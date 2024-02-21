@@ -1,4 +1,10 @@
 // Logger Middleware
+const maskSensitiveData = (body) => {
+  if (body && body.password) {
+    return { ...body, password: '*****' };
+  }
+  return body;
+};
 const loggerMiddleware = (req, res, next) => {
   if (process.env.LOG_CONSOLE === 'true') {
     console.log(`request method and URL : ${req.method} ${req.originalUrl}`) // Log the request method and URL
