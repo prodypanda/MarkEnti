@@ -1,14 +1,21 @@
 const express = require('express')
+const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const passport = require('passport')
+const helmet = require('helmet')
+
+
+
+// middlewares
 const loggerMiddleware = require('./middleware/logger.middleware')
 const rateLimitMiddleware = require('./middleware/rateLimit.middleware')
-const helmet = require('helmet')
 const sanitizeMiddleware = require('./middleware/sanitize.middleware')
 const { csrfProtection } = require('./middleware/csrf.middleware')
-const path = require('path')
-const swaggerUi = require('swagger-ui-express')
-const swaggerDocument = require('./swagger-output.json')
+const guestSessionMiddleware = require('./middleware/guestSession.middleware')
+
+
+
+// routes
 const authRoutes = require('./routes/auth.routes')
 const categoryRoutes = require('./routes/category.routes')
 const productRoutes = require('./routes/product.routes')
@@ -25,9 +32,8 @@ const salesReportsRoutes = require('./routes/salesReports.routes')
 const cmsRoutes = require('./routes/cms.routes')
 const menuRoutes = require('./routes/menu.routes')
 const cartRoutes = require('./routes/cart.routes')
-const cookieParser = require('cookie-parser')
-const guestSessionMiddleware = require('./middleware/guestSession.middleware')
 const guestCartRoutes = require('./routes/guestCart.routes')
+
 const app = express()
 
 // app.use(loggerMiddleware)
@@ -65,17 +71,7 @@ app.use(function(req, res, next) {
 });
 
 
-if (process.env.SERVE_SWAGGER_DOCS === 'true') {
-  app.use(
-    '/api-docs',
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerDocument, { explorer: true })
-  )
-  app.get('/swagger-output.json', (req, res) => {
-    res.setHeader('Content-Type', 'application/json')
-    res.send(swaggerDocument)
-  })
-}
+
 
 app.use('/api/auth', authRoutes)
 app.use('/api/categories', categoryRoutes)
