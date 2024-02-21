@@ -144,7 +144,7 @@ Please ensure your code adheres to the project's coding standards and includes a
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License. See [`LICENSE`](/blob/main/LICENSE) for more information.
 
 ## Acknowledgments
 
