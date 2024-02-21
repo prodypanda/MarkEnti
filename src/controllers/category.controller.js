@@ -1,0 +1,218 @@
+const Category = require('../models/category.model')
+const validateNestingLevel = require('../helpers/validateNestingLevel')
+const deleteWithDescendants = require('../helpers/deleteWithDescendants')
+const retrieveCategoryTree = require('../helpers/retrieveCategoryTree')
+const slugify = require('../utils/stringUtils')
+
+/**
+ * Create a new category in the system.
+ * @param {object} req - The request object containing new category details.
+ * @param {object} res - The response object to send back the newly created category.
+ */
+exports.createCategory = async (req, res) => {
+  const {
+    name,
+    description,
+    parent,
+    image,
+    icon,
+    isActive,
+    sortOrder,
+    seoTitle,
+    seoDescription,
+  } = req.body
+  
+  //slugify ancrement or random
+  const slug = await slugify(req.body.slug,req.body.name,'ancrement')
+  console.log("slug: "+slug)
+  try {
+    const category = new Category({
+      name,
+      description,
+      parent,
+      image,
+      icon,
+      isActive,
+      sortOrder,
+      seoTitle,
+      seoDescription,
+      slug,
+    })
+    await category.validate()
+    const savedCategory = await category.save()
+    res.status(201).json(savedCategory)
+  } catch (error) {
+
+    if (error.code === 11000) {
+      // Determine which field caused the duplicate key error
+      const field = Object.keys(error.keyValue || {})[0];
+      let errorMessage = "Duplicate field error";
+      if (field === 'name') {
+        errorMessage = `Category name "${name}" already exists, please choose another name.`;
+      } else if (field === 'slug') {
+        errorMessage = `Slug "${slug}" already exists, please choose another slug.`;
+      } else { 
+        errorMessage = field + ' already exists, please choose another one.';
+       }
+      
+      res.status(400).json({
+         success: false, 
+         message: errorMessage 
+        });
+    } else {
+      // Handle other errors
+      res.status(400).json({
+        success: false,
+        message: error.message || 'An error occurred while creating the category.',
+      });
+    }
+  }
+};
+
+  
+/**
+ * Update an existing category in the system.
+ * @param {object} req - The request object containing updated category details.
+ * @param {object} res - The response object to send back the updated category.
+ */
+exports.updateCategory = async (req, res) => {
+  const { id } = req.params
+  const {
+    name,
+    description,
+    parent,
+    isActive,
+    image,
+    icon,
+    sortOrder,
+    seoTitle,
+    seoDescription,
+    slug,
+  } = req.body
+  try {
+    await validateNestingLevel(parent)
+    const category = await Category.findByIdAndUpdate(
+      id,
+      {
+        name,
+        description,
+        parent,
+        isActive,
+        image,
+        icon,
+        sortOrder,
+        seoTitle,
+        seoDescription,
+        slug,
+      },
+      { new: true }
+    )
+    res.status(200).json(category)
+  } catch (error) {
+    res.status(400).json({ message: error.message })
+  }
+}
+
+/**
+ * Delete a category from the system.
+ * @param {object} req - The request object containing the category ID.
+ * @param {object} res - The response object confirming deletion.
+ */
+exports.deleteCategory = async (req, res) => {
+  try {
+    const { id } = req.params
+    await deleteWithDescendants(id)
+    res
+      .status(200)
+      .json({ message: 'Category and its descendants have been removed' })
+  } catch (error) {
+    res.status(400).json({ message: error.message })
+  }
+}
+
+/**
+ * Retrieve all categories in the system.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object with all categories.
+ */
+exports.getCategories = async (req, res) => {
+  try {
+    const { start, end } = req.query; // Extract start and end from query parameters
+    
+    // Convert start and end to numbers and calculate limit
+    const startIndex = parseInt(start, 10) || 0; // Default to 0 if not provided
+    const endIndex = parseInt(end, 10) || 0; // Default to 0 if not provided
+    const limit = endIndex ? endIndex - startIndex + 1 : undefined; // Calculate limit based on end and start
+// console.log(end)
+// console.log(limit)
+
+    // Count the total number of categories
+    const totalCount = await Category.countDocuments({}); // You can add any specific filters if necessary
+
+    const categoriesTree = await retrieveCategoryTree(
+      null,
+      req.filter,
+      req.sort,
+      startIndex,
+      limit
+    )
+
+    // Set the x-total-count header with the total count
+    res.setHeader('x-total-count', totalCount.toString()); 
+    res.status(200).json(categoriesTree)
+  } catch (error) {
+    res.status(400).json({ message: error.message })
+  }
+}
+
+/**
+ * Retrieve a single category by its ID.
+ * @param {object} req - The request object containing the category ID.
+ * @param {object} res - The response object with the requested category details.
+ */
+exports.getCategory = async (req, res) => {
+  const { id } = req.params
+  try {
+    //todo!
+    //add functionality for the admin to show non activated (hidden) catgories.
+    const category = await Category.findById(id).where('isActive').equals(true)
+    if (!category) {
+      return res.status(404).json({ message: 'Category not found' })
+    }
+    const ancestors = await Category.find({ _id: { $in: category.ancestors } })
+    res.status(200).json({
+      ancestors: ancestors.map((ancestor) => {
+        return {
+          _id: ancestor._id,
+          name: ancestor.name,
+          parent: ancestor.parent,
+          ancestors: ancestor.ancestors,
+        }
+      }),
+      category,
+    })
+  } catch (error) {
+    res.status(400).json({ message: error.message })
+  }
+}
+
+exports.uploadCategoryImage = async (req, res) => {
+  const { id } = req.params
+  if (!req.file) return res.status(400).send('No image file provided.')
+
+  try {
+    const category = await Category.findByIdAndUpdate(
+      id,
+      {
+        image: `/images/${req.file.filename}`,
+      },
+      { new: true }
+    )
+
+    if (!category) return res.status(404).send('Category not found.')
+
+    res.status(200).json({ message: 'Image uploaded successfully.', category })
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
