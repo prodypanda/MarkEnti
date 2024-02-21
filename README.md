@@ -76,7 +76,22 @@ markenti is an e-commerce platform back-end REST API that facilitates online sto
 - **Nodemailer:** for email sending capabilities
 - **Stripe/PayPal APIs:** For handling payments and subscriptions.
 
+Additional libraries and middlewares are used to ensure performance, security, and functionality which are detailed in the project's `package.json` file.
 
+## Project Structure
+```
+/project_root
+    /src
+        /config
+        /controllers
+        /models
+        /routes
+        /helpers
+        /middleware
+    package.json
+    .env
+    ...additional files and directories
+```
 
 ## Getting Started
 
@@ -100,7 +115,7 @@ markenti is an e-commerce platform back-end REST API that facilitates online sto
    ```
    npm install
    ```
-4. Create a `.env` file in the root directory and fill in your environment variables:
+4. Rename the `.env.exemple` file to `.env` in the root directory and fill in your environment variables:
    ```
    DB_URI=mongodb://your_mongodb_uri
    JWT_SECRET=your_jwt_secret
