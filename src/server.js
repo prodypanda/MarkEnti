@@ -4,7 +4,7 @@ const http = require('http')
 const app = require('./app')
 const connectDB = require('./config/mongoose')
 
-require('./schedulers/discountScheduler')
+require('./middlewares/schedulers/discountScheduler')
 
 const port = process.env.PORT || 8080
 
