@@ -50,6 +50,7 @@ const productSchema = new Schema({
   }
 });
 
+
 // Generate slug before saving the product
 productSchema.pre('save', async function(next) {
   // If slug is not provided, generate one from product name
