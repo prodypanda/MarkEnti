@@ -3,9 +3,10 @@ const { applyActiveDiscount } = require('../utils/productUtils')
 
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, variations, inventoryCount=0 } = req.body
+    const { name, slug, description, price, category, variations, inventoryCount = 0 } = req.body
     let product = new Product({
       name,
+      slug,
       description,
       price,
       category,
@@ -134,3 +135,26 @@ exports.getProductById = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
+
+
+
+
+// Route to get product by ID or Slug
+exports.getProductByIdOrSlug = async (req, res) => {
+  let identifier = req.params.identifier;
+  try {
+    let product = await Product.findOne({
+      $or: [ { _id: identifier }, { slug: identifier } ]
+    });
+
+    if(product) {
+      return res.status(200).json(product);
+    } else {
+      return res.status(404).send('Product not found');
+    }
+  } catch(err) {
+    return res.status(500).send(err.message);
+  }
+};
+
+module.exports = router;

@@ -8,7 +8,8 @@ const loggerMiddleware = require('../middleware/logger.middleware')
 router.post('/', productController.createProduct);
 router.put('/:id', productController.updateProduct);
 router.delete('/:id', productController.deleteProduct);
-router.get('/:id', productController.getProductById);
+// router.get('/:id', productController.getProductById);
+router.get('/:IdOrSlug', productController.getProductByIdOrSlug);
 
 router.get('/', productController.getProducts);
 router.post('/create', productController.createProduct);
