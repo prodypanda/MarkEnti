@@ -1,6 +1,6 @@
 const express = require('express');
 const paymentController = require('../controllers/payment.controller');
-const { isAuthenticated } = require('../middleware/authenticate.middleware');
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 const { validatePaypalPayment, validateStripePayment, handleValidationErrors } = require('../validation/payment');
 const { handlePaymentFailure } = require('../controllers/payment.controller');
 

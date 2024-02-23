@@ -1,6 +1,6 @@
 const express = require('express');
 const cmsController = require('../controllers/cms.controller');
-const { isAuthenticated } = require('../middleware/authenticate.middleware');
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 const router = express.Router();
 
 router.post('/pages', isAuthenticated, cmsController.createPage);

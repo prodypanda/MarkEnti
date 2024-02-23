@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const shippingController = require('../controllers/shipping.controller');
-const { isAuthenticated } = require('../middleware/authenticate.middleware');
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 
 router.get('/', isAuthenticated, shippingController.getShippingOptions);
 router.post('/', isAuthenticated, shippingController.createShippingOption);

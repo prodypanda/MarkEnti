@@ -1,6 +1,6 @@
 const express = require('express');
 const discountController = require('../controllers/discount.controller');
-const { isAuthenticated } = require('../middleware/authenticate.middleware');
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 
 const router = express.Router();
 

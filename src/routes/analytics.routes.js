@@ -1,6 +1,6 @@
 const express = require('express');
 const analyticsController = require('../controllers/analytics.controller');
-const { isAuthenticated } = require('../middleware/authenticate.middleware');
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 const router = express.Router();
 
 router.get('/registration', isAuthenticated, analyticsController.getRegistrationStats);

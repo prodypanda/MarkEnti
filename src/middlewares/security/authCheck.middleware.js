@@ -1,4 +1,4 @@
-const User = require('../models/user.model')
+const User = require('../../models/user.model')
 
 exports.isAdminOrOwner = async (req, res, next) => {
   const userId = req.params.userId || req.body.userId // Assume userId is in params or body.

@@ -1,6 +1,6 @@
 const express = require('express');
 const { createMenu, updateMenu, deleteMenu, getMenus, createMenuItem, updateMenuItem, deleteMenuItem, getMenuItems, reorderMenuItems } = require('../controllers/menu.controller');
-const { isAuthenticated } = require('../middleware/authenticate.middleware');
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 const router = express.Router();
 
 router.post('/', isAuthenticated, createMenu);

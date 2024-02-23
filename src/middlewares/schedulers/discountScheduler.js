@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const discountController = require('../controllers/discount.controller');
+const discountController = require('../../controllers/discount.controller');
 // * * * * * * every secound
 // 0 * * * * * every minute
 // 0 0 0 * * * every hours

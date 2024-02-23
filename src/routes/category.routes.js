@@ -1,13 +1,13 @@
 const express = require('express')
 const categoryController = require('../controllers/category.controller')
-const { isAuthenticated } = require('../middleware/authenticate.middleware')
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware')
 const {
   sortAndFilterCategories,
-} = require('../middleware/categorySorting.middleware')
+} = require('../middlewares/categorySorting.middleware')
 const {
   uploadSingleImage,
   resizeAndFormatImage,
-} = require('../middleware/multer.middleware')
+} = require('../middlewares/multer.middleware')
 const { validateCategory } = require('../validation/category')
 const router = express.Router()
 

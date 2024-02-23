@@ -1,7 +1,7 @@
 const express = require('express');
 const orderController = require('../controllers/order.controller');
-const { isAuthenticated } = require('../middleware/authenticate.middleware');
-const { calculatePreferencesOnOrderCompletion } = require('../middleware/orderEvent.middleware');
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
+const { calculatePreferencesOnOrderCompletion } = require('../middlewares/orderEvent.middleware');
 const router = express.Router();
 
 router.post('/', isAuthenticated, orderController.placeOrder);

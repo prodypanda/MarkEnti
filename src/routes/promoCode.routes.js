@@ -1,6 +1,6 @@
 const express = require('express');
 const promoCodeController = require('../controllers/promoCode.controller');
-const { isAuthenticated } = require('../middleware/authenticate.middleware');
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 const router = express.Router();
 
 // POST route to create a promo code

@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const guestCartController = require('../controllers/guestCart.controller.js');
-const guestSessionMiddleware = require('../middleware/guestSession.middleware.js');
-const { csrfProtection } = require('../middleware/csrf.middleware');
+const guestSessionMiddleware = require('../middlewares/guestSession.middleware.js');
+const { csrfProtection } = require('../middlewares/security/csrf.middleware');
 
 
 /**

@@ -2,7 +2,7 @@
 
 const express = require('express');
 const cartController = require('../controllers/cart.controller');
-const { isAuthenticated } = require('../middleware/authenticate.middleware');
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 
 const router = express.Router();
 

@@ -1,7 +1,7 @@
 const express = require('express');
 const designController = require('../controllers/design.controller');
-const { isAuthenticated } = require('../middleware/authenticate.middleware');
-const { isAdminOrOwner } = require('../middleware/authCheck.middleware');
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
+const { isAdminOrOwner } = require('../middlewares/security/authCheck.middleware');
 // const { isAuthenticated, isAdminOrOwner } = require('../middleware/authenticate.middleware');
 const router = express.Router();
 

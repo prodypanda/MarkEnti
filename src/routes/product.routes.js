@@ -1,8 +1,8 @@
 const express = require('express');
 const productController = require('../controllers/product.controller');
-const { isAuthenticated } = require('../middleware/authenticate.middleware');
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 const router = express.Router();
-const loggerMiddleware = require('../middleware/logger.middleware')
+const loggerMiddleware = require('../middlewares/logger.middleware')
 
 // router.get('/', isAuthenticated, productController.getProducts);
 router.post('/', productController.createProduct);

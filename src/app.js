@@ -7,11 +7,11 @@ const helmet = require('helmet')
 
 
 // middlewares
-const loggerMiddleware = require('./middleware/logger.middleware')
-const rateLimitMiddleware = require('./middleware/rateLimit.middleware')
-const sanitizeMiddleware = require('./middleware/sanitize.middleware')
-const { csrfProtection } = require('./middleware/csrf.middleware')
-const guestSessionMiddleware = require('./middleware/guestSession.middleware')
+const loggerMiddleware = require('./middlewares/logger.middleware')
+const rateLimitMiddleware = require('./middlewares/security/rateLimit.middleware')
+const sanitizeMiddleware = require('./middlewares/sanitize.middleware')
+const { csrfProtection } = require('./middlewares/security/csrf.middleware')
+const guestSessionMiddleware = require('./middlewares/guestSession.middleware')
 
 
 
