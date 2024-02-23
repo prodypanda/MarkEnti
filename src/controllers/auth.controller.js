@@ -9,16 +9,31 @@ const passport = require('passport')
  */
 exports.register = async (req, res) => {
   try {
-    const { username, email, password } = req.body
+    const { username, email, password } = req.body;
 
-    const user = new User({ username, email, password })
-    await user.save()
+    // Check if username or email already exists
+    const existingUsername = await User.findOne({ username });
+    const existingEmail = await User.findOne({ email });
 
-    res.status(201).send({ message: 'User registered successfully' })
+    if (existingUsername) {
+      return res.status(400).send({ error: 'Username already exists' });
+    }
+
+    if (existingEmail) {
+      return res.status(400).send({ error: 'Email already exists' });
+    }
+
+    // Create and save new user
+    const user = new User({ username, email, password });
+    await user.save();
+
+    // Send success response
+    res.status(201).send({ message: 'User registered successfully' });
   } catch (error) {
-    res.status(500).send({ error: error.message })
+    // Handle other errors
+    res.status(500).send({ error: error.message });
   }
-}
+};
 
 /**
  * Authenticate a user and issue a JWT token for further API calls.
