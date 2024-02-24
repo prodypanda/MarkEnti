@@ -44,6 +44,8 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(guestSessionMiddleware)
 app.use(passport.initialize())
+// Custom error handler for unauthorized requests 
+
 require('./config/passport')
 
 app.get('/ping', (req, res) => {

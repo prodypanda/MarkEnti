@@ -4,7 +4,7 @@ exports.isAdminOrOwner = async (req, res, next) => {
   const userId = req.params.userId || req.body.userId // Assume userId is in params or body.
 
   try {
-    const user = await User.findById(req.user.id)
+    const user = await User.findById(req.user.id).populate('role')
     if (user.role === 'admin' || user.id === userId) {
       return next()
     }
