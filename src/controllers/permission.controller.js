@@ -1,4 +1,5 @@
-const Permission = require('../models/Permission.model')
+const Permission = require('../models/permission.model')
+const Role = require('../models/role.model')
 // router.post('/',  createPermission)
 // router.put('/:id',  updatePermission)
 // router.delete('/:id', deletePermission)
@@ -71,11 +72,27 @@ exports.getPermission = async (req, res) => {
 }
 
 
-// exports.getMyPermissions = async (req, res) => {
-//   const { id } = req.user
-//   try {
-//     const permissions = await Permission.find({
 
+exports.getMyPermissions = async (req, res) => {
+  const { id } = req.user
+  // const roles = req.user.roles;
+  const roles = ['65dadfdd645008d3066efe36', '65dae084645008d3066efe3b'];
+  // Get the permissions for the user's roles.
+  // const permissions = await Role.find({ _id: { $in: roles } }).select('permissions');
+  const permissions = await Role.findById('65dadfdd645008d3066efe36')
+  // const permissions = await Role.find({ _id: '65dadfdd645008d3066efe36' }).select('permissions');
+  console.log(permissions);
+  
+  // // Get the permissions for the user's roles.
+  // const myPermissions = permissions.map(permission => permission.permissions);
+  // // Flatten the array of arrays.
+  // const flattenedPermissions = myPermissions.flat();
+  // // Remove duplicates.
+  // const uniquePermissions = [...new Set(flattenedPermissions)];
+  return res.status(200).json(permissions);
+}
+
+  
 
 
 

@@ -18,7 +18,7 @@ const guestSessionMiddleware = require('./middlewares/guestSession.middleware')
 // routes
 const authRoutes = require('./routes/auth.routes')
 const roleRoutes = require('./routes/role.routes')
-// const permissionRoutes = require('./routes/permission.routes')
+const permissionRoutes = require('./routes/permission.routes')
 const categoryRoutes = require('./routes/category.routes')
 const productRoutes = require('./routes/product.routes')
 const orderRoutes = require('./routes/order.routes')
@@ -79,7 +79,7 @@ app.use(function(req, res, next) {
 
 app.use('/api/auth', authRoutes)
 app.use('/api/roles', roleRoutes)
-// app.use('/api/permissions', permissionRoutes)
+app.use('/api/permissions', permissionRoutes)
 
 app.use('/api/categories', categoryRoutes)
 app.use('/api/products', productRoutes)

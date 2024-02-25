@@ -18,7 +18,7 @@ router.get('/',  getPermissions)
 router.get('/:id', getPermission)
 
 router.get('/myPermissions',  getMyPermissions)
-router.put('/myPermissions',  updateMyPermissions)
+// router.put('/myPermissions',  updateMyPermissions)
 
 // router.get('/myroutes', isAuthenticated, getUserProfile);
 // router.put('/myroutes', isAuthenticated, isAdminOrOwner, updateUserProfile);
