@@ -1,0 +1,138 @@
+const Permission = require('../models/Permission.model')
+// router.post('/',  createPermission)
+// router.put('/:id',  updatePermission)
+// router.delete('/:id', deletePermission)
+// router.get('/',  getPermissions)
+// router.get('/:id', getPermission)
+
+// router.get('/myPermissions',  getMyPermissions)
+// router.put('/myPermissions',  updateMyPermissions)
+
+exports.createPermission = async (req, res) => {
+  const { name, description } = req.body
+  try {
+    const permission = await Permission.create({ name, description })
+    res.status(201).json(permission)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+exports.updatePermission = async (req, res) => {
+  const { id } = req.params
+  const { name, description } = req.body
+  try {
+    const permission = await Permission.findByIdAndUpdate(
+      id,
+      { name, description },
+      { new: true }
+    )
+    res.status(200).json(permission)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+exports.deletePermission = async (req, res) => {
+  const { id } = req.params
+  try {
+    const permission = await Permission.findByIdAndDelete(id)
+    if (!permission) {
+      res.status(404).json({ message: 'Permission not found' })
+    }else{
+        res.status(200).json(permission)
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+exports.getPermissions = async (req, res) => {
+  try {
+    const permissions = await Permission.find()
+    res.status(200).json(permissions)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
+exports.getPermission = async (req, res) => {
+  const { id } = req.params
+  try{
+    const permission = await Permission.findOne({_id: id})
+    if (!permission) {
+        res.status(404).json({ message: 'Permission not found' })
+      }else{
+          res.status(200).json(permission)
+      }
+  }catch(error){
+    res.status(500).json({ message: error.message })
+  }
+}
+
+
+// exports.getMyPermissions = async (req, res) => {
+//   const { id } = req.user
+//   try {
+//     const permissions = await Permission.find({
+
+
+
+
+
+
+
+
+
+// module.exports.permissionController = {
+//     getPermission: (req, res) =>    {
+//         Permission.find().then((data) => {
+//             res.json(data)
+//         })
+//     },
+//     addPermission: (req, res) =>    {
+//         Permission.create({
+//             name: req.body.name,
+//             description: req.body.description
+//         }).then((data) => {
+//             res.json(data)
+//         })
+//     },
+//     deletePermission: (req, res) =>    {
+//         Permission.findByIdAndRemove(req.params.id).then(() => {
+//             res.json('Permission deleted')
+//         })
+//     },
+//     updatePermission: (req, res) =>    {
+//         Permission.findByIdAndUpdate(req.params.id, {
+//             name: req.body.name,
+//             description: req.body.description
+//         }, {new: true}).then((data) => {
+//             res.json(data)
+//         })
+//     },
+//     getPermissionById: (req, res) =>    {
+//         Permission.findById(req.params.id).then((data) => {
+//             res.json(data)
+//         })
+//     },
+//     getPermissionByName: (req, res) =>    {
+//         Permission.find({name: req.params.name}).then((data) => {
+//             res.json(data)
+//         })
+//     },
+//     getPermissionByDescription: (req, res) =>    {
+//         Permission.find({description: req.params.description}).then((data) => {
+//             res.json(data)
+//         })
+//     }
+// }
+
+
+// // WEBPACK FOOTER //
+// // ./src/controllers/permission.controller.js
+// // module id = 10
+// // module chunks = 0
+
+// // WEBPACK FOOTER //
+// // ui/src/controllers/permission.controller.js
