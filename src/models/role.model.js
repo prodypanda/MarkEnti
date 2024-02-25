@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
 const roleSchema = new mongoose.Schema({
     name: { type: String, required: true, unique: true }, // e.g., 'admin', 'manager'

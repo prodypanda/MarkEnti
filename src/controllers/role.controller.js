@@ -1,0 +1,140 @@
+const Role = require('../models/role.model')
+// const validateNestingLevel = require('../helpers/validateNestingLevel')
+// const deleteWithDescendants = require('../helpers/deleteWithDescendants')
+// const retrieveCategoryTree = require('../helpers/retrieveCategoryTree')
+// const slugify = require('../utils/stringUtils')
+
+
+
+
+exports.createRole = async (req, res) => {
+    const {
+      name,
+      permissions
+    } = req.body
+    
+    try {
+      const role = new Role({
+        name,
+        permissions
+      })
+      await role.validate()
+      const savedRole = await role.save()
+      res.status(201).json(savedRole)
+    } catch (error) {
+  
+      if (error.code === 11000) {
+        // Determine which field caused the duplicate key error
+        const field = Object.keys(error.keyValue || {})[0];
+        let errorMessage = "Duplicate field error";
+        if (field === 'name') {
+          errorMessage = `Category name "${name}" already exists, please choose another name.`;
+        } else if (field === 'permissions') {
+          errorMessage = `permissions "${permissions}" already exists, please choose another permission.`;
+        } else { 
+          errorMessage = field + ' already exists, please choose another one.';
+         }
+        
+        res.status(400).json({
+           success: false, 
+           message: errorMessage 
+          });
+      } else {
+        // Handle other errors
+        res.status(400).json({
+          success: false,
+          message: error.message || 'An error occurred while creating the role.',
+        });
+      }
+    }
+  };
+
+  exports.updateRole = async (req, res) => {
+    const {
+      name,
+      permissions
+    } = req.body
+    try {
+      const role = await Role.findById(req.params.id)
+      if (!role) {
+        return res.status(404).json({
+          success: false,
+          message: 'Role not found.',
+        });
+      }
+      role.name = name
+      role.permissions = permissions
+      await role.validate()
+      const updatedRole = await role.save()
+      res.status(200).json(updatedRole)
+    }
+    catch (error) {
+        res.status(400).json({
+            success: false,
+           message: error.message || 'An error occurred while updating the role.',
+        })
+    } 
+  };
+
+  exports.deleteRole = async (req, res) => {
+    try {
+      const { id } = req.params
+      await Role.findByIdAndDelete(id)
+      res.status(200).json({
+        success: true,
+        message: 'Role deleted successfully.',
+      });
+    
+    } catch (error) {
+      res.status(400).json({ message: error.message })
+    }
+  }
+
+  exports.getRoles = async (req, res) => {
+    try {
+      const roles = await Role.find()
+      res.status(200).json(roles)
+    } catch (error) {
+      res.status(400).json({ message: error.message })
+      
+    }
+  }
+  exports.getRole = async (req, res) => {
+    try {
+      const role = await Role.findById(req.params.id)
+      res.status(200).json(role)
+    } catch (error) {
+      res.status(400).json({ message: error.message })
+      
+    }
+  }
+
+  exports.getMyRole = async (req, res) => {
+    try {
+      const role = await Role.findById(req.user.role)
+      res.status(200).json(role)
+    } catch (error) {
+      res.status(400).json({ message: error.message })
+      
+    }
+  }
+
+  exports.updateMyRole = async (req, res) => {
+    const {
+      name,
+      permissions
+    } = req.body
+    try {
+        await Role.findByIdAndUpdate(req.user.role, {
+        name,
+        permissions
+      })
+      res.status(200).json({
+        success: true,
+        message: "My role was updated successfuly"
+      })
+    }catch (error) {
+      res.status(400).json({ message: error.message })
+      
+    }
+}
