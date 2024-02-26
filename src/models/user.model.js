@@ -8,8 +8,9 @@ const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  // role: { type: String, enum: ['root', 'admin', 'manager', 'customer', 'guest'], default: 'customer' },
-  role: { type: Schema.Types.ObjectId, ref: 'Role' },
+  role: { type: String, enum: ['root', 'admin', 'manager', 'customer', 'guest'], default: 'customer' },
+  roles: [{ type: Schema.Types.ObjectId, ref: 'Role' }],
+  
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now }
 });

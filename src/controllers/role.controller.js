@@ -4,7 +4,14 @@ const Role = require('../models/role.model')
 // const retrieveCategoryTree = require('../helpers/retrieveCategoryTree')
 // const slugify = require('../utils/stringUtils')
 
+// router.post('/',  createRole)
+// router.put('/:id',  updateRole)
+// router.delete('/:id', deleteRole)
+// router.get('/',  getRoles)
+// router.get('/:id', getRole)
 
+// router.get('/myRole',  getMyRole)
+// router.put('/myRole',  updateMyRole)
 
 
 exports.createRole = async (req, res) => {
@@ -110,8 +117,11 @@ exports.createRole = async (req, res) => {
   }
 
   exports.getMyRole = async (req, res) => {
+    console.log(req.user)
     try {
-      const role = await Role.findById(req.user.role)
+        const roles = req.user.roles;
+        console.log(roles)
+      const role = await Role.findById(req.user.roles)
       res.status(200).json(role)
     } catch (error) {
       res.status(400).json({ message: error.message })
@@ -119,22 +129,27 @@ exports.createRole = async (req, res) => {
     }
   }
 
-  exports.updateMyRole = async (req, res) => {
-    const {
-      name,
-      permissions
-    } = req.body
-    try {
-        await Role.findByIdAndUpdate(req.user.role, {
-        name,
-        permissions
-      })
-      res.status(200).json({
-        success: true,
-        message: "My role was updated successfuly"
-      })
-    }catch (error) {
-      res.status(400).json({ message: error.message })
+
+
+
+
+
+//   exports.updateMyRole = async (req, res) => {
+//     const {
+//       name,
+//       permissions
+//     } = req.body
+//     try {
+//         await Role.findByIdAndUpdate(req.user.role, {
+//         name,
+//         permissions
+//       })
+//       res.status(200).json({
+//         success: true,
+//         message: "My role was updated successfuly"
+//       })
+//     }catch (error) {
+//       res.status(400).json({ message: error.message })
       
-    }
-}
+//     }
+// }
