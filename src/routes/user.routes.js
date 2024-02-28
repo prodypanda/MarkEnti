@@ -3,7 +3,7 @@ const { getUsers, getUserProfile, getUserById, updateUserProfile, deleteUser } =
 // const { isAuthenticated, isAdminOrOwner } = require('../middleware/authenticate.middleware');
 const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 const { isAdminOrOwner } = require('../middlewares/security/verifyRoles.middleware');
-const { validateCategory, validateMongoId, validateUserUpdate } = require('../validation/inputValidator')
+const { validateMongoId, validateUserUpdate } = require('../validation/inputValidator')
 const router = express.Router();
 
 router.get('/', isAuthenticated, getUsers);
