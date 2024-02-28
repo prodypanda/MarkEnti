@@ -23,7 +23,7 @@ exports.createCategory = async (req, res) => {
   } = req.body
   
   //slugify ancrement or random
-  const slug = await slugify(req.body.slug,req.body.name,'ancrement')
+  const slug = await slugify(toslogify, 'category', 'slugifyMiddleware')
   console.log("slug: "+slug)
   try {
     const category = new Category({
@@ -87,8 +87,17 @@ exports.updateCategory = async (req, res) => {
     sortOrder,
     seoTitle,
     seoDescription,
-    slug,
   } = req.body
+
+    //slugify the string
+    let toslogify
+    if(req.body.slug || req.body.slug == !null){
+      toslogify = req.body.slug
+    }else{
+      toslogify = req.body.name
+    }
+    // slugifying methode: ancrement or random or slugifyMiddleware
+    const slug = await slugify(toslogify, 'category', 'slugifyMiddleware')
   try {
     await validateNestingLevel(parent)
     const category = await Category.findByIdAndUpdate(
@@ -158,7 +167,7 @@ exports.getCategories = async (req, res) => {
     )
 
     // Set the x-total-count header with the total count
-    res.setHeader('x-total-count', totalCount.toString()); 
+    res.setHeader('x-total-count', totalCount.toString());
     res.status(200).json(categoriesTree)
   } catch (error) {
     res.status(400).json({ message: error.message })

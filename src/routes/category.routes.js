@@ -1,6 +1,6 @@
 const express = require('express')
 const categoryController = require('../controllers/category.controller')
-const { isAuthenticated } = require('../middlewares/security/authenticate.middleware')
+const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 const {
   sortAndFilterCategories,
 } = require('../middlewares/categorySorting.middleware')
@@ -8,7 +8,7 @@ const {
   uploadSingleImage,
   resizeAndFormatImage,
 } = require('../middlewares/multer.middleware')
-const { validateCategory } = require('../validation/category')
+const { validateCategory } = require('../validation/inputValidator')
 const router = express.Router()
 
 /**
@@ -36,7 +36,7 @@ const router = express.Router()
  *        "400":
  *          description: Bad request
  */
-router.post('/', validateCategory, categoryController.createCategory)
+router.post('/',isAuthenticated , validateCategory, categoryController.createCategory)
 
 /**
  * @swagger
@@ -66,7 +66,7 @@ router.post('/', validateCategory, categoryController.createCategory)
  *          description: Category not found
  */
 
-router.put('/:id', validateCategory, categoryController.updateCategory)
+router.put('/:id',isAuthenticated , validateCategory, categoryController.updateCategory)
 
 /**
  * @swagger
@@ -90,7 +90,7 @@ router.put('/:id', validateCategory, categoryController.updateCategory)
  *          description: Category not found
  */
 
-router.delete('/:id', categoryController.deleteCategory)
+router.delete('/:id',isAuthenticated , categoryController.deleteCategory)
 
 /**
  * @swagger

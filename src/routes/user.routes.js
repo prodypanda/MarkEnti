@@ -1,5 +1,5 @@
 const express = require('express');
-const { getUsers, getUserProfile, getUserById, updateUserProfile } = require('../controllers/user.controller');
+const { getUsers, getUserProfile, getUserById, updateUserProfile, deleteUser } = require('../controllers/user.controller');
 // const { isAuthenticated, isAdminOrOwner } = require('../middleware/authenticate.middleware');
 const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 const { isAdminOrOwner } = require('../middlewares/security/verifyRoles.middleware');

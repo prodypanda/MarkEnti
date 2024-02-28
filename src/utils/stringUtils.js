@@ -1,9 +1,21 @@
 const Category = require('../models/category.model')
+const Product = require('../models/product.model')
 const crypto = require('crypto')
-//ancrement or random
-const slugify = async (slug, name, dupkey = 'ancrement') => {
+const slugifyMiddleware = require('slugify');
+//ancrement or random or slugifyMiddleware
+const slugify = async (slug, type, methode = 'ancrement') => {
+
+let element
+  if (type === 'category') {
+    element = Category
+  } else if (type === 'product') {
+    element = Product
+  }
+
+
   let newSlug
-  if (slug) {
+
+  if (methode === 'ancrement') {
     newSlug = slug
       .toString()
       .toLowerCase()
@@ -12,8 +24,16 @@ const slugify = async (slug, name, dupkey = 'ancrement') => {
       .replace(/\-\-+/g, '-')
       .replace(/^-+/, '')
       .replace(/-+$/, '')
-  } else if (!slug && name) {
-    newSlug = name
+    let existingElement = await element.findOne({ slug: newSlug })
+    let counter = 1
+    console.log(existingElement)
+    while (existingElement) {
+      newSlug = `${newSlug}-${counter}`
+      existingElement = await element.findOne({ slug: newSlug })
+      counter++
+    }
+  } else if (methode === 'random') {
+    newSlug = slug
       .toString()
       .toLowerCase()
       .replace(/\s+/g, '-')
@@ -21,27 +41,36 @@ const slugify = async (slug, name, dupkey = 'ancrement') => {
       .replace(/\-\-+/g, '-')
       .replace(/^-+/, '')
       .replace(/-+$/, '')
-  }
-
-  if (dupkey === 'ancrement') {
-    let existingCategory = await Category.findOne({ slug: newSlug })
-    let counter = 1
-    console.log(existingCategory)
-    while (existingCategory) {
-      newSlug = `${newSlug}-${counter}`
-      existingCategory = await Category.findOne({ slug: newSlug })
-      counter++
-    }
-  } else if (dupkey === 'random') {
-    let existingCategory = await Category.findOne({ slug: newSlug })
-    while (existingCategory) {
-      newSlug =newSlug +'-' + Math.floor(Math.random() * 99) + crypto
+    let existingElement = await element.findOne({ slug: newSlug })
+    while (existingElement) {
+      newSlug = newSlug +'-' + Math.floor(Math.random() * 99) + crypto
           .randomBytes(Math.ceil((6 * 3) / 4))
           .toString('base64') // Convert to base64 format
           .replace(/\+/g, '0') // Replace + symbols with 0
           .replace(/\//g, '0') // Replace / symbols with 0
           .slice(0, 6)
     }
+  } else if (methode === 'slugifyMiddleware') {
+    
+    newSlug = slugifyMiddleware(slug, { lower: true });
+    // Check for uniqueness
+    let count = 0;
+    while(true) {
+      try {
+        let existingElement = await element.findOne({ slug: newSlug });
+        if (!existingElement) {
+          // No conflict or same element, break the loop
+          break;
+        }
+        count++;
+        // Create a new slug
+        newSlug = `${slugifyMiddleware(newSlug, { lower: true })}-${count}`;
+      } catch(err) {
+        return next(err);
+      }
+    }
+
+
   }
 
   return newSlug
