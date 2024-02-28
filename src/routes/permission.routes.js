@@ -4,7 +4,7 @@ const express = require('express');
 // const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
 // const { isAdminOrOwner } = require('../middlewares/security/verifyRoles.middleware');
 const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
-const { validatePermission } = require('../validation/inputValidator')
+const { validatePermission, validateMongoId } = require('../validation/inputValidator')
 
 const {  getMyPermissions, getPermission, getPermissions, createPermission, updatePermission, deletePermission} = require('../controllers/permission.controller');
 
@@ -13,11 +13,11 @@ const router = express.Router();
 router.get('/myPermissions', isAuthenticated, getMyPermissions)
 
 router.post('/', isAuthenticated, validatePermission, createPermission)
-router.put('/:id', isAuthenticated, validatePermission, updatePermission)
+router.put('/:id', isAuthenticated, validateMongoId, validatePermission, updatePermission)
 
-router.delete('/:id', isAuthenticated, deletePermission)
+router.delete('/:id', isAuthenticated, validateMongoId, deletePermission)
 router.get('/', isAuthenticated, getPermissions)
-router.get('/:id', isAuthenticated, getPermission)
+router.get('/:id', isAuthenticated, validateMongoId, getPermission)
 
 
 

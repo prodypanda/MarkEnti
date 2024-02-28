@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/auth.controller');
-const validateRegisterInput = require('../validation/register');
+// const validateRegisterInput = require('../validation/register');
+const { validateUserRegister, validateUserLogin } = require('../validation/inputValidator')
 
 /**
  * @swagger
@@ -46,7 +47,7 @@ const validateRegisterInput = require('../validation/register');
  *          description: Server error
  */
 
-router.post('/register', validateRegisterInput, authController.register);
+router.post('/register', validateUserRegister, authController.register);
 
 
 /**
@@ -120,6 +121,6 @@ router.post('/register', validateRegisterInput, authController.register);
  *        "500":
  *          description: Server error
  */
-router.post('/login', authController.login);
+router.post('/login', validateUserLogin, authController.login);
 
 module.exports = router;

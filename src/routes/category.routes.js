@@ -8,7 +8,7 @@ const {
   uploadSingleImage,
   resizeAndFormatImage,
 } = require('../middlewares/multer.middleware')
-const { validateCategory } = require('../validation/inputValidator')
+const { validateCategory, validateMongoId } = require('../validation/inputValidator')
 const router = express.Router()
 
 /**
@@ -66,7 +66,7 @@ router.post('/',isAuthenticated , validateCategory, categoryController.createCat
  *          description: Category not found
  */
 
-router.put('/:id',isAuthenticated , validateCategory, categoryController.updateCategory)
+router.put('/:id',isAuthenticated, validateMongoId, validateCategory, categoryController.updateCategory)
 
 /**
  * @swagger
@@ -90,7 +90,7 @@ router.put('/:id',isAuthenticated , validateCategory, categoryController.updateC
  *          description: Category not found
  */
 
-router.delete('/:id',isAuthenticated , categoryController.deleteCategory)
+router.delete('/:id',isAuthenticated, validateMongoId, categoryController.deleteCategory)
 
 /**
  * @swagger
@@ -127,7 +127,7 @@ router.get('/', sortAndFilterCategories, categoryController.getCategories)
  *          description: Category not found
  */
 
-router.get('/:id', categoryController.getCategory)
+router.get('/:id', isAuthenticated, validateMongoId, categoryController.getCategory)
 
 router.post(
   '/upload-image/:id',
