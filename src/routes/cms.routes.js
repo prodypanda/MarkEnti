@@ -4,7 +4,7 @@ const { isAuthenticated } = require('../middlewares/security/authenticate.middle
 const { validateMongoId } = require('../validation/inputValidator')
 const router = express.Router();
 
-//adding validateMongoId to validate the mongo id
+//removed
 router.post('/pages', isAuthenticated, cmsController.createPage);
 router.put('/pages/:id', isAuthenticated, validateMongoId, cmsController.updatePage);
 router.delete('/pages/:id', isAuthenticated, validateMongoId, cmsController.deletePage);
