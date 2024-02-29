@@ -1,9 +1,9 @@
 const Product = require('../models/product.model')
 
 exports.updateInventory = async (req, res) => {
-  const { productId, count } = req.body
+  const { id, count } = req.body
   try {
-    const product = await Product.findById(productId)
+    const product = await Product.findById(id)
     if (!product) {
       return res.status(404).json({ message: 'Product not found' })
     }
@@ -22,9 +22,9 @@ exports.updateInventory = async (req, res) => {
 }
 
 exports.getInventory = async (req, res) => {
-  const { productId } = req.params
+  const { id } = req.params
   try {
-    const product = await Product.findById(productId).select('inventoryCount')
+    const product = await Product.findById(id).select('inventoryCount')
     if (!product) {
       return res.status(404).json({ message: 'Product not found' })
     }

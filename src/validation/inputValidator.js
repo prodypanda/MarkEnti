@@ -216,3 +216,37 @@ const descriptionBlacklist = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/
 // Slug Blacklist + Space Handling
 const slugBlacklist = /[^a-zA-Z0-9-]+/g; 
 // const slugBlacklist = ' /\\|&@#%^*,';
+
+
+
+
+// Include this file in routes where permission creation or updation is handled.
+exports.validateInventoryNumeric = [
+  check('count')
+  .isNumeric().withMessage('Count must be a number')
+  .isInt({ min: 0, max: 99999 }).withMessage('Count must be a positive integer'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
+
+
+// Include this file in routes where permission creation or updation is handled.
+exports.validateCartImput = [
+  check('quantity')
+  .isNumeric().withMessage('Count must be a number')
+  .isInt({ min: 0, max: 99999 }).withMessage('Count must be a positive integer'),
+  check('id')
+  .isMongoId().withMessage('Invalid id format'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    next();
+  },
+];

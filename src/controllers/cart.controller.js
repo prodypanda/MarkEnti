@@ -34,7 +34,7 @@ exports.removeItemFromCart = async (req, res) => {
   try {
     const cart = await cartService.removeItemFromCart(
       req.user.id,
-      req.params.itemId
+      req.params.id
     )
     res.status(200).json(cart)
   } catch (error) {
