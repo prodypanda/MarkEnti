@@ -304,7 +304,7 @@ exports.validateDesignConfigCreate = [
   .escape(),
 
   // Custom CSS validations
-  body('customCSS').optional()
+  check('customCSS').optional()
     .custom(async (value) => {
       const lintResult = await stylelint.lint({
         code: value,
@@ -491,7 +491,7 @@ exports.validateDesignConfigCreate = [
 
 
 // Include this file in routes where category updation is handled.
-exports.validateDesignConfigCreate = [
+exports.validateDesignConfigUpdate = [
   // Theme validations
   check('theme').if((value, { req }) => req.body.theme)
   .not().isEmpty().withMessage('theme is required')
@@ -499,7 +499,7 @@ exports.validateDesignConfigCreate = [
   .escape(),
 
   // Custom CSS validations
-  body('customCSS').optional()
+  check('customCSS').optional()
     .custom(async (value) => {
       const lintResult = await stylelint.lint({
         code: value,
