@@ -1,4 +1,5 @@
 const { check, validationResult } = require('express-validator');
+const stylelint = require('stylelint');
 const slugifyMiddleware = require('slugify');
 const User = require('../models/user.model')
 
@@ -295,15 +296,189 @@ exports.validatePageUpdate = [
 ];
 
 
-// Include this file in routes where category creation or updation is handled.
+// Include this file in routes where category creation is handled.
 exports.validateDesignConfigCreate = [
-  check('title').not().isEmpty().withMessage('Page title is required')
-  .blacklist('/\\|&@<>#%^*/').isLength({ min: 3, max: 50 }).withMessage('Page title must be between 3 and 50 characters')
+  // Theme validations
+  check('theme').not().isEmpty().withMessage('theme is required')
+  .blacklist('/\\|&@<>#%^*/').isLength({ min: 1, max: 100 }).withMessage('Thame name must be between 1 and 100 characters')
   .escape(),
-  check('content').not().isEmpty().withMessage('Page content is required').isLength({ min: 1, max: 50000 }).withMessage('Page content must be between 1 and 50000 characters').escape(),
-  check('slug').optional().trim().customSanitizer(value => slugifyMiddleware(value, { lower: true })) // Sanitize first
-  .isSlug().withMessage('Slug must be a valid slug')
-  .blacklist('/\\|&@<>#%^*/'),
+
+  // Custom CSS validations
+  body('customCSS').optional()
+    .custom(async (value) => {
+      const lintResult = await stylelint.lint({
+        code: value,
+      });
+
+      if (lintResult.errored) {
+        throw new Error('CSS code is invalid');
+      }
+    }).optional().trim().isLength({ max: 20000 }).withMessage('CSS code must not exceed 20000 characters').escape(),
+
+  // Layout validations
+  check('layout.headerPosition')
+    .optional() // Only validate if this field exists
+    .isIn(['top', 'left', 'right', 'bottom']).withMessage('Header position must be top, left, right, or bottom'),
+  check('layout.menuPosition')
+    .optional()
+    .isIn(['side', 'top']).withMessage('Menu position must be side or top'),
+  check('layout.sidebarPosition')
+    .optional()
+    .isIn(['left', 'right']).withMessage('Sidebar position must be left or right'),
+  check('layout.roundedCorners')
+    .optional()
+    .isBoolean().withMessage('Rounded corners must be true or false'),
+
+  // Colors validation
+  check('colors.primary').optional().isHexColor().withMessage('Primary color must be a valid hex color'),
+  check('colors.secondary').optional().isHexColor().withMessage('Secondary color must be a valid hex color'),
+  check('colors.background').optional().isHexColor().withMessage('Background color must be a valid hex color'),
+  check('colors.accent').optional().isHexColor().withMessage('Accent color must be a valid hex color'),
+
+  // Logo validations
+  check('logo.url').optional().isURL().withMessage('Logo URL must be a valid URL'),
+  check('logo.altText').optional().trim().isLength({ max: 255 }).withMessage('Logo alt text must not exceed 100 characters').escape(),
+
+  // Favicon validation
+  check('favicon').optional().isURL().withMessage('Favicon URL must be a valid URL').escape(),
+
+  // Background image
+  check('backgroundImage').optional().isURL().withMessage('Background image URL must be a valid URL').escape(),
+
+  // Typography Validations
+  check('typography.fonts.header')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 255 })
+    .withMessage('Header font must be between 1 and 255 characters')
+    .escape(),
+  check('typography.fonts.body')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 255 })
+    .withMessage('Body font must be between 1 and 255 characters')
+    .escape(),
+  check('typography.baseFontSize')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Base font size must be between 1 and 100 characters')
+    .escape(),
+  check('typography.headingStyles.h1')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('H1 heading style must be between 1 and 100 characters')
+    .escape(),
+  check('typography.headingStyles.h2')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('H2 heading style must be between 1 and 100 characters')
+    .escape(),
+  check('typography.headingStyles.h3')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('H3 heading style must be between 1 and 100 characters')
+    .escape(),
+  check('typography.headingStyles.h4')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('H4 heading style must be between 1 and 100 characters')
+    .escape(),
+  check('typography.headingStyles.h5')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('H5 heading style must be between 1 and 100 characters')
+    .escape(),
+  check('typography.headingStyles.h6')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('H6 heading style must be between 1 and 100 characters')
+    .escape(),
+
+    // Breakpoints validations
+    check('breakpoints.xs')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Extra small breakpoint must be between 1 and 100 characters')
+    .escape(),
+  check('breakpoints.sm')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Small breakpoint must be between 1 and 100 characters')
+    .escape(),
+  check('breakpoints.md')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Medium breakpoint must be between 1 and 100 characters')
+    .escape(),
+  check('breakpoints.lg')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Large breakpoint must be between 1 and 100 characters')
+    .escape(),
+  check('breakpoints.xl')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Extra large breakpoint must be between 1 and 100 characters')
+    .escape(),
+
+  // Spacing validations
+  check('spacing.small')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Small spacing must be between 1 and 100 characters')
+    .escape(),
+  check('spacing.medium')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Medium spacing must be between 1 and 100 characters')
+    .escape(),
+  check('spacing.large')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Large spacing must be between 1 and 100 characters')
+    .escape(),
+  check('spacing.extraLarge')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Extra large spacing must be between 1 and 100 characters')
+    .escape(),
+
+  // Social media links (array validation)
+  check('socialMediaLinks.*.platform')
+  .optional()
+  .trim()
+  .isLength({ min: 1, max: 100 })
+  .withMessage('Social media platform name must be between 1 and 100 characters')
+  .escape(),
+  check('socialMediaLinks.*.link')
+  .optional()
+  .isURL()
+  .withMessage('Social media link must be a valid URL')
+  .escape(),
+  check('socialMediaLinks.*.icon')
+  .optional()
+  .trim()
+  .isLength({ min: 1, max: 100 })
+  .withMessage('Social media icon must be between 1 and 100 characters')
+  .escape(),
+
+
   (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -312,3 +487,207 @@ exports.validateDesignConfigCreate = [
     next();
   },
 ];
+
+
+
+// Include this file in routes where category updation is handled.
+exports.validateDesignConfigCreate = [
+  // Theme validations
+  check('theme').if((value, { req }) => req.body.theme)
+  .not().isEmpty().withMessage('theme is required')
+  .blacklist('/\\|&@<>#%^*/').isLength({ min: 1, max: 100 }).withMessage('Thame name must be between 1 and 100 characters')
+  .escape(),
+
+  // Custom CSS validations
+  body('customCSS').optional()
+    .custom(async (value) => {
+      const lintResult = await stylelint.lint({
+        code: value,
+      });
+
+      if (lintResult.errored) {
+        throw new Error('CSS code is invalid');
+      }
+    }).optional().trim().isLength({ max: 20000 }).withMessage('CSS code must not exceed 20000 characters').escape(),
+
+  // Layout validations
+  check('layout.headerPosition')
+    .optional() // Only validate if this field exists
+    .isIn(['top', 'left', 'right', 'bottom']).withMessage('Header position must be top, left, right, or bottom'),
+  check('layout.menuPosition')
+    .optional()
+    .isIn(['side', 'top']).withMessage('Menu position must be side or top'),
+  check('layout.sidebarPosition')
+    .optional()
+    .isIn(['left', 'right']).withMessage('Sidebar position must be left or right'),
+  check('layout.roundedCorners')
+    .optional()
+    .isBoolean().withMessage('Rounded corners must be true or false'),
+
+  // Colors validation
+  check('colors.primary').optional().isHexColor().withMessage('Primary color must be a valid hex color'),
+  check('colors.secondary').optional().isHexColor().withMessage('Secondary color must be a valid hex color'),
+  check('colors.background').optional().isHexColor().withMessage('Background color must be a valid hex color'),
+  check('colors.accent').optional().isHexColor().withMessage('Accent color must be a valid hex color'),
+
+  // Logo validations
+  check('logo.url').optional().isURL().withMessage('Logo URL must be a valid URL'),
+  check('logo.altText').optional().trim().isLength({ max: 255 }).withMessage('Logo alt text must not exceed 100 characters').escape(),
+
+  // Favicon validation
+  check('favicon').optional().isURL().withMessage('Favicon URL must be a valid URL').escape(),
+
+  // Background image
+  check('backgroundImage').optional().isURL().withMessage('Background image URL must be a valid URL').escape(),
+
+  // Typography Validations
+  check('typography.fonts.header')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 255 })
+    .withMessage('Header font must be between 1 and 255 characters')
+    .escape(),
+  check('typography.fonts.body')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 255 })
+    .withMessage('Body font must be between 1 and 255 characters')
+    .escape(),
+  check('typography.baseFontSize')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Base font size must be between 1 and 100 characters')
+    .escape(),
+  check('typography.headingStyles.h1')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('H1 heading style must be between 1 and 100 characters')
+    .escape(),
+  check('typography.headingStyles.h2')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('H2 heading style must be between 1 and 100 characters')
+    .escape(),
+  check('typography.headingStyles.h3')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('H3 heading style must be between 1 and 100 characters')
+    .escape(),
+  check('typography.headingStyles.h4')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('H4 heading style must be between 1 and 100 characters')
+    .escape(),
+  check('typography.headingStyles.h5')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('H5 heading style must be between 1 and 100 characters')
+    .escape(),
+  check('typography.headingStyles.h6')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('H6 heading style must be between 1 and 100 characters')
+    .escape(),
+
+    // Breakpoints validations
+    check('breakpoints.xs')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Extra small breakpoint must be between 1 and 100 characters')
+    .escape(),
+  check('breakpoints.sm')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Small breakpoint must be between 1 and 100 characters')
+    .escape(),
+  check('breakpoints.md')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Medium breakpoint must be between 1 and 100 characters')
+    .escape(),
+  check('breakpoints.lg')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Large breakpoint must be between 1 and 100 characters')
+    .escape(),
+  check('breakpoints.xl')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Extra large breakpoint must be between 1 and 100 characters')
+    .escape(),
+
+  // Spacing validations
+  check('spacing.small')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Small spacing must be between 1 and 100 characters')
+    .escape(),
+  check('spacing.medium')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Medium spacing must be between 1 and 100 characters')
+    .escape(),
+  check('spacing.large')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Large spacing must be between 1 and 100 characters')
+    .escape(),
+  check('spacing.extraLarge')
+    .optional()
+    .trim()
+    .isLength({ min: 1, max: 100 })
+    .withMessage('Extra large spacing must be between 1 and 100 characters')
+    .escape(),
+
+  // Social media links (array validation)
+  check('socialMediaLinks.*.platform')
+  .optional()
+  .trim()
+  .isLength({ min: 1, max: 100 })
+  .withMessage('Social media platform name must be between 1 and 100 characters')
+  .escape(),
+  check('socialMediaLinks.*.link')
+  .optional()
+  .isURL()
+  .withMessage('Social media link must be a valid URL')
+  .escape(),
+  check('socialMediaLinks.*.icon')
+  .optional()
+  .trim()
+  .isLength({ min: 1, max: 100 })
+  .withMessage('Social media icon must be between 1 and 100 characters')
+  .escape(),
+
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
+
+
+
+
+/**
+ * Validates user input from a request body.
+ * Checks for required fields and runs validation on each field.
+ * Returns validation errors if any, otherwise continues to next middleware.
+ */
