@@ -250,3 +250,46 @@ exports.validateCartImput = [
     next();
   },
 ];
+
+
+
+
+// Include this file in routes where category creation or updation is handled.
+exports.validatePageCreate = [
+  check('title').not().isEmpty().withMessage('Page title is required')
+  .blacklist('/\\|&@<>#%^*/').isLength({ min: 3, max: 50 }).withMessage('Page title must be between 3 and 50 characters')
+  .escape(),
+  check('content').not().isEmpty().withMessage('Page content is required').isLength({ min: 1, max: 50000 }).withMessage('Page content must be between 1 and 50000 characters').escape(),
+  check('slug').optional().trim().customSanitizer(value => slugifyMiddleware(value, { lower: true })) // Sanitize first
+  .isSlug().withMessage('Slug must be a valid slug')
+  .blacklist('/\\|&@<>#%^*/'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
+
+
+// Include this file in routes where category creation or updation is handled.
+exports.validatePageUpdate = [
+  check('title').if((value, { req }) => req.body.title) // Only validate if title is being updated
+  .not().isEmpty().withMessage('Page title is required')
+  .blacklist('/\\|&@<>#%^*/').isLength({ min: 3, max: 50 }).withMessage('Page title must be between 3 and 50 characters')
+  .escape(),
+  check('content').if((value, { req }) => req.body.title) // Only validate if content is being updated
+  .not().isEmpty().withMessage('Page content is required').isLength({ min: 1, max: 50000 }).withMessage('Page content must be between 1 and 50000 characters').escape(),
+  check('slug').if((value, { req }) => req.body.title) // Only validate if slug is being updated
+  .optional().trim().customSanitizer(value => slugifyMiddleware(value, { lower: true })) // Sanitize first
+  .isSlug().withMessage('Slug must be a valid slug')
+  .blacklist('/\\|&@<>#%^*/'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
