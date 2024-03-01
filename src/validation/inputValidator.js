@@ -686,6 +686,87 @@ exports.validateDesignConfigUpdate = [
 
 
 
+
+// Include this file in routes where category creation or updation is handled.
+exports.validateDiscountCreate = [
+  check('productId')
+  .isMongoId().withMessage('Invalid product Id format'),
+  check('discountPercentage')
+  .not().isEmpty().withMessage('Discount Pourcentage is required').trim().escape()
+  .isNumeric({ no_symbols: false, min: 0, max: 100 })
+        // .isFloat({ min: 0, max: 100 })
+  .withMessage('Percentage must be a number between 0 and 100'),
+
+  check('startDate')
+  .not().isEmpty().withMessage('StartDate is required').trim().escape()
+  .isDate().withMessage('Invalid date format'),
+  // .isDate({ format: 'YYYY-MM-DD', strict: true, min: new Date(), max: new Date() }),
+
+  check('endDate')
+  .not().isEmpty().withMessage('endDate is required').trim().escape()
+  .isDate().withMessage('Invalid date format'),
+
+  check('isActive').optional()
+  .isBoolean().withMessage('Invalid boolean format, true or false'),
+
+  check('maxUsage').optional()
+  .isNumeric({ no_symbols: false, min: 0, max: 10000000000 })
+  .withMessage('Invalid max usage format, must be a number between 0 and 10000000000, 0 for unlimited usage'),
+  check('usageCount').optional()
+  .isNumeric({ no_symbols: false, min: 0, max: 10000000000 })
+  .withMessage('Invalid usage count format, must be a number between 0 and 10000000000'),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
+
+
+
+// Include this file in routes where category creation or updation is handled.
+exports.validateDiscountUpdate = [
+  check('productId').if((value, { req }) => req.body.productId)
+  .isMongoId().withMessage('Invalid product Id format'),
+
+  check('discountPercentage').if((value, { req }) => req.body.discountPercentage)
+  .not().isEmpty().withMessage('Discount Pourcentage is required').trim().escape()
+  .isNumeric({ no_symbols: false, min: 0, max: 100 })
+        // .isFloat({ min: 0, max: 100 })
+  .withMessage('Percentage must be a number between 0 and 100'),
+
+  check('startDate').if((value, { req }) => req.body.startDate)
+  .not().isEmpty().withMessage('StartDate is required').trim().escape()
+  .isDate().withMessage('Invalid date format'),
+  // .isDate({ format: 'YYYY-MM-DD', strict: true, min: new Date(), max: new Date() }),
+
+  check('endDate').if((value, { req }) => req.body.endDate)
+  .not().isEmpty().withMessage('endDate is required').trim().escape()
+  .isDate().withMessage('Invalid date format'),
+
+  check('isActive').if((value, { req }) => req.body.isActive).optional()
+  .isBoolean().withMessage('Invalid boolean format, true or false'),
+
+  check('maxUsage').if((value, { req }) => req.body.maxUsage).optional()
+  .isNumeric({ no_symbols: false, min: 0, max: 10000000000 })
+  .withMessage('Invalid max usage format, must be a number between 0 and 10000000000, 0 for unlimited usage'),
+
+  check('usageCount').if((value, { req }) => req.body.usageCount).optional()
+  .isNumeric({ no_symbols: false, min: 0, max: 10000000000 })
+  .withMessage('Invalid usage count format, must be a number between 0 and 10000000000'),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
+
 /**
  * Validates user input from a request body.
  * Checks for required fields and runs validation on each field.
