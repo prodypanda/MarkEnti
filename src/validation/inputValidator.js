@@ -767,6 +767,57 @@ exports.validateDiscountUpdate = [
   },
 ];
 
+
+
+exports.validateMenuCreate = [
+  check('title').not().isEmpty().withMessage('Menu Title is required').blacklist('/\\|&@<>#%^*/').isLength({ min: 3, max: 100 })
+  .withMessage('Menu Title must be between 3 and 100 characters').trim().escape(),
+
+  check('slug').optional().trim().customSanitizer(value => slugifyMiddleware(value, { lower: true })) // Sanitize first
+  .isSlug().withMessage('Slug must be a valid slug')
+  .blacklist('/\\|&@<>#%^*/'),
+
+  check('visible').optional().isBoolean().withMessage('Invalid boolean format, true or false'),
+  check('items').optional().isMongoId().withMessage('Invalid menu items Id format'),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
+
+
+exports.validateMenuUpdate = [
+  check('title').if((value, { req }) => req.body.startDate)
+  .not().isEmpty().withMessage('Menu Title is required').blacklist('/\\|&@<>#%^*/').isLength({ min: 3, max: 100 })
+  .withMessage('Menu Title must be between 3 and 100 characters').trim().escape(),
+
+  check('slug').if((value, { req }) => req.body.startDate)
+  .optional().trim().customSanitizer(value => slugifyMiddleware(value, { lower: true })) // Sanitize first
+  .isSlug().withMessage('Slug must be a valid slug')
+  .blacklist('/\\|&@<>#%^*/'),
+
+  check('visible').if((value, { req }) => req.body.startDate)
+  .optional().isBoolean().withMessage('Invalid boolean format, true or false'),
+  check('items').if((value, { req }) => req.body.startDate)
+  .optional().isMongoId().withMessage('Invalid menu items Id format'),
+
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
+
+
+
+
+
 /**
  * Validates user input from a request body.
  * Checks for required fields and runs validation on each field.

@@ -4,7 +4,10 @@ const menuSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    trim: true
+    trim: true,
+    minlength: 3,
+    maxlength: 100,
+    unique: true,
   },
   slug: {
     type: String,
@@ -12,6 +15,10 @@ const menuSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     trim: true
+  },
+  visible: {
+    type: Boolean,
+    default: true
   },
   items: [{
     type: mongoose.Schema.Types.ObjectId,

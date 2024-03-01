@@ -1,10 +1,29 @@
+/**
+ * Menu controller handles CRUD operations for menus and menu items.
+ *
+ * Exports functions for:
+ * - Creating, updating, deleting and getting menus
+ * - Creating, updating, deleting and getting menu items
+ * - Reordering menu items
+ */
 const Menu = require('../models/menu.model')
 const MenuItem = require('../models/menuItem.model')
 
+/**
+ * Creates a new menu.
+ *
+ * @param {Object} req - Express request object
+ * @param {string} req.body.title - Menu title
+ * @param {string} req.body.slug - Menu slug
+ * @param {boolean} req.body.visible - Whether menu is visible
+ * @param {Object[]} req.body.items - Array of menu items
+ * @param {Object} res - Express response object
+ * @returns {Promise}
+ */
 exports.createMenu = async (req, res) => {
   try {
-    const { title, slug } = req.body
-    const menu = new Menu({ title, slug })
+    const { title, slug, visible, items } = req.body
+    const menu = new Menu({ title, slug, visible, items })
     await menu.save()
     res.status(201).json(menu)
   } catch (error) {
@@ -12,13 +31,25 @@ exports.createMenu = async (req, res) => {
   }
 }
 
+/**
+ * Updates an existing menu.
+ *
+ * @param {Object} req - Express request object
+ * @param {string} req.params.id - ID of menu to update
+ * @param {string} req.body.title - Updated menu title
+ * @param {string} req.body.slug - Updated menu slug
+ * @param {boolean} req.body.visible - Updated visibility status
+ * @param {Object[]} req.body.items - Updated array of menu items
+ * @param {Object} res - Express response object
+ * @returns {Promise}
+ */
 exports.updateMenu = async (req, res) => {
   try {
     const { id } = req.params
-    const { title, slug } = req.body
+    const { title, slug, visible, items } = req.body
     const menu = await Menu.findByIdAndUpdate(
       id,
-      { title, slug },
+      { title, slug, visible, items },
       { new: true }
     )
     if (!menu) {
@@ -30,6 +61,14 @@ exports.updateMenu = async (req, res) => {
   }
 }
 
+/**
+ * Deletes a menu by ID.
+ *
+ * @param {Object} req - Express request object
+ * @param {string} req.params.id - ID of menu to delete
+ * @param {Object} res - Express response object
+ * @returns {Promise}
+ */
 exports.deleteMenu = async (req, res) => {
   try {
     const { id } = req.params
@@ -40,6 +79,13 @@ exports.deleteMenu = async (req, res) => {
   }
 }
 
+/**
+ * Gets all menus populated with their menu items.
+ *
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Promise} Promise that resolves to array of menus
+ */
 exports.getMenus = async (req, res) => {
   try {
     const menus = await Menu.find().populate('items')
@@ -48,6 +94,9 @@ exports.getMenus = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
+
+
+
 
 exports.createMenuItem = async (req, res) => {
   try {
