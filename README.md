@@ -1,10 +1,13 @@
 # markenti-backend
 
 Welcome to the backend repository of the **markenti** project, a comprehensive solution for entrepreneurs looking to launch their own eCommerce platform. This Node.js application serves as the backbone of the "markenti" website, handling user authentication, product management, order processing, and much more.
- This repository serves as a valuable resource for developers and entrepreneurs who are interested in learning more about the backend architecture of an e-commerce platform.
+
+This repository serves as a valuable resource for developers and entrepreneurs who are interested in learning more about the backend architecture of an e-commerce platform.
 
 ## Overview
-markenti is an e-commerce platform back-end REST API that facilitates online storefront management for businesses. The API supports operations such as product listing, order processing, customer relationship management, and secure payment transactions. The technology stack includes Node.js, Express, MongoDB, Mongoose, axios, jsonwebtoken, and other libraries to create a robust and secure service.
+markenti is an e-commerce platform back-end REST API that facilitates online storefront management for businesses.
+
+The API supports operations such as product listing, order processing, customer relationship management, and secure payment transactions. The technology stack includes Node.js, Express, MongoDB, Mongoose, axios, jsonwebtoken, and other libraries to create a robust and secure service.
 
 ## Features
 
@@ -38,7 +41,6 @@ markenti is an e-commerce platform back-end REST API that facilitates online sto
 - Personalized dashboards for store admins and customers
 - Configurable site customization for store admins
 - Role-based access control for store admins and customers
-- Personalized dashboards for store admins and customers
 - Configurable site customization for store admins
 - Configurable order management for store admins
 - Configurable staff management for store admins
