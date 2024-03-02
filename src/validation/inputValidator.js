@@ -190,7 +190,7 @@ exports.validateRole = [
 
 
 // Include this file in routes where category creation or updation is handled.
-exports.validateCategory = [
+exports.validateCategoryCreate = [
   check('name').not().isEmpty().withMessage('Category name is required')
   .blacklist('/\\|&@<>#%^*/').isLength({ min: 3, max: 50 }).withMessage('Category name must be between 3 and 50 characters')
   .escape(),
@@ -218,6 +218,33 @@ const descriptionBlacklist = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/
 const slugBlacklist = /[^a-zA-Z0-9-]+/g; 
 // const slugBlacklist = ' /\\|&@#%^*,';
 
+
+
+// Include this file in routes where category creation or updation is handled.
+exports.validateCategoryUpdate = [
+  check('name').if((value, { req }) => req.body.name) // Only validate if name is being updated
+  .not().isEmpty().withMessage('Category name is required')
+  .blacklist('/\\|&@<>#%^*/').isLength({ min: 3, max: 50 }).withMessage('Category name must be between 3 and 50 characters')
+  .escape(),
+  check('description').if((value, { req }) => req.body.description)
+  .not().isEmpty().withMessage('Category description is required').escape(),
+  check('seoTitle').if((value, { req }) => req.body.seoTitle)
+  .optional().trim().isLength({ max: 60 }).withMessage('SEO title must not exceed 60 characters').blacklist('/\\|&@<>#%^*/').escape(),
+  check('seoDescription').if((value, { req }) => req.body.seoDescription)
+  .optional().trim().isLength({ max: 160 }).withMessage('SEO description must not exceed 160 characters').escape(),
+  check('slug').if((value, { req }) => req.body.slug)
+  .optional().trim().customSanitizer(value => slugifyMiddleware(value, { lower: true })) // Sanitize first
+  .isSlug().withMessage('Slug must be a valid slug')
+  .blacklist('/\\|&@<>#%^*/'),
+  // check('slug').optional().trim().isSlug().withMessage('Slug must be a valid slug'),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    next();
+  },
+];
 
 
 
@@ -280,9 +307,9 @@ exports.validatePageUpdate = [
   .not().isEmpty().withMessage('Page title is required')
   .blacklist('/\\|&@<>#%^*/').isLength({ min: 3, max: 50 }).withMessage('Page title must be between 3 and 50 characters')
   .escape(),
-  check('content').if((value, { req }) => req.body.title) // Only validate if content is being updated
+  check('content').if((value, { req }) => req.body.content) // Only validate if content is being updated
   .not().isEmpty().withMessage('Page content is required').isLength({ min: 1, max: 50000 }).withMessage('Page content must be between 1 and 50000 characters').escape(),
-  check('slug').if((value, { req }) => req.body.title) // Only validate if slug is being updated
+  check('slug').if((value, { req }) => req.body.slug) // Only validate if slug is being updated
   .optional().trim().customSanitizer(value => slugifyMiddleware(value, { lower: true })) // Sanitize first
   .isSlug().withMessage('Slug must be a valid slug')
   .blacklist('/\\|&@<>#%^*/'),
@@ -778,7 +805,10 @@ exports.validateMenuCreate = [
   .blacklist('/\\|&@<>#%^*/'),
 
   check('visible').optional().isBoolean().withMessage('Invalid boolean format, true or false'),
-  check('items').optional().isMongoId().withMessage('Invalid menu items Id format'),
+  check('items').isArray({min: 0, max: 1000}).withMessage('Menu items must be an array of 1000 items or less'),
+  check('items.*').optional().isMongoId().withMessage('Menu items must be valid MongoDB IDs'),
+  
+
 
   (req, res, next) => {
     const errors = validationResult(req);
@@ -791,18 +821,18 @@ exports.validateMenuCreate = [
 
 
 exports.validateMenuUpdate = [
-  check('title').if((value, { req }) => req.body.startDate)
+  check('title').if((value, { req }) => req.body.title)
   .not().isEmpty().withMessage('Menu Title is required').blacklist('/\\|&@<>#%^*/').isLength({ min: 3, max: 100 })
   .withMessage('Menu Title must be between 3 and 100 characters').trim().escape(),
 
-  check('slug').if((value, { req }) => req.body.startDate)
+  check('slug').if((value, { req }) => req.body.slug)
   .optional().trim().customSanitizer(value => slugifyMiddleware(value, { lower: true })) // Sanitize first
-  .isSlug().withMessage('Slug must be a valid slug')
+  .isSlug().withMessage('Menu Slug must be a valid slug')
   .blacklist('/\\|&@<>#%^*/'),
 
-  check('visible').if((value, { req }) => req.body.startDate)
+  check('visible').if((value, { req }) => req.body.visible)
   .optional().isBoolean().withMessage('Invalid boolean format, true or false'),
-  check('items').if((value, { req }) => req.body.startDate)
+  check('items').if((value, { req }) => req.body.items)
   .optional().isMongoId().withMessage('Invalid menu items Id format'),
 
   (req, res, next) => {

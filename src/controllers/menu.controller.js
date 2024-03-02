@@ -8,7 +8,7 @@
  */
 const Menu = require('../models/menu.model')
 const MenuItem = require('../models/menuItem.model')
-
+const slugify = require('../utils/stringUtils')
 /**
  * Creates a new menu.
  *
@@ -22,7 +22,19 @@ const MenuItem = require('../models/menuItem.model')
  */
 exports.createMenu = async (req, res) => {
   try {
-    const { title, slug, visible, items } = req.body
+    const { title, visible, items } = req.body
+  
+    //slugify the string
+    let toslogify
+    if(req.body.slug || req.body.slug == !null){
+      toslogify = req.body.slug
+    }else{
+      toslogify = req.body.title
+    }
+    // slugifying methode: ancrement or random or slugifyMiddleware    
+  const slug = await slugify(toslogify, 'menu', 'slugifyMiddleware')
+  console.log("slug: "+slug)
+
     const menu = new Menu({ title, slug, visible, items })
     await menu.save()
     res.status(201).json(menu)
@@ -46,10 +58,36 @@ exports.createMenu = async (req, res) => {
 exports.updateMenu = async (req, res) => {
   try {
     const { id } = req.params
-    const { title, slug, visible, items } = req.body
+    const { title, visible, slug, items } = req.body
+
+    const updateFields = {}
+    if (title !== undefined) {
+      updateFields.title = title
+    }
+    if (visible !== undefined) { 
+      updateFields.visible = visible;
+    }
+    if (items !== undefined) {
+      if (!Array.isArray(items)) {
+        return res
+          .status(400)
+          .json({ message: 'items must be an array of menu items' })
+      }
+      updateFields.items = items
+    }
+    if (slug !== undefined) {
+      updateFields.slug = await slugify(slug, 'category', 'slugifyMiddleware')
+    }
+    if (Object.keys(updateFields).length === 0) {
+      return res
+        .status(400)
+        .json({ message: 'No fields to update' })
+    }
+
+    // Update the menu with the new fields
     const menu = await Menu.findByIdAndUpdate(
       id,
-      { title, slug, visible, items },
+      { $set: updateFields },
       { new: true }
     )
     if (!menu) {

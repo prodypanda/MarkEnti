@@ -22,7 +22,14 @@ exports.createCategory = async (req, res) => {
     seoDescription,
   } = req.body
   
-  //slugify ancrement or random
+    //slugify the string
+    let toslogify
+    if(req.body.slug || req.body.slug == !null){
+      toslogify = req.body.slug
+    }else{
+      toslogify = req.body.name
+    }
+    // slugifying methode: ancrement or random or slugifyMiddleware
   const slug = await slugify(toslogify, 'category', 'slugifyMiddleware')
   console.log("slug: "+slug)
   try {
@@ -87,33 +94,26 @@ exports.updateCategory = async (req, res) => {
     sortOrder,
     seoTitle,
     seoDescription,
+    slug,
   } = req.body
 
-    //slugify the string
-    let toslogify
-    if(req.body.slug || req.body.slug == !null){
-      toslogify = req.body.slug
-    }else{
-      toslogify = req.body.name
-    }
-    // slugifying methode: ancrement or random or slugifyMiddleware
-    const slug = await slugify(toslogify, 'category', 'slugifyMiddleware')
+  const updateFields = {}
+  if (name || name == !null) updateFields.name = name // INPUT_REQUIRED {Handle any additional fields here}
+  if (description || description == !null) updateFields.description = description
+  if (parent || parent == !null) updateFields.parent = parent // INPUT_REQUIRED {Handle any additional fields here}
+  if (isActive || isActive == !null) updateFields.isActive = isActive
+  if (image || image == !null) updateFields.image = image
+  if (icon || icon == !null) updateFields.icon = icon
+  if (sortOrder || sortOrder == !null) updateFields.sortOrder = sortOrder
+  if (seoTitle || seoTitle == !null) updateFields.seoTitle = seoTitle
+  if (seoDescription || seoDescription == !null) updateFields.seoDescription = seoDescription
+  if (slug || slug == !null) updateFields.slug = await slugify(slug, 'category', 'slugifyMiddleware')
+
   try {
     await validateNestingLevel(parent)
     const category = await Category.findByIdAndUpdate(
       id,
-      {
-        name,
-        description,
-        parent,
-        isActive,
-        image,
-        icon,
-        sortOrder,
-        seoTitle,
-        seoDescription,
-        slug,
-      },
+      { $set:updateFields },
       { new: true }
     )
     res.status(200).json(category)

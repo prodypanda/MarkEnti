@@ -8,7 +8,7 @@ const {
   uploadSingleImage,
   resizeAndFormatImage,
 } = require('../middlewares/multer.middleware')
-const { validateCategory, validateMongoId } = require('../validation/inputValidator')
+const { validateMongoId, validateCategoryCreate, validateCategoryUpdate } = require('../validation/inputValidator')
 const router = express.Router()
 
 /**
@@ -36,7 +36,7 @@ const router = express.Router()
  *        "400":
  *          description: Bad request
  */
-router.post('/',isAuthenticated , validateCategory, categoryController.createCategory)
+router.post('/',isAuthenticated , validateCategoryCreate, categoryController.createCategory)
 
 /**
  * @swagger
@@ -66,7 +66,7 @@ router.post('/',isAuthenticated , validateCategory, categoryController.createCat
  *          description: Category not found
  */
 
-router.put('/:id',isAuthenticated, validateMongoId, validateCategory, categoryController.updateCategory)
+router.put('/:id',isAuthenticated, validateMongoId, validateCategoryUpdate, categoryController.updateCategory)
 
 /**
  * @swagger
