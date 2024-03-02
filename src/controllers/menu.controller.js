@@ -206,7 +206,6 @@ exports.updateMenuItem = async (req, res) => {
       return res.status(400).json({ message: 'No fields to update' })
     }
 
-
     const menuItem = await MenuItem.findByIdAndUpdate(
       id,
       { $set: updateFields },
