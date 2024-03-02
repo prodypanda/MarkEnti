@@ -1,10 +1,17 @@
 const mongoose = require('mongoose');
 
+
 const menuItemSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
     trim: true
+  },
+  slug: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true
   },
   link: {
     type: String,
