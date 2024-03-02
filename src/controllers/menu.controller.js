@@ -166,7 +166,6 @@ exports.updateMenuItem = async (req, res) => {
     const { id } = req.params
     const { title, slug, link, orderIndex, parentItem, menu } = req.body
 
-
     const updateFields = {}
     if (title !== undefined) {
       updateFields.title = title
