@@ -10,21 +10,19 @@ const Menu = require('../models/menu.model')
 const MenuItem = require('../models/menuItem.model')
 const slugify = require('../utils/stringUtils')
 
-
 exports.createMenu = async (req, res) => {
   try {
     const { title, visible, items } = req.body
-  
+
     //slugify the string
     let toslogify
-    if(req.body.slug || req.body.slug == !null){
+    if (req.body.slug || req.body.slug == !null) {
       toslogify = req.body.slug
-    }else{
+    } else {
       toslogify = req.body.title
     }
-    // slugifying methode: ancrement or random or slugifyMiddleware    
-  const slug = await slugify(toslogify, 'menu', 'slugifyMiddleware')
-  console.log("slug: "+slug)
+    // slugifying methode: ancrement or random or slugifyMiddleware
+    const slug = await slugify(toslogify, 'menu', 'slugifyMiddleware')
 
     const menu = new Menu({ title, slug, visible, items })
     await menu.save()
@@ -33,7 +31,6 @@ exports.createMenu = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
-
 
 exports.updateMenu = async (req, res) => {
   try {
@@ -44,14 +41,14 @@ exports.updateMenu = async (req, res) => {
     if (title !== undefined) {
       updateFields.title = title
     }
-    if (visible !== undefined) { 
-      updateFields.visible = visible;
+    if (visible !== undefined) {
+      updateFields.visible = visible
     }
     if (items !== undefined) {
       if (!Array.isArray(items)) {
-        return res
-          .status(400)
-          .json({ message: 'items must be an array of menu items' })
+        return res.status(400).json({
+          message: 'items must be an array of menu items',
+        })
       }
       updateFields.items = items
     }
@@ -59,9 +56,7 @@ exports.updateMenu = async (req, res) => {
       updateFields.slug = await slugify(slug, 'category', 'slugifyMiddleware')
     }
     if (Object.keys(updateFields).length === 0) {
-      return res
-        .status(400)
-        .json({ message: 'No fields to update' })
+      return res.status(400).json({ message: 'No fields to update' })
     }
 
     // Update the menu with the new fields
@@ -90,7 +85,10 @@ exports.updateMenu = async (req, res) => {
 exports.deleteMenu = async (req, res) => {
   try {
     const { id } = req.params
-    await Menu.findByIdAndDelete(id)
+    const menu = await Menu.findByIdAndDelete(id)
+    if (!menu) {
+      return res.status(404).json({ message: 'Menu not found' })
+    }
     res.status(200).json({ message: 'Menu deleted successfully' })
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -113,53 +111,77 @@ exports.getMenus = async (req, res) => {
   }
 }
 
-
-
+exports.getMenusById = async (req, res) => {
+  try {
+    const { id } = req.params
+    const menus = await Menu.find({ _id: id }).populate('items')
+    res.status(200).json(menus)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
 
 exports.createMenuItem = async (req, res) => {
   try {
     const { title, link, orderIndex, parentItem, menu } = req.body
+
     //slugify the string
     let toslogify
-    if(req.body.slug || req.body.slug == !null){
+    if (req.body.slug || req.body.slug == !null) {
       toslogify = req.body.slug
-    }else{
+    } else {
       toslogify = req.body.title
     }
-    // slugifying methode: ancrement or random or slugifyMiddleware    
-    const slug = await slugify(toslogify, 'menu', 'slugifyMiddleware')
-  
-    //check if menu exists
-    const menuExists = await Menu.findById(menu)
-    if (!menuExists) {
-      return res.status(400).json({ message: 'Menu does not exist' })
+    // slugifying methode: ancrement or random or slugifyMiddleware
+    const slug = await slugify(toslogify, 'menuItem', 'slugifyMiddleware')
+
+    if (menu !== undefined) {
+      //check if menu exists
+      const menuExists = await Menu.findById(menu)
+      if (!menuExists) {
+        return res.status(400).json({
+          message: 'Menu does not exist',
+        })
+      }
+    } else {
+      return res.status(400).json({ message: 'Menu is required' })
     }
-    //check if parentItem exists
-    const parentItemExists = await MenuItem.findById(parentItem)
-   if (parentItemExists && parentItemExists.parentItem) {
-      return res.status(400).json({ message: 'Parent item must be a top level item' })
+
+    if (parentItem !== undefined) {
+      //check if parentItem exists
+      const parentItemExists = await MenuItem.findById(parentItem)
+      if (parentItemExists && parentItemExists.parentItem) {
+        return res.status(400).json({
+          message: 'Parent item must be a top level item',
+        })
+      }
     }
-    //check if orderIndex is valid
-    if (orderIndex < 0) {
-      return res.status(400).json({ message: 'Order index must be a zero or a positive integer' })
+
+    if (orderIndex !== undefined) {
+      //check if orderIndex is valid
+      if (orderIndex < 0) {
+        return res.status(400).json({
+          message: 'Order index must be a zero or a positive integer',
+        })
+      }
     } else {
       orderIndex = 0
     }
-    
-    const menuItem = new MenuItem({ title, slug, link, orderIndex, parentItem, menu })
+
+    const menuItem = new MenuItem({
+      title,
+      slug,
+      link,
+      orderIndex,
+      parentItem,
+      menu,
+    })
     await menuItem.save()
     res.status(201).json(menuItem)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 }
-
-
-
-
-
-
-
 
 exports.updateMenuItem = async (req, res) => {
   try {
@@ -170,21 +192,25 @@ exports.updateMenuItem = async (req, res) => {
     if (title !== undefined) {
       updateFields.title = title
     }
-    if (link !== undefined) { 
-      updateFields.link = link;
+    if (link !== undefined) {
+      updateFields.link = link
     }
-    if (orderIndex !== undefined) { 
+    if (orderIndex !== undefined) {
       //check if orderIndex is valid
       if (orderIndex < 0) {
-        return res.status(400).json({ message: 'Order index must be a zero or a positive integer' })
+        return res.status(400).json({
+          message: 'Order index must be a zero or a positive integer',
+        })
       }
-    updateFields.orderIndex = orderIndex;
+      updateFields.orderIndex = orderIndex
     }
     if (parentItem !== undefined) {
-    //check if parentItem exists
-    const parentItemExists = await MenuItem.findById(parentItem)
+      //check if parentItem exists
+      const parentItemExists = await MenuItem.findById(parentItem)
       if (parentItemExists && parentItemExists.parentItem) {
-          return res.status(400).json({ message: 'Parent item must be a top level item' })
+        return res.status(400).json({
+          message: 'Parent item must be a top level item',
+        })
       }
       updateFields.parentItem = parentItem
     }
@@ -192,11 +218,13 @@ exports.updateMenuItem = async (req, res) => {
       //check if menu exists
       const menuExists = await Menu.findById(menu)
       if (!menuExists) {
-        return res.status(400).json({ message: 'Menu does not exist' })
+        return res.status(400).json({
+          message: 'Menu does not exist',
+        })
       }
       updateFields.menu = menuExists._id
     }
- 
+
     if (slug !== undefined) {
       updateFields.slug = await slugify(slug, 'category', 'slugifyMiddleware')
     }
@@ -223,7 +251,9 @@ exports.deleteMenuItem = async (req, res) => {
   try {
     const { id } = req.params
     await MenuItem.findByIdAndDelete(id)
-    res.status(200).json({ message: 'MenuItem deleted successfully' })
+    res.status(200).json({
+      message: 'MenuItem deleted successfully',
+    })
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
@@ -251,7 +281,9 @@ exports.reorderMenuItems = async (req, res) => {
         { orderIndex: index }
       )
     })
-    res.status(200).json({ message: 'Menu Items reordered successfully' })
+    res.status(200).json({
+      message: 'Menu Items reordered successfully',
+    })
   } catch (error) {
     res.status(500).json({ message: error.message })
   }

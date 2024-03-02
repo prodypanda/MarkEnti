@@ -1,6 +1,7 @@
 const Category = require('../models/category.model')
 const Product = require('../models/product.model')
 const Menu = require('../models/menu.model')
+const MenuItem = require('../models/menuItem.model')
 const crypto = require('crypto')
 const slugifyMiddleware = require('slugify');
 //ancrement or random or slugifyMiddleware
@@ -13,6 +14,8 @@ let element
     element = Product
   } else if (type === 'menu') {
     element = Menu
+  } else if (type === 'menuItem') {
+    element = MenuItem
   } else {
     throw new Error('type must be category or product or menu')
   }
