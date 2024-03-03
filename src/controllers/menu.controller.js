@@ -261,7 +261,7 @@ exports.deleteMenuItem = async (req, res) => {
 
 exports.getMenuItems = async (req, res) => {
   try {
-    const menu = await Menu.find().populate('items')
+    const menu = await Menu.find().populate('menu')
     if (!menu) {
       return res.status(404).json({ message: 'Menu not found' })
     }
@@ -274,7 +274,7 @@ exports.getMenuItems = async (req, res) => {
 exports.getMenuItemsById = async (req, res) => {
   try {
     const { menuId } = req.params
-    const menu = await Menu.findById(menuId).populate('items')
+    const menu = await Menu.findById(menuId).populate('menu')
     if (!menu) {
       return res.status(404).json({ message: 'Menu not found' })
     }
