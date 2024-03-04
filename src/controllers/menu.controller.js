@@ -120,66 +120,151 @@ exports.getMenusById = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
-
+//
+//
+//
+//
+//
+//
+//
+//
+/**
+ * Creates a new menu item.
+ *
+ * @param {Object} req - Express request object
+ * @param {string} req.body.title - Title of menu item
+ * @param {string} req.body.link - Link for menu item
+ * @param {number} req.body.orderIndex - Order index of menu item
+ * @param {string} req.body.parentItem - ID of parent menu item
+ * @param {string} req.body.menu - ID of menu this item belongs to
+ * @param {Object} res - Express response object
+ * @returns {Promise}
+ */
+//
+//
+//
+//
+//
+//
 exports.createMenuItem = async (req, res) => {
+  const { title, parent } = req.body
+
+  let link
+  //slugify the string
+  let toslogify
+  if (req.body.slug || req.body.slug == !null) {
+    toslogify = req.body.slug
+  } else {
+    toslogify = req.body.title
+  }
+  // slugifying methode: ancrement or random or slugifyMiddleware
+  const slug = await slugify(toslogify, 'menuItem', 'slugifyMiddleware')
+
+  let finallink
+  if (req.body.link !== undefined) {
+    const linkExists = await MenuItem.findOne({ link: req.body.link })
+    if (linkExists) {
+      console.log(linkExists)
+
+      return res.status(400).json({
+        message:
+          'Another menu item with this link already exists, please choose another link',
+      })
+    } else {
+      link = req.body.link
+    }
+  } else {
+    link = slug
+  }
+
+  let istoplevel
+  if (parent !== undefined) {
+    //check if menu exists
+    const parentExists = await MenuItem.findById(parent)
+    if (!parentExists) {
+      return res.status(400).json({
+        message: 'Menu Item does not exist',
+      })
+    } else {
+      istoplevel = false
+    }
+  } else {
+    istoplevel = true
+  }
+  let orderIndex
+  if (req.body.orderIndex !== undefined) {
+    //check if orderIndex is valid
+    if (req.body.orderIndex < 0) {
+      return res.status(400).json({
+        message: 'Order index must be a zero or a positive integer',
+      })
+    } else {
+      orderIndex = req.body.orderIndex
+    }
+  } else {
+    orderIndex = 0
+  }
+
+  let orderIndexExists = true
+  let i = orderIndex
+  while (orderIndexExists) {
+    orderIndexExists = await MenuItem.findOne({
+      orderIndex: i,
+    })
+    if (!orderIndexExists) {
+      orderIndex = i
+      break
+    }
+    i++
+  }
+  // Check if requested orderIndex exists
+  const existingIndex = await MenuItem.findOne({
+    orderIndex: req.body.orderIndex,
+  })
+
+  let createdBy = req.user._id
   try {
-    const { title, link, orderIndex, parentItem, menu } = req.body
-
-    //slugify the string
-    let toslogify
-    if (req.body.slug || req.body.slug == !null) {
-      toslogify = req.body.slug
-    } else {
-      toslogify = req.body.title
-    }
-    // slugifying methode: ancrement or random or slugifyMiddleware
-    const slug = await slugify(toslogify, 'menuItem', 'slugifyMiddleware')
-
-    if (menu !== undefined) {
-      //check if menu exists
-      const menuExists = await Menu.findById(menu)
-      if (!menuExists) {
-        return res.status(400).json({
-          message: 'Menu does not exist',
-        })
-      }
-    } else {
-      return res.status(400).json({ message: 'Menu is required' })
-    }
-
-    if (parentItem !== undefined) {
-      //check if parentItem exists
-      const parentItemExists = await MenuItem.findById(parentItem)
-      if (parentItemExists && parentItemExists.parentItem) {
-        return res.status(400).json({
-          message: 'Parent item must be a top level item',
-        })
-      }
-    }
-
-    if (orderIndex !== undefined) {
-      //check if orderIndex is valid
-      if (orderIndex < 0) {
-        return res.status(400).json({
-          message: 'Order index must be a zero or a positive integer',
-        })
-      }
-    } else {
-      orderIndex = 0
-    }
-
     const menuItem = new MenuItem({
       title,
       slug,
       link,
-      orderIndex,
-      parentItem,
-      menu,
+      orderIndex: orderIndex,
+      parent,
+      istoplevel,
+      createdBy,
     })
-    await menuItem.save()
-    res.status(201).json(menuItem)
+
+    await menuItem.validate()
+    const savedMenuItem = await menuItem.save()
+    return res.status(201).json(savedMenuItem)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    if (error.code === 11000) {
+      // Determine which field caused the duplicate key error
+      const field = Object.keys(error.keyValue || {})[0]
+      let errorMessage = 'Duplicate field error'
+      if (field === 'title') {
+        errorMessage = `Category title "${title}" already exists, please choose another title.`
+      } else if (field === 'slug') {
+        errorMessage = `Slug "${slug}" already exists, please choose another slug.`
+      } else if (field === 'link') {
+        errorMessage = `link "${link}" already exists, please choose another link.`
+      } else {
+        errorMessage =
+          field + ' already exists, please choose another one. ' + error
+      }
+
+      return res.status(400).json({
+        success: false,
+        message: errorMessage,
+      })
+    } else {
+      // Handle other errors
+      return res.status(400).json({
+        success: false,
+        message:
+          error.message || 'An error occurred while creating the category.',
+      })
+    }
   }
 }
 
@@ -261,11 +346,8 @@ exports.deleteMenuItem = async (req, res) => {
 
 exports.getMenuItems = async (req, res) => {
   try {
-    const menu = await Menu.find().populate('menu')
-    if (!menu) {
-      return res.status(404).json({ message: 'Menu not found' })
-    }
-    res.status(200).json(menu.items)
+    const menus = await MenuItem.find().populate('menu')
+    res.status(200).json(menus)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
