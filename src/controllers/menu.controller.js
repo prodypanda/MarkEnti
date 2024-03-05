@@ -332,6 +332,8 @@ exports.updateMenuItem = async (req, res) => {
 
   if (Object.keys(updateFields).length === 0) {
     return res.status(400).json({ message: 'No fields to update' })
+  } else {
+    updateFields.updatedBy = req.user._id
   }
 
   try {
