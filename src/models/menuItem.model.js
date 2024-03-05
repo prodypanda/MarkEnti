@@ -45,6 +45,11 @@ const menuItemSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
+    updatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+    },
   },
   {
     timestamps: true,

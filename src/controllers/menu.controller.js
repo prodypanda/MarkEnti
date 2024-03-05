@@ -9,6 +9,7 @@
 const Menu = require('../models/menu.model')
 const MenuItem = require('../models/menuItem.model')
 const slugify = require('../utils/stringUtils')
+const validateNestingLevel = require('../helpers/validateNestingLevel')
 
 exports.createMenu = async (req, res) => {
   try {
@@ -146,6 +147,9 @@ exports.getMenusById = async (req, res) => {
 //
 //
 //
+//
+//
+//
 exports.createMenuItem = async (req, res) => {
   const { title, parent } = req.body
 
@@ -217,10 +221,6 @@ exports.createMenuItem = async (req, res) => {
     }
     i++
   }
-  // Check if requested orderIndex exists
-  const existingIndex = await MenuItem.findOne({
-    orderIndex: req.body.orderIndex,
-  })
 
   let createdBy = req.user._id
   try {
@@ -267,68 +267,98 @@ exports.createMenuItem = async (req, res) => {
     }
   }
 }
-
+//
+//
+//
+//
+//
+//
+//
+//
 exports.updateMenuItem = async (req, res) => {
-  try {
-    const { id } = req.params
-    const { title, slug, link, orderIndex, parentItem, menu } = req.body
+  const { id } = req.params
+  const { title, slug, link, parent } = req.body
 
-    const updateFields = {}
-    if (title !== undefined) {
-      updateFields.title = title
-    }
-    if (link !== undefined) {
-      updateFields.link = link
-    }
-    if (orderIndex !== undefined) {
-      //check if orderIndex is valid
-      if (orderIndex < 0) {
-        return res.status(400).json({
-          message: 'Order index must be a zero or a positive integer',
+  const updateFields = {}
+  if (title || title == !null) updateFields.title = title // INPUT_REQUIRED {Handle any additional fields here}
+  if (slug || slug == !null)
+    updateFields.slug = await slugify(slug, 'menuItem', 'slugifyMiddleware')
+
+  if (link || link == !null) updateFields.link = link // INPUT_REQUIRED {Handle any additional fields here}
+
+  let orderIndex
+  if (req.body.orderIndex !== undefined) {
+    //check if orderIndex is valid
+    if (req.body.orderIndex < 0) {
+      return res.status(400).json({
+        message: 'Order index must be a zero or a positive integer',
+      })
+    } else {
+      orderIndex = req.body.orderIndex
+
+      let orderIndexExists = true
+      let i = orderIndex
+      while (orderIndexExists) {
+        orderIndexExists = await MenuItem.findOne({
+          orderIndex: i,
+          // _id: { $ne: req.params.id },
         })
+        if (!orderIndexExists || orderIndexExists.id == req.params.id) {
+          orderIndex = i
+          break
+        }
+        i++
       }
+
       updateFields.orderIndex = orderIndex
     }
-    if (parentItem !== undefined) {
-      //check if parentItem exists
-      const parentItemExists = await MenuItem.findById(parentItem)
-      if (parentItemExists && parentItemExists.parentItem) {
-        return res.status(400).json({
-          message: 'Parent item must be a top level item',
-        })
-      }
-      updateFields.parentItem = parentItem
-    }
-    if (menu !== undefined) {
-      //check if menu exists
-      const menuExists = await Menu.findById(menu)
-      if (!menuExists) {
-        return res.status(400).json({
-          message: 'Menu does not exist',
-        })
-      }
-      updateFields.menu = menuExists._id
-    }
+  }
 
-    if (slug !== undefined) {
-      updateFields.slug = await slugify(slug, 'category', 'slugifyMiddleware')
+  if (parent || parent == !null) {
+    //check if parentItem exists
+    const parentItemExists = await MenuItem.findById(parent)
+    // if (parentItemExists && parentItemExists.parent) {
+    //   return res.status(400).json({
+    //     message: 'Parent item must be a top level item',
+    //   })
+    // }
+    if (!parentItemExists) {
+      return res.status(404).json({
+        message: 'Parent item does not exist',
+      })
     }
+    updateFields.parent = parent
+  }
 
-    if (Object.keys(updateFields).length === 0) {
-      return res.status(400).json({ message: 'No fields to update' })
-    }
+  if (Object.keys(updateFields).length === 0) {
+    return res.status(400).json({ message: 'No fields to update' })
+  }
 
-    const menuItem = await MenuItem.findByIdAndUpdate(
-      id,
-      { $set: updateFields },
-      { new: true }
-    )
+  try {
+    if (updateFields.parent || updateFields.parent == !null)
+      await validateNestingLevel(updateFields.parent, 'menuItem')
+
+    // const menuItem = await MenuItem.findByIdAndUpdate(
+    //   id,
+    //   { $set: updateFields },
+    //   { new: true }
+    // )
+    // if (!menuItem) {
+    //   return res.status(404).json({ message: 'Menu item not found' })
+    // }
+    // res.status(200).json(menuItem)
+
+    const menuItem = await MenuItem.findById(id)
     if (!menuItem) {
-      return res.status(404).json({ message: 'Menu item not found' })
+      return res.status(404).json({ message: 'Menu Item not found' })
+    } else {
+      menuItem.set(updateFields)
+      await menuItem.validate()
     }
-    res.status(200).json(menuItem)
+    const savedMenuItem = await menuItem.save()
+    res.status(201).json(savedMenuItem)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(400).json({ message: error.message })
   }
 }
 

@@ -1,8 +1,20 @@
 const Category = require('../models/category.model')
+const MenuItem = require('../models/menuItem.model')
 
 const maxDepth = 5
 
-async function validateNestingLevel(parentId) {
+async function validateNestingLevel(parentId, elementType) {
+  let Element
+  if (elementType === 'category') {
+    Element = Category
+  } else if (elementType === 'menuItem') {
+    Element = MenuItem
+  } else {
+    throw new Error(`Invalid element type: ${elementType}`)
+  }
+
+  // Check if the parent category exists
+
   if (!parentId) {
     // This is a top-level category since there's no parent.
     return true
@@ -16,7 +28,7 @@ async function validateNestingLevel(parentId) {
       break
     }
 
-    const parentCategory = await Category.findById(parentId)
+    const parentCategory = await Element.findById(parentId)
 
     // Check if the parent category was found
     if (!parentCategory) {
