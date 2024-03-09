@@ -145,6 +145,7 @@ exports.updateCategory = async (req, res) => {
 exports.deleteCategory = async (req, res) => {
   try {
     const { id } = req.params
+    const WithDescendants = req.query.withDescendants === 'true' // Check query parameter for delete with descendants or with references only
     const returnMsg = await deleteElement(id, 'category', WithDescendants)
     return res.status(200).json({ message: returnMsg })
   } catch (error) {

@@ -370,7 +370,8 @@ exports.updateMenuItem = async (req, res) => {
 
 exports.deleteMenuItem = async (req, res) => {
   try {
-    const { id, WithDescendants } = req.params
+    const { id } = req.params
+    const WithDescendants = req.query.withDescendants === 'true' // Check query parameter for delete with descendants or with references only
     // if ((WithDescendants || WithDescendants == !null) && WithDescendants == 'true')
     const returnMsg = await deleteElement(id, 'menuitem', WithDescendants)
     return res.status(200).json({ message: returnMsg })

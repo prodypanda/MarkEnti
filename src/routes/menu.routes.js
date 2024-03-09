@@ -25,12 +25,7 @@ const router = express.Router()
 
 router.post('/items', isAuthenticated, createMenuItem)
 router.put('/items/:id', isAuthenticated, validateMongoId, updateMenuItem)
-router.delete(
-  '/items/:id/:WithDescendants',
-  isAuthenticated,
-  validateMongoId,
-  deleteMenuItem
-)
+router.delete('/items/:id', isAuthenticated, validateMongoId, deleteMenuItem)
 router.get('/items/:menuId', isAuthenticated, getMenuItemsById)
 router.get('/items', isAuthenticated, getMenuItems)
 router.post('/items/reorder', isAuthenticated, reorderMenuItems)
