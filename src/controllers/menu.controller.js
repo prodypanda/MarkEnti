@@ -369,22 +369,10 @@ exports.updateMenuItem = async (req, res) => {
 }
 
 exports.deleteMenuItem = async (req, res) => {
-  let returnMsg = ''
   try {
     const { id, WithDescendants } = req.params
-    if (
-      (WithDescendants || WithDescendants == !null) &&
-      WithDescendants == 'true'
-    ) {
-      await deleteWithDescendants(id, 'menuitem')
-      returnMsg = 'Menu Item and its descendants have been removed'
-    } else {
-      // await MenuItem.findByIdAndDelete(id)
-      await deleteAndClean(id, 'menuitem')
-      returnMsg = 'Menu Item has been removed'
-    }
-    // await MenuItem.findByIdAndDelete(id)
-
+    // if ((WithDescendants || WithDescendants == !null) && WithDescendants == 'true')
+    const returnMsg = await deleteElement(id, 'menuitem', WithDescendants)
     return res.status(200).json({ message: returnMsg })
   } catch (error) {
     res.status(400).json({ message: error.message })

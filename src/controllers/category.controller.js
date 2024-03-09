@@ -1,6 +1,7 @@
 const Category = require('../models/category.model')
 const validateNestingLevel = require('../helpers/validateNestingLevel')
 const [
+  deleteElement,
   deleteWithDescendants,
   deleteAndClean,
 ] = require('../helpers/deleteWithDescendants')
@@ -144,10 +145,8 @@ exports.updateCategory = async (req, res) => {
 exports.deleteCategory = async (req, res) => {
   try {
     const { id } = req.params
-    await deleteWithDescendants(id, 'category')
-    res
-      .status(200)
-      .json({ message: 'Category and its descendants have been removed' })
+    const returnMsg = await deleteElement(id, 'category', WithDescendants)
+    return res.status(200).json({ message: returnMsg })
   } catch (error) {
     res.status(400).json({ message: error.message })
   }
