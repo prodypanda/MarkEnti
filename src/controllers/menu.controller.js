@@ -10,6 +10,10 @@ const Menu = require('../models/menu.model')
 const MenuItem = require('../models/menuItem.model')
 const slugify = require('../utils/stringUtils')
 const validateNestingLevel = require('../helpers/validateNestingLevel')
+const [
+  deleteWithDescendants,
+  deleteAndClean,
+] = require('../helpers/deleteWithDescendants')
 
 exports.createMenu = async (req, res) => {
   try {
@@ -365,14 +369,25 @@ exports.updateMenuItem = async (req, res) => {
 }
 
 exports.deleteMenuItem = async (req, res) => {
+  let returnMsg = ''
   try {
-    const { id } = req.params
-    await MenuItem.findByIdAndDelete(id)
-    res.status(200).json({
-      message: 'MenuItem deleted successfully',
-    })
+    const { id, WithDescendants } = req.params
+    if (
+      (WithDescendants || WithDescendants == !null) &&
+      WithDescendants == 'true'
+    ) {
+      await deleteWithDescendants(id, 'menuitem')
+      returnMsg = 'Menu Item and its descendants have been removed'
+    } else {
+      // await MenuItem.findByIdAndDelete(id)
+      await deleteAndClean(id, 'menuitem')
+      returnMsg = 'Menu Item has been removed'
+    }
+    // await MenuItem.findByIdAndDelete(id)
+
+    return res.status(200).json({ message: returnMsg })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(400).json({ message: error.message })
   }
 }
 
