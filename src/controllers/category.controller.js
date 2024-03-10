@@ -1,10 +1,6 @@
 const Category = require('../models/category.model')
 const validateNestingLevel = require('../helpers/validateNestingLevel')
-const [
-  deleteElement,
-  deleteWithDescendants,
-  deleteAndClean,
-] = require('../helpers/deleteWithDescendants')
+const [deleteEntity] = require('../helpers/deleteWithDescendants')
 const retrieveCategoryTree = require('../helpers/retrieveCategoryTree')
 const slugify = require('../utils/stringUtils')
 
@@ -146,7 +142,7 @@ exports.deleteCategory = async (req, res) => {
   try {
     const { id } = req.params
     const WithDescendants = req.query.withDescendants === 'true' // Check query parameter for delete with descendants or with references only
-    const returnMsg = await deleteElement(id, 'category', WithDescendants)
+    const returnMsg = await deleteEntity(id, 'category', WithDescendants)
     return res.status(200).json({ message: returnMsg })
   } catch (error) {
     res.status(400).json({ message: error.message })
