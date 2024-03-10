@@ -10,7 +10,7 @@ const Menu = require('../models/menu.model')
 const MenuItem = require('../models/menuItem.model')
 const slugify = require('../utils/stringUtils')
 const validateNestingLevel = require('../helpers/validateNestingLevel')
-const [deleteEntity] = require('../helpers/deleteWithDescendants')
+const [deleteEntity] = require('../helpers/deleteNodedEntity')
 
 exports.createMenu = async (req, res) => {
   try {

@@ -1,6 +1,6 @@
 const Category = require('../models/category.model')
 const validateNestingLevel = require('../helpers/validateNestingLevel')
-const [deleteEntity] = require('../helpers/deleteWithDescendants')
+const [deleteEntity] = require('../helpers/deleteNodedEntity')
 const retrieveCategoryTree = require('../helpers/retrieveCategoryTree')
 const slugify = require('../utils/stringUtils')
 
