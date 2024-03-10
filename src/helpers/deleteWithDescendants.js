@@ -30,12 +30,13 @@ const deleteEntity = async (entityId, entityType, deleteDescendants = true) => {
  * @returns {Model}
  */
 function getEntityModel(entityType) {
-  if (entityType === 'menuitem') {
-    return MenuItem
-  } else if (entityType === 'category') {
-    return Category
-  } else {
-    throw new Error('Invalid entityType value')
+  switch (entityType) {
+    case 'menuitem':
+      return MenuItem
+    case 'category':
+      return Category
+    default:
+      throw new Error('Invalid entityType value')
   }
 }
 
@@ -52,13 +53,15 @@ const deleteEntityAndDescendants = async (entityId, entityType) => {
     '_id'
   )
 
-  for (const descendantId of descendantIds) {
-    await deleteEntityAndDescendants(descendantId, entityType)
-  }
+  await Promise.all(
+    descendantIds.map(async (descendantId) => {
+      await deleteEntityAndDescendants(descendantId, entityType)
+    })
+  )
 
   await EntityModel.findByIdAndDelete(entityId)
 
-  return `${entityType} and its descendants have been removed`
+  return { message: `${entityType} and its descendants have been removed` }
 }
 
 /**
@@ -66,28 +69,29 @@ const deleteEntityAndDescendants = async (entityId, entityType) => {
  *
  * @param {string} entityId
  * @param {string} entityType
- * @returns {Promise<string>}
+ * @returns {Promise<Object>}
  */
 const deleteEntityAndCleanReferences = async (entityId, entityType) => {
   const EntityModel = getEntityModel(entityType)
 
   await EntityModel.findByIdAndDelete(entityId)
 
-  await EntityModel.updateMany(
-    { parent: entityId },
-    {
-      parent: null,
-      isTopLevel: true,
-      $pull: { ancestors: entityId },
-    }
-  )
+  await Promise.all([
+    EntityModel.updateMany(
+      { parent: entityId },
+      {
+        parent: null,
+        isTopLevel: true,
+        $pull: { ancestors: entityId },
+      }
+    ),
+    EntityModel.updateMany(
+      { ancestors: entityId },
+      { $pull: { ancestors: entityId } }
+    ),
+  ])
 
-  await EntityModel.updateMany(
-    { ancestors: entityId },
-    { $pull: { ancestors: entityId } }
-  )
-
-  return `${entityType} and its references have been removed`
+  return { message: `${entityType} and its references have been removed` }
 }
 
 module.exports = [deleteEntity, deleteEntityAndDescendants]
