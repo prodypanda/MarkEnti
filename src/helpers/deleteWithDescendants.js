@@ -1,92 +1,96 @@
 const Category = require('../models/category.model')
 const MenuItem = require('../models/menuItem.model')
-const deleteElement = async (
-  categoryId,
-  modelType,
-  deleteWithDescendants = true
-) => {
-  if (deleteWithDescendants) {
-    await deleteWithDescendants(categoryId, modelType) // Existing logic
-  } else {
-    const returndAndClRef = await deleteAndCleanReferences(
-      categoryId,
-      modelType
-    )
-    return returndAndClRef
+
+/**
+ * Delete an entity by ID and handle descendants and references.
+ *
+ * @param {string} entityId - The ID of the entity to delete
+ * @param {string} entityType - 'category' or 'menuitem'
+ * @param {boolean} deleteDescendants - Whether to delete descendants
+ * @returns {Promise<string>} Status message
+ */
+const deleteEntity = async (entityId, entityType, deleteDescendants = true) => {
+  try {
+    if (deleteDescendants) {
+      await deleteWithDescendants(entityId, entityType)
+    } else {
+      const returnAndCleanReferences = await deleteAndCleanReferences(
+        entityId,
+        entityType
+      )
+      return returnAndCleanReferences
+    }
+  } catch (error) {
+    console.error(error)
+    throw error
   }
 }
 
-const deleteWithDescendants = async (categoryId, modelType) => {
-  let Model
-  if (modelType === 'menuitem') {
-    Model = MenuItem
-  } else if (modelType === 'category') {
-    Model = Category
-  } else {
-    Model = Category
-  }
-  const descendants = await Model.find({ parent: categoryId }).distinct('_id')
+/**
+ * Delete an entity and all its descendants recursively.
+ *
+ * @param {string} entityId
+ * @param {string} entityType
+ */
+const deleteWithDescendants = async (entityId, entityType) => {
+  const EntityModel = getEntityModel(entityType)
 
-  for (const descendantId of descendants) {
-    await deleteWithDescendants(descendantId, modelType)
+  const descendantIds = await EntityModel.find({ parent: entityId }).distinct(
+    '_id'
+  )
+
+  for (const descendantId of descendantIds) {
+    await deleteWithDescendants(descendantId, entityType)
   }
-  await Model.findByIdAndDelete(categoryId)
-  return modelType + ' and its descendants have been removed'
+
+  await EntityModel.findByIdAndDelete(entityId)
+
+  return `${entityType} and its descendants have been removed`
 }
 
-const deleteAndCleanReferences = async (categoryId, modelType) => {
-  let Model
-  if (modelType === 'menuitem') {
-    Model = MenuItem
-  } else if (modelType === 'category') {
-    Model = Category
+/**
+ * Get the Mongoose model for the given entity type.
+ *
+ * @param {string} entityType
+ * @returns {Model}
+ */
+function getEntityModel(entityType) {
+  if (entityType === 'menuitem') {
+    return MenuItem
+  } else if (entityType === 'category') {
+    return Category
   } else {
-    Model = Category
+    return Category
   }
-  // 1. Delete the main element
-  await Model.findByIdAndDelete(categoryId)
+}
 
-  // 2. Update references and ancestors
-  await Model.find({ ancestors: categoryId })
+/**
+ * Delete an entity and clean up references.
+ *
+ * @param {string} entityId
+ * @param {string} entityType
+ * @returns {Promise<string>}
+ */
+const deleteAndCleanReferences = async (entityId, entityType) => {
+  const EntityModel = getEntityModel(entityType)
 
-  await Model.updateMany(
-    { parent: categoryId },
+  await EntityModel.findByIdAndDelete(entityId)
+
+  await EntityModel.updateMany(
+    { parent: entityId },
     {
-      parent: null, // Set parent to blank
-      istoplevel: true, // Set istoplevel to true
-      $pull: { ancestors: categoryId }, // Remove from ancestors array
+      parent: null,
+      isTopLevel: true,
+      $pull: { ancestors: entityId },
     }
   )
 
-  await Model.updateMany(
-    { ancestors: categoryId },
-    {
-      $pull: { ancestors: categoryId }, // Remove from ancestors array
-    }
+  await EntityModel.updateMany(
+    { ancestors: entityId },
+    { $pull: { ancestors: entityId } }
   )
 
-  return modelType + ' and its references has been removed'
+  return `${entityType} and its references have been removed`
 }
 
-// const deleteAndClean = async (modelId, modelType) => {
-//   let Model
-//   if (modelType === 'menuitem') {
-//     Model = MenuItem
-//   } else if (modelType === 'category') {
-//     Model = Category
-//   } else {
-//     Model = Category
-//   }
-
-//   const descendants = await Model.find({ parent: modelId }).distinct('_id')
-//   for (const descendantId of descendants) {
-//     await deleteAndClean(descendantId, modelType)
-//   }
-
-//   const model = await Model.findById(modelId)
-//   model.set({ parent: null })
-//   await model.validate()
-//   await model.save()
-//   await Model.findByIdAndDelete(modelId)
-// }
-module.exports = [deleteElement, deleteWithDescendants]
+module.exports = [deleteEntity, deleteWithDescendants]
