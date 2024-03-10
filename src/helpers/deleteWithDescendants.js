@@ -10,42 +10,17 @@ const MenuItem = require('../models/menuItem.model')
  * @returns {Promise<string>} Status message
  */
 const deleteEntity = async (entityId, entityType, deleteDescendants = true) => {
-  try {
-    if (deleteDescendants) {
-      await deleteWithDescendants(entityId, entityType)
-    } else {
-      const returnAndCleanReferences = await deleteAndCleanReferences(
-        entityId,
-        entityType
-      )
-      return returnAndCleanReferences
-    }
-  } catch (error) {
-    console.error(error)
-    throw error
-  }
-}
-
-/**
- * Delete an entity and all its descendants recursively.
- *
- * @param {string} entityId
- * @param {string} entityType
- */
-const deleteWithDescendants = async (entityId, entityType) => {
-  const EntityModel = getEntityModel(entityType)
-
-  const descendantIds = await EntityModel.find({ parent: entityId }).distinct(
-    '_id'
-  )
-
-  for (const descendantId of descendantIds) {
-    await deleteWithDescendants(descendantId, entityType)
+  if (!['category', 'menuitem'].includes(entityType)) {
+    throw new Error('Invalid entityType value')
   }
 
-  await EntityModel.findByIdAndDelete(entityId)
-
-  return `${entityType} and its descendants have been removed`
+  if (deleteDescendants) {
+    const returnMsg = await deleteEntityAndDescendants(entityId, entityType)
+    return returnMsg
+  } else {
+    const returnMsg = await deleteEntityAndCleanReferences(entityId, entityType)
+    return returnMsg
+  }
 }
 
 /**
@@ -60,8 +35,30 @@ function getEntityModel(entityType) {
   } else if (entityType === 'category') {
     return Category
   } else {
-    return Category
+    throw new Error('Invalid entityType value')
   }
+}
+
+/**
+ * Delete an entity and all its descendants recursively.
+ *
+ * @param {string} entityId
+ * @param {string} entityType
+ */
+const deleteEntityAndDescendants = async (entityId, entityType) => {
+  const EntityModel = getEntityModel(entityType)
+
+  const descendantIds = await EntityModel.find({ parent: entityId }).distinct(
+    '_id'
+  )
+
+  for (const descendantId of descendantIds) {
+    await deleteEntityAndDescendants(descendantId, entityType)
+  }
+
+  await EntityModel.findByIdAndDelete(entityId)
+
+  return `${entityType} and its descendants have been removed`
 }
 
 /**
@@ -71,7 +68,7 @@ function getEntityModel(entityType) {
  * @param {string} entityType
  * @returns {Promise<string>}
  */
-const deleteAndCleanReferences = async (entityId, entityType) => {
+const deleteEntityAndCleanReferences = async (entityId, entityType) => {
   const EntityModel = getEntityModel(entityType)
 
   await EntityModel.findByIdAndDelete(entityId)
@@ -93,4 +90,4 @@ const deleteAndCleanReferences = async (entityId, entityType) => {
   return `${entityType} and its references have been removed`
 }
 
-module.exports = [deleteEntity, deleteWithDescendants]
+module.exports = [deleteEntity, deleteEntityAndDescendants]
