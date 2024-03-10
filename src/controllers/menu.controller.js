@@ -10,10 +10,7 @@ const Menu = require('../models/menu.model')
 const MenuItem = require('../models/menuItem.model')
 const slugify = require('../utils/stringUtils')
 const validateNestingLevel = require('../helpers/validateNestingLevel')
-const [
-  deleteWithDescendants,
-  deleteAndClean,
-] = require('../helpers/deleteWithDescendants')
+const [deleteElement] = require('../helpers/deleteWithDescendants')
 
 exports.createMenu = async (req, res) => {
   try {
@@ -371,8 +368,8 @@ exports.updateMenuItem = async (req, res) => {
 exports.deleteMenuItem = async (req, res) => {
   try {
     const { id } = req.params
+
     const WithDescendants = req.query.withDescendants === 'true' // Check query parameter for delete with descendants or with references only
-    // if ((WithDescendants || WithDescendants == !null) && WithDescendants == 'true')
     const returnMsg = await deleteElement(id, 'menuitem', WithDescendants)
     return res.status(200).json({ message: returnMsg })
   } catch (error) {

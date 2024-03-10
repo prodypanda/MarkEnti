@@ -8,7 +8,11 @@ const deleteElement = async (
   if (deleteWithDescendants) {
     await deleteWithDescendants(categoryId, modelType) // Existing logic
   } else {
-    await deleteAndCleanReferences(categoryId, modelType)
+    const returndAndClRef = await deleteAndCleanReferences(
+      categoryId,
+      modelType
+    )
+    return returndAndClRef
   }
 }
 
@@ -22,6 +26,7 @@ const deleteWithDescendants = async (categoryId, modelType) => {
     Model = Category
   }
   const descendants = await Model.find({ parent: categoryId }).distinct('_id')
+
   for (const descendantId of descendants) {
     await deleteWithDescendants(descendantId, modelType)
   }
@@ -42,13 +47,24 @@ const deleteAndCleanReferences = async (categoryId, modelType) => {
   await Model.findByIdAndDelete(categoryId)
 
   // 2. Update references and ancestors
+  await Model.find({ ancestors: categoryId })
+
   await Model.updateMany(
     { parent: categoryId },
     {
-      parent: '', // Set parent to blank
+      parent: null, // Set parent to blank
+      istoplevel: true, // Set istoplevel to true
       $pull: { ancestors: categoryId }, // Remove from ancestors array
     }
   )
+
+  await Model.updateMany(
+    { ancestors: categoryId },
+    {
+      $pull: { ancestors: categoryId }, // Remove from ancestors array
+    }
+  )
+
   return modelType + ' and its references has been removed'
 }
 
