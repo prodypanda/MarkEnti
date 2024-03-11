@@ -73,7 +73,7 @@ categorySchema.path('parent').validate(async function (value) {
   }
 
   const parentCategory = await this.constructor.findById(value)
-  return !!parentCategory // Ensure parent category exists
+  return Boolean(parentCategory) // Ensure parent category exists
 }, 'The specified parent category does not exist.')
 
 async function populateAncestors(category, CategoryModel) {

@@ -64,7 +64,7 @@ menuItemSchema.path('parent').validate(async function (value) {
   }
 
   const parentMenuItem = await this.constructor.findById(value)
-  return !!parentMenuItem // Ensure parent Menu Item exists
+  return Boolean(parentMenuItem) // Ensure parent Menu Item exists
 }, 'The specified parent Menu Item does not exist.')
 
 async function populateAncestors(menuItem, MenuItemModel) {
