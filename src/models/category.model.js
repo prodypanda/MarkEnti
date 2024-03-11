@@ -5,64 +5,64 @@ const categorySchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    trim: true,
+    trim: true
   },
   description: {
     type: String,
     required: true,
-    trim: true,
+    trim: true
   },
   parent: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
-    default: null,
+    default: null
   },
   ancestors: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Category',
-    },
+      ref: 'Category'
+    }
   ],
   isActive: {
     type: Boolean,
     required: true,
-    default: true,
+    default: true
   },
   sortOrder: {
     type: Number,
-    default: 0,
+    default: 0
   },
   image: {
-    type: String,
+    type: String
   },
   icon: {
-    type: String,
+    type: String
   },
   seoTitle: {
     type: String,
     trim: true,
-    default: '',
+    default: ''
   },
   seoDescription: {
     type: String,
     trim: true,
-    default: '',
+    default: ''
   },
   slug: {
     type: String,
     trim: true,
     lowercase: true,
     unique: true,
-    required: true,
+    required: true
   },
   created_at: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
   updated_at: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 })
 
 categorySchema.index({ parent: 1, name: 1 })
@@ -73,16 +73,16 @@ categorySchema.path('parent').validate(async function (value) {
   }
 
   const parentCategory = await this.constructor.findById(value)
-  return !!parentCategory // Ensure parent category exists
+  return Boolean(parentCategory) // Ensure parent category exists
 }, 'The specified parent category does not exist.')
 
-async function populateAncestors(category, CategoryModel) {
+async function populateAncestors (category, CategoryModel) {
   if (!category.parent) {
     category.ancestors = []
     return
   }
 
-  let ancestors = []
+  const ancestors = []
   let currentParentId = category.parent
 
   while (currentParentId) {
