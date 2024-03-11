@@ -1,10 +1,27 @@
 // Logger Middleware
+/**
+ * Masks sensitive data in the given object by replacing
+ * password with masked value if present
+ *
+ * @param {Object} body - The request body object
+ * @returns {Object} - The body object with masked password if present
+ */
 const maskSensitiveData = (body) => {
   if (body?.password) {
     return { ...body, password: '*****' }
   }
   return body
 }
+/**
+ * Logger middleware for logging request info to console
+ *
+ * Logs request method, URL, headers, query params etc.
+ * Also logs response statusCode and body
+ *
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @param {Function} next - Express next middleware function
+ */
 const loggerMiddleware = (req, res, next) => {
   if (process.env.LOG_CONSOLE === 'true') {
     console.log(`request method and URL : ${req.method} ${req.originalUrl}`) // Log the request method and URL
