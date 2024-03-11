@@ -46,7 +46,7 @@ const retrieveEntityTree = async (
       )
       return {
         ...entity.toObject(),
-        children,
+        children
       }
     })
   )
@@ -60,7 +60,7 @@ const retrieveEntityTree = async (
  * @returns {Model} The Mongoose model class for the entity type
  * @throws {Error} If entityType is invalid
  */
-function getEntityModel(entityType) {
+function getEntityModel (entityType) {
   switch (entityType) {
     case 'menuitem':
       return MenuItem
