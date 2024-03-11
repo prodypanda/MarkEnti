@@ -7,7 +7,7 @@ const calculatePreferences = async (customerId) => {
     const categories = new Set();
     orders.forEach(order => {
       order.products.forEach(orderProduct => {
-        if (orderProduct.product && orderProduct.product.category) {
+        if (orderProduct.product?.category) {
           categories.add(orderProduct.product.category.toString());
         }
       });

@@ -1,6 +1,6 @@
 // Logger Middleware
 const maskSensitiveData = (body) => {
-  if (body && body.password) {
+  if (body?.password) {
     return { ...body, password: '*****' };
   }
   return body;
