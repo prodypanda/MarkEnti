@@ -2,7 +2,7 @@
 const express = require('express')
 const analyticsController = require('../controllers/analytics.controller')
 const {
-  isAuthenticated,
+  isAuthenticated
 } = require('../middlewares/security/authenticate.middleware')
 const router = express.Router()
 
