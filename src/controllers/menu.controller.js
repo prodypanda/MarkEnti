@@ -407,40 +407,41 @@ exports.getMenuItems = async (req, res) => {
   }
 }
 
+/**
+ * Retrieves a specific menu item by its ID and returns its ancestors and the menu item itself.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Promise<void>} - A promise that resolves when the response is sent.
+ */
 exports.getMenuItemsById = async (req, res) => {
-  // try {
-  //   const { menuId } = req.params
-  //   const menu = await Menu.findById(menuId).populate('parent')
-  //   if (!menu) {
-  //     return res.status(404).json({ message: 'Menu not found' })
-  //   }
-  //   res.status(200).json(menu.items)
-  // } catch (error) {
-  //   res.status(500).json({ message: error.message })
-  // }
-
-  const { id } = req.params
   try {
-    MenuItem
-    //todo!
-    //add functionality for the admin to show non activated (hidden) catgories.
-    const menuItem = await MenuItem.findById(id)
+    const { id } = req.params
+
+    // Find the menu item with the specified ID
+    const menuItem = await MenuItem.findById(id).lean()
+
     if (!menuItem) {
+      // If the menu item is not found, return a 404 response with an error message
       return res.status(404).json({ message: 'Menu Item not found' })
     }
-    const ancestors = await MenuItem.find({ _id: { $in: menuItem.ancestors } })
+
+    // Find the ancestors of the menu item
+    const ancestors = await MenuItem.find({
+      _id: { $in: menuItem.ancestors },
+    }).lean()
+
+    // Return a 200 response with the ancestors and the menu item
     res.status(200).json({
-      ancestors: ancestors.map((ancestor) => {
-        return {
-          _id: ancestor._id,
-          title: ancestor.title,
-          parent: ancestor.parent,
-          ancestors: ancestor.ancestors,
-        }
-      }),
+      ancestors: ancestors.map((ancestor) => ({
+        _id: ancestor._id,
+        title: ancestor.title,
+        parent: ancestor.parent,
+        ancestors: ancestor.ancestors,
+      })),
       menuItem,
     })
   } catch (error) {
+    // Return a 400 response with the error message
     res.status(400).json({ message: error.message })
   }
 }
