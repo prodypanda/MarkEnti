@@ -379,13 +379,6 @@ exports.deleteMenuItem = async (req, res) => {
 }
 
 exports.getMenuItems = async (req, res) => {
-  // try {
-  //   const menus = await MenuItem.find().populate('ancestors')
-  //   res.status(200).json(menus)
-  // } catch (error) {
-  //   res.status(500).json({ message: error.message })
-  // }
-
   try {
     const { start, end } = req.query // Extract start and end from query parameters
 
@@ -415,31 +408,86 @@ exports.getMenuItems = async (req, res) => {
 }
 
 exports.getMenuItemsById = async (req, res) => {
+  // try {
+  //   const { menuId } = req.params
+  //   const menu = await Menu.findById(menuId).populate('parent')
+  //   if (!menu) {
+  //     return res.status(404).json({ message: 'Menu not found' })
+  //   }
+  //   res.status(200).json(menu.items)
+  // } catch (error) {
+  //   res.status(500).json({ message: error.message })
+  // }
+
+  const { id } = req.params
   try {
-    const { menuId } = req.params
-    const menu = await Menu.findById(menuId).populate('parent')
-    if (!menu) {
-      return res.status(404).json({ message: 'Menu not found' })
+    MenuItem
+    //todo!
+    //add functionality for the admin to show non activated (hidden) catgories.
+    const menuItem = await MenuItem.findById(id)
+    if (!menuItem) {
+      return res.status(404).json({ message: 'Menu Item not found' })
     }
-    res.status(200).json(menu.items)
+    const ancestors = await MenuItem.find({ _id: { $in: menuItem.ancestors } })
+    res.status(200).json({
+      ancestors: ancestors.map((ancestor) => {
+        return {
+          _id: ancestor._id,
+          title: ancestor.title,
+          parent: ancestor.parent,
+          ancestors: ancestor.ancestors,
+        }
+      }),
+      menuItem,
+    })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(400).json({ message: error.message })
   }
 }
 
+/**
+ * Reorders menu items in a web application.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @returns {Object} - The response object with a success message or an error message.
+ */
 exports.reorderMenuItems = async (req, res) => {
   try {
-    const { menuId, orderedItems } = req.body
-    orderedItems.forEach(async (itemId, index) => {
-      await MenuItem.updateOne(
-        { _id: itemId, menu: menuId },
-        { orderIndex: index }
-      )
-    })
-    res.status(200).json({
-      message: 'Menu Items reordered successfully',
-    })
+    const { menuId, orderedItems } = req.body // Destructure body for clarity
+
+    // Input validation:
+    if (!menuId || !orderedItems || !Array.isArray(orderedItems)) {
+      return res.status(400).json({ message: 'Invalid menuId or orderedItems' })
+    }
+
+    // Ensure all itemIds exist in the database to prevent orphaned references
+    const existingItemIds = await MenuItem.find({
+      _id: { $in: orderedItems },
+      menu: menuId,
+    }).distinct('_id')
+
+    if (existingItemIds.length !== orderedItems.length) {
+      return res
+        .status(400)
+        .json({ message: 'One or more itemIds are invalid' })
+    }
+
+    // Create update operations with better efficiency:
+    const updateOperations = orderedItems.map((itemId, index) => ({
+      updateOne: {
+        filter: { _id: itemId, menu: menuId },
+        update: { $set: { orderIndex: index } }, // Use $set for focused updates
+      },
+    }))
+
+    // Bulk write:
+    await MenuItem.bulkWrite(updateOperations)
+
+    res.status(200).json({ message: 'Menu items reordered successfully' })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    console.error(error) // Log the error for debugging
+    res
+      .status(500)
+      .json({ message: 'An error occurred while reordering menu items' })
   }
 }
