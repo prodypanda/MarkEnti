@@ -11,6 +11,7 @@ const MenuItem = require('../models/menuItem.model')
 const slugify = require('../utils/stringUtils')
 const validateNestingLevel = require('../helpers/validateNestingLevel')
 const [deleteEntity] = require('../helpers/deleteNodedEntity')
+const retrieveEntityTree = require('../helpers/retrieveEntityTree')
 
 exports.createMenu = async (req, res) => {
   try {
@@ -378,18 +379,45 @@ exports.deleteMenuItem = async (req, res) => {
 }
 
 exports.getMenuItems = async (req, res) => {
+  // try {
+  //   const menus = await MenuItem.find().populate('ancestors')
+  //   res.status(200).json(menus)
+  // } catch (error) {
+  //   res.status(500).json({ message: error.message })
+  // }
+
   try {
-    const menus = await MenuItem.find().populate('menu')
-    res.status(200).json(menus)
+    const { start, end } = req.query // Extract start and end from query parameters
+
+    // Convert start and end to numbers and calculate limit
+    const startIndex = parseInt(start, 10) || 0 // Default to 0 if not provided
+    const endIndex = parseInt(end, 10) || 0 // Default to 0 if not provided
+    const limit = endIndex ? endIndex - startIndex + 1 : undefined // Calculate limit based on end and start
+
+    // Count the total number of menu items
+    const totalCount = await MenuItem.countDocuments({}) // You can add any specific filters if necessary
+
+    const menuitemsTree = await retrieveEntityTree(
+      'menuitem',
+      null,
+      req.filter,
+      req.sort,
+      startIndex,
+      limit
+    )
+
+    // Set the x-total-count header with the total count
+    res.setHeader('x-total-count', totalCount.toString())
+    res.status(200).json(menuitemsTree)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    res.status(400).json({ message: error.message })
   }
 }
 
 exports.getMenuItemsById = async (req, res) => {
   try {
     const { menuId } = req.params
-    const menu = await Menu.findById(menuId).populate('menu')
+    const menu = await Menu.findById(menuId).populate('parent')
     if (!menu) {
       return res.status(404).json({ message: 'Menu not found' })
     }

@@ -1,7 +1,7 @@
 const Category = require('../models/category.model')
 const validateNestingLevel = require('../helpers/validateNestingLevel')
 const [deleteEntity] = require('../helpers/deleteNodedEntity')
-const retrieveCategoryTree = require('../helpers/retrieveCategoryTree')
+const retrieveEntityTree = require('../helpers/retrieveEntityTree')
 const slugify = require('../utils/stringUtils')
 
 /**
@@ -168,7 +168,8 @@ exports.getCategories = async (req, res) => {
     // Count the total number of categories
     const totalCount = await Category.countDocuments({}) // You can add any specific filters if necessary
 
-    const categoriesTree = await retrieveCategoryTree(
+    const categoriesTree = await retrieveEntityTree(
+      'category',
       null,
       req.filter,
       req.sort,
