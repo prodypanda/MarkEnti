@@ -1,9 +1,8 @@
-const express = require('express');
-const router = express.Router();
-const guestCartController = require('../controllers/guestCart.controller.js');
-const guestSessionMiddleware = require('../middlewares/guestSession.middleware.js');
-const { csrfProtection } = require('../middlewares/security/csrf.middleware');
-
+const express = require('express')
+const router = express.Router()
+const guestCartController = require('../controllers/guestCart.controller.js')
+const guestSessionMiddleware = require('../middlewares/guestSession.middleware.js')
+const { csrfProtection } = require('../middlewares/security/csrf.middleware')
 
 /**
  * @swagger
@@ -105,11 +104,23 @@ const { csrfProtection } = require('../middlewares/security/csrf.middleware');
  *         description: Item removed from guest cart
  *       500:
  *         description: Error removing item from guest cart
-*/
+ */
 
-router.post('/', [guestSessionMiddleware, csrfProtection], guestCartController.createGuestCart);
-router.post('/items', [guestSessionMiddleware, csrfProtection], guestCartController.addItemToGuestCart);
-router.delete('/items/:itemId', [guestSessionMiddleware, csrfProtection], guestCartController.removeItemFromGuestCart);
-router.get('/', guestSessionMiddleware, guestCartController.getGuestCart);
+router.post(
+  '/',
+  [guestSessionMiddleware, csrfProtection],
+  guestCartController.createGuestCart
+)
+router.post(
+  '/items',
+  [guestSessionMiddleware, csrfProtection],
+  guestCartController.addItemToGuestCart
+)
+router.delete(
+  '/items/:itemId',
+  [guestSessionMiddleware, csrfProtection],
+  guestCartController.removeItemFromGuestCart
+)
+router.get('/', guestSessionMiddleware, guestCartController.getGuestCart)
 
-module.exports = router;
+module.exports = router

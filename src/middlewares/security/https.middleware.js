@@ -1,8 +1,8 @@
 const httpsMiddleware = (req, res, next) => {
   if (req.headers['x-forwarded-proto'] !== 'https') {
-    return res.redirect(301, `http://${req.hostname}${req.url}`);
+    return res.redirect(301, `http://${req.hostname}${req.url}`)
   }
-  next();
-};
+  next()
+}
 
-module.exports = httpsMiddleware;
+module.exports = httpsMiddleware

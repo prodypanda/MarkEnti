@@ -1,11 +1,11 @@
 const Category = require('../models/category.model')
 const MenuItem = require('../models/menuItem.model')
 
-//entityType = category
-//parentId = null
-//sort = { name: 1 }
+// entityType = category
+// parentId = null
+// sort = { name: 1 }
 
-//filter = active
+// filter = active
 const retrieveEntityTree = async (
   entityType,
   parentId = null,
@@ -40,13 +40,13 @@ const retrieveEntityTree = async (
       )
       return {
         ...entity.toObject(),
-        children,
+        children
       }
     })
   )
 }
 
-function getEntityModel(entityType) {
+function getEntityModel (entityType) {
   switch (entityType) {
     case 'menuitem':
       return MenuItem

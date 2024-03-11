@@ -9,31 +9,31 @@ const getSalesReport = async (req, res) => {
         $match: {
           createdAt: {
             $gte: new Date(startDate),
-            $lte: new Date(endDate),
+            $lte: new Date(endDate)
           },
-          status: 'completed',
-        },
+          status: 'completed'
+        }
       },
       {
         $group: {
           _id: null,
           totalSales: { $sum: '$totalAmount' },
-          totalOrders: { $sum: 1 },
-        },
+          totalOrders: { $sum: 1 }
+        }
       },
       {
         $project: {
           _id: 0,
           totalSales: 1,
-          totalOrders: 1,
-        },
-      },
+          totalOrders: 1
+        }
+      }
     ])
 
     const report = salesData[0] || { totalSales: 0, totalOrders: 0 }
 
     res.status(200).json({
-      report,
+      report
     })
   } catch (error) {
     res
@@ -43,5 +43,5 @@ const getSalesReport = async (req, res) => {
 }
 
 module.exports = {
-  getSalesReport,
+  getSalesReport
 }

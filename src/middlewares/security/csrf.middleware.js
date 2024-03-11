@@ -4,10 +4,10 @@ const csrfProtection = csurf({
   cookie: {
     httpOnly: true,
     sameSite: 'Strict',
-    secure: process.env.NODE_ENV === 'production',
-  },
+    secure: process.env.NODE_ENV === 'production'
+  }
 })
 
 module.exports = {
-  csrfProtection,
+  csrfProtection
 }

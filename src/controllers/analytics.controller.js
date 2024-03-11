@@ -6,9 +6,9 @@ exports.getRegistrationStats = async (req, res) => {
     {
       $group: {
         _id: { $dateToString: { format: '%Y-%m-%d', date: '$created_at' } },
-        count: { $sum: 1 },
-      },
-    },
+        count: { $sum: 1 }
+      }
+    }
   ])
   res.json(stats)
 }
@@ -20,10 +20,10 @@ exports.getSalesStats = async (req, res) => {
       $group: {
         _id: '$date',
         totalSales: { $sum: '$totalAmount' },
-        totalOrders: { $sum: 1 },
-      },
+        totalOrders: { $sum: 1 }
+      }
     },
-    { $sort: { _id: 1 } },
+    { $sort: { _id: 1 } }
   ])
   res.json(stats)
 }
@@ -35,7 +35,7 @@ exports.getPaymentFailureAnalytics = async (req, res) => {
     const failures = await getPaymentFailures()
     res.status(200).json({
       failureCount: failures.length,
-      reasons: failures.map((f) => f.reason),
+      reasons: failures.map((f) => f.reason)
     })
   } catch (error) {
     res

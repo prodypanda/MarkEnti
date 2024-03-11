@@ -10,15 +10,15 @@ const {
   deleteMenuItem,
   getMenuItems,
   reorderMenuItems,
-  getMenuItemsById,
+  getMenuItemsById
 } = require('../controllers/menu.controller')
 const {
-  isAuthenticated,
+  isAuthenticated
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validateMongoId,
   validateMenuCreate,
-  validateMenuUpdate,
+  validateMenuUpdate
 } = require('../validation/inputValidator')
 
 const router = express.Router()

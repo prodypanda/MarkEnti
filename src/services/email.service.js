@@ -1,7 +1,6 @@
-const nodemailer = require('nodemailer');
-const dotenv = require('dotenv');
-dotenv.config();
-
+const nodemailer = require('nodemailer')
+const dotenv = require('dotenv')
+dotenv.config()
 
 const transport = nodemailer.createTransport({
   logger: true, // enable logging
@@ -13,19 +12,27 @@ const transport = nodemailer.createTransport({
     user: process.env.EMAIL_SMTP_USERNAME,
     pass: process.env.EMAIL_SMTP_PASSWORD
   }
-});
+})
 
-const sendEmail = async ({ from, to, subject, text, html, headers, priority}) => {
-  const mailOptions = { from, to, subject, text, html, headers, priority};
+const sendEmail = async ({
+  from,
+  to,
+  subject,
+  text,
+  html,
+  headers,
+  priority
+}) => {
+  const mailOptions = { from, to, subject, text, html, headers, priority }
 
   try {
-    await transport.sendMail(mailOptions);
-    console.log(`Email sent to ${to}`);
+    await transport.sendMail(mailOptions)
+    console.log(`Email sent to ${to}`)
   } catch (error) {
-    console.error(`Error when sending email to ${to}: `, error);
+    console.error(`Error when sending email to ${to}: `, error)
   }
-};
+}
 
 module.exports = {
-  sendEmail,
-};
+  sendEmail
+}

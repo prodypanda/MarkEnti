@@ -4,16 +4,12 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 const helmet = require('helmet')
 
-
-
 // middlewares
 const loggerMiddleware = require('./middlewares/logger.middleware')
 const rateLimitMiddleware = require('./middlewares/security/rateLimit.middleware')
 const sanitizeMiddleware = require('./middlewares/sanitize.middleware')
 const { csrfProtection } = require('./middlewares/security/csrf.middleware')
 const guestSessionMiddleware = require('./middlewares/guestSession.middleware')
-
-
 
 // routes
 const authRoutes = require('./routes/auth.routes')
@@ -46,7 +42,7 @@ app.use(bodyParser.json())
 app.use(cookieParser())
 app.use(guestSessionMiddleware)
 app.use(passport.initialize())
-// Custom error handler for unauthorized requests 
+// Custom error handler for unauthorized requests
 
 require('./config/passport')
 
@@ -67,15 +63,15 @@ app.use(sanitizeMiddleware())
 //   next()
 // })
 
-app.use(function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*'); // '*' for allowing any origin
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  next();
-});
-
-
-
+app.use(function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', '*') // '*' for allowing any origin
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+  )
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  next()
+})
 
 app.use('/api/auth', authRoutes)
 app.use('/api/roles', roleRoutes)

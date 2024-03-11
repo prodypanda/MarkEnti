@@ -41,7 +41,7 @@ exports.placeOrder = async (req, res) => {
       const promo = await PromoCode.findOne({
         code: promoCode,
         isEnabled: true,
-        expirationDate: { $gte: new Date() },
+        expirationDate: { $gte: new Date() }
       })
       if (promo) {
         discount = (promo.discountPercentage / 100) * totalAmount
@@ -56,9 +56,9 @@ exports.placeOrder = async (req, res) => {
       customer,
       products,
       totalAmount: totalAmountAfterDiscount, // Use the `totalAmountAfterDiscount` variable here.
-      discount: discount,
+      discount,
       promotionalCodeApplied: promoCodeApplied,
-      splitPayments,
+      splitPayments
     })
 
     // Implement logic to handle split payments distribution.
@@ -70,7 +70,7 @@ exports.placeOrder = async (req, res) => {
     try {
       // After successfully saving an order, calculate preferences
       const preferences = await preferenceService.calculatePreferences(customer) // `customer` is the customer's ID
-      await Order.findByIdAndUpdate(order._id, { preferences: preferences })
+      await Order.findByIdAndUpdate(order._id, { preferences })
 
       res.status(201).json({ ...order.toObject(), preferences })
     } catch (error) {
@@ -122,30 +122,24 @@ exports.refundOrder = async (req, res) => {
     const { id } = req.params
     const order = await Order.findById(id)
     if (!order) {
-      return res
-        .status(404)
-        .json({
-          message: 'Order not found, cannot refund order that does not exist',
-        })
+      return res.status(404).json({
+        message: 'Order not found, cannot refund order that does not exist'
+      })
     }
 
     // Check if the order has already been refunded
     if (order.status === 'refunded') {
-      return res
-        .status(400)
-        .json({
-          message: 'Order is already refunded and cannot be refunded again',
-        })
+      return res.status(400).json({
+        message: 'Order is already refunded and cannot be refunded again'
+      })
     }
 
     // Check if the order has been paid
     if (!order.status === 'processing') {
-      return res
-        .status(400)
-        .json({
-          message:
-            'Order is not paid yet and cannot be refunded, please contact customer support for further assistance if you believe this is a mistake',
-        })
+      return res.status(400).json({
+        message:
+          'Order is not paid yet and cannot be refunded, please contact customer support for further assistance if you believe this is a mistake'
+      })
     }
 
     // Implement logic to refund the order
@@ -155,7 +149,7 @@ exports.refundOrder = async (req, res) => {
       { new: true }
     )
     return res.status(200).json(updatedOrder)
-    //res.status(200).json({ message: 'Order refunded successfully' });
+    // res.status(200).json({ message: 'Order refunded successfully' });
   } catch (error) {
     return res.status(500).json({ message: error.message })
   }

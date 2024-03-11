@@ -5,11 +5,13 @@ Dive into the world of **Markenti** - your ultimate gateway to launching a power
 Designed for developers and aspiring entrepreneurs alike, this repository offers a deep dive into the backend architecture of an e-commerce platform, providing essential insights and tools to enhance your project or learn from ours.
 
 ## Project Overview
+
 Markenti stands as a cutting-edge e-commerce platform backend REST API, designed meticulously to empower businesses in managing online storefronts effectively.
 
 With this API, you're equipped to handle a wide array of operations ranging from product listings, order processing, customer relationship management, to conducting secure payment transactions. Our technology stack is comprehensive, featuring Node.js, Express, MongoDB, Mongoose, Axios, JsonWebToken among other pivotal libraries, which together build a secure and resilient service.
 
 ## Highlighted Features
+
 - **User Experience:** Seamless signup/login, encrypted passwords, JWT session management, and roles-based access control.
 - **Dashboard Availability:** Tailored dashboards for profile updates, site customization, and analytics tracking.
 - **Comprehensive Product Management:** Extensive CRUD functionalities for product and category management with support for image uploads and inventory tracking.
@@ -21,6 +23,7 @@ With this API, you're equipped to handle a wide array of operations ranging from
 - **In-depth Analytics:** Actionable insights into sales, trending products, and website traffic for strategic decision-making.
 
 ## Leveraging Technology
+
 Our choice of technologies reflects our commitment to reliability, efficiency, and security:
 
 - **Server Foundation:** Node.js & Express.js for a scalable server-side solution.
@@ -36,6 +39,7 @@ Our choice of technologies reflects our commitment to reliability, efficiency, a
 - **Testing Framework:** Jest for comprehensive application testing.
 
 ## Project Structure for Easy Navigation
+
 ```
 /project_root
     /src
@@ -88,6 +92,7 @@ Join us in making **Markenti** even better! Your contributions, whether in the f
 Remember to adhere to our Contributor Code of Conduct and maintain the high standards set for project contributions.
 
 ## Get in Touch
+
 Should you have any questions, suggestions, or just want to connect, drop us an email at admin@prodypanda.com, and we'd be more than happy to chat!
 
 By contributing to and using the **Markenti** project, you're empowering businesses worldwide with an exceptional eCommerce platform, crafted with care, precision, and a deep understanding of the digital marketplace.

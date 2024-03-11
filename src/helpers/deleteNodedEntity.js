@@ -29,7 +29,7 @@ const deleteEntity = async (entityId, entityType, deleteDescendants = true) => {
  * @param {string} entityType
  * @returns {Model}
  */
-function getEntityModel(entityType) {
+function getEntityModel (entityType) {
   switch (entityType) {
     case 'menuitem':
       return MenuItem
@@ -82,13 +82,13 @@ const deleteEntityAndCleanReferences = async (entityId, entityType) => {
       {
         parent: null,
         isTopLevel: true,
-        $pull: { ancestors: entityId },
+        $pull: { ancestors: entityId }
       }
     ),
     EntityModel.updateMany(
       { ancestors: entityId },
       { $pull: { ancestors: entityId } }
-    ),
+    )
   ])
 
   return { message: `${entityType} and its references have been removed` }

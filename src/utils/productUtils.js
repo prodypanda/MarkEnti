@@ -1,4 +1,4 @@
-const Discount = require('../models/discount.model');
+const Discount = require('../models/discount.model')
 
 const applyActiveDiscount = async (product) => {
   const discount = await Discount.findOne({
@@ -6,15 +6,15 @@ const applyActiveDiscount = async (product) => {
     isActive: true,
     startDate: { $lte: new Date() },
     endDate: { $gte: new Date() }
-  });
+  })
 
   if (discount) {
-    product.price = product.price * ((100 - discount.discountPercentage) / 100);
+    product.price = product.price * ((100 - discount.discountPercentage) / 100)
   }
 
-  return { product, discount };
-};
+  return { product, discount }
+}
 
 module.exports = {
-  applyActiveDiscount,
-};
+  applyActiveDiscount
+}

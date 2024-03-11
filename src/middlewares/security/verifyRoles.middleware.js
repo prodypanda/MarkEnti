@@ -19,23 +19,19 @@ exports.isAdminOrOwner = async (req, res, next) => {
   }
 }
 
-
-
 exports.verifyRoles = (...allowedRoles) => {
   return (req, res, next) => {
-      if (!req?.user?.role) return res.sendStatus(401); // Unauthorized (no role)
+    if (!req?.user?.role) return res.sendStatus(401) // Unauthorized (no role)
 
-      const userRole = req.user.role; 
-      const rolesArray = Array.isArray(userRole) ? userRole : [userRole]; // Handle potential arrays for multiple roles
+    const userRole = req.user.role
+    const rolesArray = Array.isArray(userRole) ? userRole : [userRole] // Handle potential arrays for multiple roles
 
-      const result = rolesArray.some((role) => allowedRoles.includes(role));
-      if (!result) return res.sendStatus(403); // Forbidden
+    const result = rolesArray.some((role) => allowedRoles.includes(role))
+    if (!result) return res.sendStatus(403) // Forbidden
 
-      next();
-  };
-};
-
-
+    next()
+  }
+}
 
 // // Check if the user has the permission to create a new user.
 // if (user.roles.some(role => role.permissions.includes('create-user'))) {

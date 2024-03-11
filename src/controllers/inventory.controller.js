@@ -10,12 +10,10 @@ exports.updateInventory = async (req, res) => {
     product.inventoryCount = count
     await product.save()
 
-    res
-      .status(200)
-      .json({
-        message: 'Inventory updated',
-        inventoryCount: product.inventoryCount,
-      })
+    res.status(200).json({
+      message: 'Inventory updated',
+      inventoryCount: product.inventoryCount
+    })
   } catch (error) {
     res.status(500).json({ message: error.message })
   }

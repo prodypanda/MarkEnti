@@ -4,7 +4,7 @@ const uuid = require('uuid').v4
 
 const storage = multer.memoryStorage()
 
-exports.uploadSingleImage = multer({ storage: storage }).single('image')
+exports.uploadSingleImage = multer({ storage }).single('image')
 
 exports.resizeAndFormatImage = async (req, res, next) => {
   if (!req.file) return next()

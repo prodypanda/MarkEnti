@@ -1,19 +1,21 @@
-const express = require('express');
-const productController = require('../controllers/product.controller');
-const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
-const router = express.Router();
+const express = require('express')
+const productController = require('../controllers/product.controller')
+const {
+  isAuthenticated
+} = require('../middlewares/security/authenticate.middleware')
+const router = express.Router()
 const loggerMiddleware = require('../middlewares/logger.middleware')
 
 // router.get('/', isAuthenticated, productController.getProducts);
-router.post('/', productController.createProduct);
-router.put('/:id', productController.updateProduct);
-router.delete('/:id', productController.deleteProduct);
+router.post('/', productController.createProduct)
+router.put('/:id', productController.updateProduct)
+router.delete('/:id', productController.deleteProduct)
 // router.get('/:id', productController.getProductById);
-router.get('/:IdOrSlug', productController.getProductByIdOrSlug);
+router.get('/:IdOrSlug', productController.getProductByIdOrSlug)
 
-router.get('/', productController.getProducts);
-router.post('/create', productController.createProduct);
-router.put('/edit/:id', productController.updateProduct);
-router.get('/show/:id', productController.getProductById);
+router.get('/', productController.getProducts)
+router.post('/create', productController.createProduct)
+router.put('/edit/:id', productController.updateProduct)
+router.get('/show/:id', productController.getProductById)
 
-module.exports = router;
+module.exports = router

@@ -3,7 +3,7 @@ const MenuItem = require('../models/menuItem.model')
 
 const maxDepth = 5
 
-async function validateNestingLevel(parentId, elementType) {
+async function validateNestingLevel (parentId, elementType) {
   let Element
   if (elementType === 'category') {
     Element = Category

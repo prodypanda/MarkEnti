@@ -3,14 +3,21 @@ const Product = require('../models/product.model')
 
 exports.createDiscount = async (req, res) => {
   try {
-    const { productId, discountPercentage, startDate, endDate, isActive = false, maxUsage = 0, usageCount = 0 } = req.body
+    const {
+      productId,
+      discountPercentage,
+      startDate,
+      endDate,
+      isActive = false,
+      maxUsage = 0,
+      usageCount = 0
+    } = req.body
 
     // Check if product exists
     const product = await Product.findById(productId)
     if (!product) {
       return res.status(404).json({ message: 'Product not found' })
     }
-
 
     let discount = new Discount({
       productId,
@@ -32,9 +39,16 @@ exports.createDiscount = async (req, res) => {
 exports.updateDiscount = async (req, res) => {
   try {
     const { id } = req.params
-    const { discountPercentage, startDate, endDate, isActive, maxUsage, usageCount } = req.body
+    const {
+      discountPercentage,
+      startDate,
+      endDate,
+      isActive,
+      maxUsage,
+      usageCount
+    } = req.body
 
-    let discount = await Discount.findById(id)
+    const discount = await Discount.findById(id)
     if (!discount) {
       return res.status(404).json({ message: 'Discount not found' })
     }
@@ -69,13 +83,12 @@ exports.deactivateDiscounts = async () => {
     // Deactivating all discounts that have expired or reached their maximum usage count
     const conditions = [
       { endDate: { $lt: new Date().toISOString() }, isActive: true }, // x AND x
-      { usageCount: { $lt: maxUsage }, isActive: true }  // y AND y
-    ];
+      { usageCount: { $lt: maxUsage }, isActive: true } // y AND y
+    ]
     // Use the UTC date for consistency across different server timezones
     const result = await Discount.updateMany(
       { $or: conditions }, // x AND x OR y AND y
       { $set: { isActive: false } }
-      
     )
     console.log(`${result.nModified} discounts have been deactivated.`)
     console.log(`${result.modifiedCount} discounts have been deactivated.`)

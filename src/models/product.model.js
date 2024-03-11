@@ -1,27 +1,29 @@
-const slugify = require('slugify');
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const slugify = require('slugify')
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
 const productSchema = new Schema({
-  name: { 
-    type: String, 
-    required: true 
+  name: {
+    type: String,
+    required: true
   },
-  slug: { 
-    type: String, 
-    unique: true 
+  slug: {
+    type: String,
+    unique: true
   },
-  description: { 
-    type: String, 
-    required: true 
+  description: {
+    type: String,
+    required: true
   },
-  price: { 
-    type: Number, 
-    required: true 
+  price: {
+    type: Number,
+    required: true
   },
-  images: [{ 
-    type: String 
-  }],
+  images: [
+    {
+      type: String
+    }
+  ],
   category: {
     type: Schema.Types.ObjectId,
     ref: 'Category',
@@ -40,44 +42,42 @@ const productSchema = new Schema({
     required: true,
     min: [0, 'Inventory count cannot be negative.']
   },
-  created_at: { 
-    type: Date, 
-    default: Date.now 
+  created_at: {
+    type: Date,
+    default: Date.now
   },
-  updated_at: { 
-    type: Date, 
-    default: Date.now 
+  updated_at: {
+    type: Date,
+    default: Date.now
   }
-});
-
+})
 
 // Generate slug before saving the product
-productSchema.pre('save', async function(next) {
+productSchema.pre('save', async function (next) {
   // If slug is not provided, generate one from product name
-  if(!this.slug){
-    this.slug = slugify(this.name, { lower: true });
+  if (!this.slug) {
+    this.slug = slugify(this.name, { lower: true })
   }
   // Check for uniqueness
-  let count = 0;
-  while(true) {
+  let count = 0
+  while (true) {
     try {
-      let existingProduct = await Product.findOne({ slug: this.slug });
+      const existingProduct = await Product.findOne({ slug: this.slug })
       if (!existingProduct || existingProduct._id.equals(this._id)) {
         // No conflict or same product, break the loop
-        break;
+        break
       }
-      count++;
-      this.slug = `${slugify(this.name, { lower: true })}-${count}`;
-    } catch(err) {
-      return next(err);
+      count++
+      this.slug = `${slugify(this.name, { lower: true })}-${count}`
+    } catch (err) {
+      return next(err)
     }
   }
 
-  this.updated_at = Date.now(); // Update the 'updated_at' field
-  next();
-});
+  this.updated_at = Date.now() // Update the 'updated_at' field
+  next()
+})
 
+const Product = mongoose.model('Product', productSchema)
 
-const Product = mongoose.model('Product', productSchema);
-
-module.exports = Product;
+module.exports = Product
