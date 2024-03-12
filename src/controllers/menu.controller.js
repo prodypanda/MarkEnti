@@ -17,7 +17,7 @@ exports.createMenu = async (req, res) => {
   try {
     const { title, visible, items } = req.body
 
-    //slugify the string
+    // slugify the string
     let toslogify
     if (req.body.slug || req.body.slug == !null) {
       toslogify = req.body.slug
@@ -50,7 +50,7 @@ exports.updateMenu = async (req, res) => {
     if (items !== undefined) {
       if (!Array.isArray(items)) {
         return res.status(400).json({
-          message: 'items must be an array of menu items',
+          message: 'items must be an array of menu items'
         })
       }
       updateFields.items = items
@@ -156,7 +156,7 @@ exports.createMenuItem = async (req, res) => {
   const { title, parent } = req.body
 
   let link
-  //slugify the string
+  // slugify the string
   let toslogify
   if (req.body.slug || req.body.slug == !null) {
     toslogify = req.body.slug
@@ -174,7 +174,7 @@ exports.createMenuItem = async (req, res) => {
 
       return res.status(400).json({
         message:
-          'Another menu item with this link already exists, please choose another link',
+          'Another menu item with this link already exists, please choose another link'
       })
     } else {
       link = req.body.link
@@ -185,11 +185,11 @@ exports.createMenuItem = async (req, res) => {
 
   let istoplevel
   if (parent !== undefined) {
-    //check if menu exists
+    // check if menu exists
     const parentExists = await MenuItem.findById(parent)
     if (!parentExists) {
       return res.status(400).json({
-        message: 'Menu Item does not exist',
+        message: 'Menu Item does not exist'
       })
     } else {
       istoplevel = false
@@ -199,10 +199,10 @@ exports.createMenuItem = async (req, res) => {
   }
   let orderIndex
   if (req.body.orderIndex !== undefined) {
-    //check if orderIndex is valid
+    // check if orderIndex is valid
     if (req.body.orderIndex < 0) {
       return res.status(400).json({
-        message: 'Order index must be a zero or a positive integer',
+        message: 'Order index must be a zero or a positive integer'
       })
     } else {
       orderIndex = req.body.orderIndex
@@ -215,7 +215,7 @@ exports.createMenuItem = async (req, res) => {
   let i = orderIndex
   while (orderIndexExists) {
     orderIndexExists = await MenuItem.findOne({
-      orderIndex: i,
+      orderIndex: i
     })
     if (!orderIndexExists) {
       orderIndex = i
@@ -224,16 +224,16 @@ exports.createMenuItem = async (req, res) => {
     i++
   }
 
-  let createdBy = req.user._id
+  const createdBy = req.user._id
   try {
     const menuItem = new MenuItem({
       title,
       slug,
       link,
-      orderIndex: orderIndex,
+      orderIndex,
       parent,
       istoplevel,
-      createdBy,
+      createdBy
     })
 
     await menuItem.validate()
@@ -256,14 +256,14 @@ exports.createMenuItem = async (req, res) => {
 
       return res.status(400).json({
         success: false,
-        message: errorMessage,
+        message: errorMessage
       })
     } else {
       // Handle other errors
       return res.status(400).json({
         success: false,
         message:
-          error.message || 'An error occurred while creating the category.',
+          error.message || 'An error occurred while creating the category.'
       })
     }
   }
@@ -282,17 +282,18 @@ exports.updateMenuItem = async (req, res) => {
 
   const updateFields = {}
   if (title || title == !null) updateFields.title = title // INPUT_REQUIRED {Handle any additional fields here}
-  if (slug || slug == !null)
+  if (slug || slug == !null) {
     updateFields.slug = await slugify(slug, 'menuItem', 'slugifyMiddleware')
+  }
 
   if (link || link == !null) updateFields.link = link // INPUT_REQUIRED {Handle any additional fields here}
 
   let orderIndex
   if (req.body.orderIndex !== undefined) {
-    //check if orderIndex is valid
+    // check if orderIndex is valid
     if (req.body.orderIndex < 0) {
       return res.status(400).json({
-        message: 'Order index must be a zero or a positive integer',
+        message: 'Order index must be a zero or a positive integer'
       })
     } else {
       orderIndex = req.body.orderIndex
@@ -301,7 +302,7 @@ exports.updateMenuItem = async (req, res) => {
       let i = orderIndex
       while (orderIndexExists) {
         orderIndexExists = await MenuItem.findOne({
-          orderIndex: i,
+          orderIndex: i
           // _id: { $ne: req.params.id },
         })
         if (!orderIndexExists || orderIndexExists.id == req.params.id) {
@@ -316,7 +317,7 @@ exports.updateMenuItem = async (req, res) => {
   }
 
   if (parent || parent == !null) {
-    //check if parentItem exists
+    // check if parentItem exists
     const parentItemExists = await MenuItem.findById(parent)
     // if (parentItemExists && parentItemExists.parent) {
     //   return res.status(400).json({
@@ -325,7 +326,7 @@ exports.updateMenuItem = async (req, res) => {
     // }
     if (!parentItemExists) {
       return res.status(404).json({
-        message: 'Parent item does not exist',
+        message: 'Parent item does not exist'
       })
     }
     updateFields.parent = parent
@@ -338,8 +339,9 @@ exports.updateMenuItem = async (req, res) => {
   }
 
   try {
-    if (updateFields.parent || updateFields.parent == !null)
+    if (updateFields.parent || updateFields.parent == !null) {
       await validateNestingLevel(updateFields.parent, 'menuItem')
+    }
 
     // const menuItem = await MenuItem.findByIdAndUpdate(
     //   id,
@@ -426,7 +428,7 @@ exports.getMenuItemsById = async (req, res) => {
 
     // Find the ancestors of the menu item
     const ancestors = await MenuItem.find({
-      _id: { $in: menuItem.ancestors },
+      _id: { $in: menuItem.ancestors }
     }).lean()
 
     // Return a 200 response with the ancestors and the menu item
@@ -435,9 +437,9 @@ exports.getMenuItemsById = async (req, res) => {
         _id: ancestor._id,
         title: ancestor.title,
         parent: ancestor.parent,
-        ancestors: ancestor.ancestors,
+        ancestors: ancestor.ancestors
       })),
-      menuItem,
+      menuItem
     })
   } catch (error) {
     // Return a 400 response with the error message
@@ -463,7 +465,7 @@ exports.reorderMenuItems = async (req, res) => {
     // Ensure all itemIds exist in the database to prevent orphaned references
     const existingItemIds = await MenuItem.find({
       _id: { $in: orderedItems },
-      menu: menuId,
+      menu: menuId
     }).distinct('_id')
 
     if (existingItemIds.length !== orderedItems.length) {
@@ -476,8 +478,8 @@ exports.reorderMenuItems = async (req, res) => {
     const updateOperations = orderedItems.map((itemId, index) => ({
       updateOne: {
         filter: { _id: itemId, menu: menuId },
-        update: { $set: { orderIndex: index } }, // Use $set for focused updates
-      },
+        update: { $set: { orderIndex: index } } // Use $set for focused updates
+      }
     }))
 
     // Bulk write:
