@@ -71,9 +71,9 @@ exports.updateMenu = async (req, res) => {
     if (!menu) {
       return res.status(404).json({ message: 'Menu not found' })
     }
-    res.status(200).json(menu)
+    return res.status(200).json(menu)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -92,9 +92,9 @@ exports.deleteMenu = async (req, res) => {
     if (!menu) {
       return res.status(404).json({ message: 'Menu not found' })
     }
-    res.status(200).json({ message: 'Menu deleted successfully' })
+    return res.status(200).json({ message: 'Menu deleted successfully' })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -251,8 +251,7 @@ exports.createMenuItem = async (req, res) => {
       } else if (field === 'link') {
         errorMessage = `link "${link}" already exists, please choose another link.`
       } else {
-        errorMessage =
-          field + ' already exists, please choose another one. ' + error
+        errorMessage = `${field} already exists, please choose another one. ${error}`
       }
 
       return res.status(400).json({
@@ -360,9 +359,9 @@ exports.updateMenuItem = async (req, res) => {
       await menuItem.validate()
     }
     const savedMenuItem = await menuItem.save()
-    res.status(201).json(savedMenuItem)
+    return res.status(201).json(savedMenuItem)
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -374,7 +373,7 @@ exports.deleteMenuItem = async (req, res) => {
     const returnMsg = await deleteEntity(id, 'menuitem', WithDescendants)
     return res.status(200).json({ message: returnMsg })
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -442,7 +441,7 @@ exports.getMenuItemsById = async (req, res) => {
     })
   } catch (error) {
     // Return a 400 response with the error message
-    res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -484,10 +483,12 @@ exports.reorderMenuItems = async (req, res) => {
     // Bulk write:
     await MenuItem.bulkWrite(updateOperations)
 
-    res.status(200).json({ message: 'Menu items reordered successfully' })
+    return res
+      .status(200)
+      .json({ message: 'Menu items reordered successfully' })
   } catch (error) {
     console.error(error) // Log the error for debugging
-    res
+    return res
       .status(500)
       .json({ message: 'An error occurred while reordering menu items' })
   }
