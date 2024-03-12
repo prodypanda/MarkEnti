@@ -19,10 +19,10 @@ exports.createCategory = async (req, res) => {
     isActive,
     sortOrder,
     seoTitle,
-    seoDescription,
+    seoDescription
   } = req.body
 
-  //slugify the string
+  // slugify the string
   let toslogify
   if (req.body.slug || req.body.slug == !null) {
     toslogify = req.body.slug
@@ -43,7 +43,7 @@ exports.createCategory = async (req, res) => {
       sortOrder,
       seoTitle,
       seoDescription,
-      slug,
+      slug
     })
     await category.validate()
     const savedCategory = await category.save()
@@ -63,14 +63,14 @@ exports.createCategory = async (req, res) => {
 
       res.status(400).json({
         success: false,
-        message: errorMessage,
+        message: errorMessage
       })
     } else {
       // Handle other errors
       res.status(400).json({
         success: false,
         message:
-          error.message || 'An error occurred while creating the category.',
+          error.message || 'An error occurred while creating the category.'
       })
     }
   }
@@ -93,23 +93,26 @@ exports.updateCategory = async (req, res) => {
     sortOrder,
     seoTitle,
     seoDescription,
-    slug,
+    slug
   } = req.body
 
   const updateFields = {}
   if (name || name == !null) updateFields.name = name // INPUT_REQUIRED {Handle any additional fields here}
-  if (description || description == !null)
+  if (description || description == !null) {
     updateFields.description = description
+  }
   if (parent || parent == !null) updateFields.parent = parent // INPUT_REQUIRED {Handle any additional fields here}
   if (isActive || isActive == !null) updateFields.isActive = isActive
   if (image || image == !null) updateFields.image = image
   if (icon || icon == !null) updateFields.icon = icon
   if (sortOrder || sortOrder == !null) updateFields.sortOrder = sortOrder
   if (seoTitle || seoTitle == !null) updateFields.seoTitle = seoTitle
-  if (seoDescription || seoDescription == !null)
+  if (seoDescription || seoDescription == !null) {
     updateFields.seoDescription = seoDescription
-  if (slug || slug == !null)
+  }
+  if (slug || slug == !null) {
     updateFields.slug = await slugify(slug, 'category', 'slugifyMiddleware')
+  }
 
   try {
     await validateNestingLevel(parent, 'category')
@@ -193,8 +196,8 @@ exports.getCategories = async (req, res) => {
 exports.getCategory = async (req, res) => {
   const { id } = req.params
   try {
-    //todo!
-    //add functionality for the admin to show non activated (hidden) catgories.
+    // todo!
+    // add functionality for the admin to show non activated (hidden) catgories.
     const category = await Category.findById(id).where('isActive').equals(true)
     if (!category) {
       return res.status(404).json({ message: 'Category not found' })
@@ -206,10 +209,10 @@ exports.getCategory = async (req, res) => {
           _id: ancestor._id,
           name: ancestor.name,
           parent: ancestor.parent,
-          ancestors: ancestor.ancestors,
+          ancestors: ancestor.ancestors
         }
       }),
-      category,
+      category
     })
   } catch (error) {
     return res.status(400).json({ message: error.message })
@@ -224,7 +227,7 @@ exports.uploadCategoryImage = async (req, res) => {
     const category = await Category.findByIdAndUpdate(
       id,
       {
-        image: `/images/${req.file.filename}`,
+        image: `/images/${req.file.filename}`
       },
       { new: true }
     )

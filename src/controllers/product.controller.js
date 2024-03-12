@@ -10,7 +10,7 @@ exports.createProduct = async (req, res) => {
       price,
       category,
       variations,
-      inventoryCount = 0,
+      inventoryCount = 0
     } = req.body
     let product = new Product({
       name,
@@ -19,7 +19,7 @@ exports.createProduct = async (req, res) => {
       price,
       category,
       variations,
-      inventoryCount,
+      inventoryCount
     })
     product = await product.save()
     return res.status(201).json(product)
@@ -33,7 +33,7 @@ exports.updateProduct = async (req, res) => {
     const { id } = req.params
     const updateData = req.body
     const product = await Product.findByIdAndUpdate(id, updateData, {
-      new: true,
+      new: true
     })
     return res.status(200).json(product)
   } catch (error) {
@@ -64,7 +64,7 @@ exports.getProducts = async (req, res) => {
     const totalCount = await Product.countDocuments({}) // You can add any specific filters if necessary
 
     // Find products with optional pagination
-    let products = await Product.find()
+    const products = await Product.find()
       .populate('category')
       .skip(startIndex)
       .limit(limit)
@@ -145,10 +145,10 @@ exports.getProductById = async (req, res) => {
 
 // Route to get product by ID or Slug
 exports.getProductByIdOrSlug = async (req, res) => {
-  let identifier = req.params.identifier
+  const identifier = req.params.identifier
   try {
-    let product = await Product.findOne({
-      $or: [{ _id: identifier }, { slug: identifier }],
+    const product = await Product.findOne({
+      $or: [{ _id: identifier }, { slug: identifier }]
     })
 
     if (product) {

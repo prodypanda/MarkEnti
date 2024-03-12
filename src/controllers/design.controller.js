@@ -37,7 +37,7 @@ exports.createDesignConfig = async (req, res) => {
     typography,
     breakpoints,
     spacing,
-    border,
+    border
   } = req.body
 
   const errors = []
@@ -55,7 +55,7 @@ exports.createDesignConfig = async (req, res) => {
   }
 
   try {
-    let designConfig = await DesignConfig.create({
+    const designConfig = await DesignConfig.create({
       ...(theme && { theme }),
       ...(customCSS && { customCSS }),
       ...(colors && { colors }),
@@ -67,7 +67,7 @@ exports.createDesignConfig = async (req, res) => {
       ...(typography && { typography }),
       ...(breakpoints && { breakpoints }),
       ...(spacing && { spacing }),
-      ...(border && { border }),
+      ...(border && { border })
     })
 
     return res.json(designConfig)
@@ -90,13 +90,13 @@ exports.updateDesignConfig = async (req, res) => {
     typography,
     breakpoints,
     spacing,
-    border,
+    border
   } = req.body
 
   // Ideally, validation of input data should be performed here before updating
 
   try {
-    let designConfig = await DesignConfig.findOneAndUpdate(
+    const designConfig = await DesignConfig.findOneAndUpdate(
       { user: id },
       {
         ...(theme && { theme }),
@@ -110,7 +110,7 @@ exports.updateDesignConfig = async (req, res) => {
         ...(typography && { typography }),
         ...(breakpoints && { breakpoints }),
         ...(spacing && { spacing }),
-        ...(border && { border }),
+        ...(border && { border })
         // Add other properties that should be updated here as needed.
       },
       { new: true, upsert: true, runValidators: true, context: 'query' }

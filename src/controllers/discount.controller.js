@@ -10,7 +10,7 @@ exports.createDiscount = async (req, res) => {
       endDate,
       isActive = false,
       maxUsage = 0,
-      usageCount = 0,
+      usageCount = 0
     } = req.body
 
     // Check if product exists
@@ -26,7 +26,7 @@ exports.createDiscount = async (req, res) => {
       endDate,
       isActive,
       maxUsage,
-      usageCount,
+      usageCount
     })
     discount = await discount.save()
 
@@ -45,11 +45,11 @@ exports.updateDiscount = async (req, res) => {
       endDate,
       isActive,
       maxUsage,
-      usageCount,
+      usageCount
     } = req.body
 
     // skipcq: JS-0242
-    let discount = await Discount.findById(id)
+    const discount = await Discount.findById(id)
     if (!discount) {
       return res.status(404).json({ message: 'Discount not found' })
     }
@@ -84,7 +84,7 @@ exports.deactivateDiscounts = async () => {
     // Deactivating all discounts that have expired or reached their maximum usage count
     const conditions = [
       { endDate: { $lt: new Date().toISOString() }, isActive: true }, // x AND x
-      { usageCount: { $lt: maxUsage }, isActive: true }, // y AND y
+      { usageCount: { $lt: maxUsage }, isActive: true } // y AND y
     ]
     // Use the UTC date for consistency across different server timezones
     const result = await Discount.updateMany(

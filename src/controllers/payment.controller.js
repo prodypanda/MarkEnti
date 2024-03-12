@@ -18,11 +18,11 @@ exports.processPaypalPayment = async (req, res) => {
           {
             payment: {
               provider: 'paypal',
-              paymentID: paymentID,
-              payerID: payerID,
+              paymentID,
+              payerID,
               execute_payment_json: payment,
-              status: 'confirmed',
-            },
+              status: 'confirmed'
+            }
           },
           { new: true }
         )
@@ -52,7 +52,7 @@ exports.confirmPaypalPayment = async (req, res) => {
     const updatedOrder = await Order.findByIdAndUpdate(
       orderID,
       {
-        'payment.status': 'confirmed',
+        'payment.status': 'confirmed'
       },
       { new: true }
     )
@@ -69,7 +69,7 @@ exports.processStripePayment = async (req, res) => {
       amount: amount * 100, // Converting to cents for Stripe,
       currency: 'usd',
       source: token,
-      description: `Charge for order ${orderID}`,
+      description: `Charge for order ${orderID}`
     })
     const updatedOrder = await Order.findByIdAndUpdate(
       orderID,
@@ -77,7 +77,7 @@ exports.processStripePayment = async (req, res) => {
         'payment.provider': 'stripe',
         'payment.charge': charge,
         'payment.status': 'confirmed',
-        status: 'paid',
+        status: 'paid'
       },
       { new: true }
     )
@@ -100,7 +100,7 @@ exports.handlePaymentFailure = async (req, res) => {
       failureReason
     )
     const order = await Order.findById(orderId).populate('customer')
-    //console.log(order)
+    // console.log(order)
     await sendEmail({
       from: process.env.EMAIL_FROM_ADDRESS,
       // to: 'nashab2016@gmail.com', // Assuming `customerEmail` exist on `order` object
@@ -110,9 +110,9 @@ exports.handlePaymentFailure = async (req, res) => {
       html: `<p>Dear Customer,</p><p>We regret to inform you that your payment for the order with ID: ${orderId} was unsuccessful.</p><p>Reason: ${failureReason}</p><p>Please visit your orders dashboard to attempt the payment again or contact our support team for further assistance.</p><p>Best regards,<br/>PandaVee3 Team</p>`,
       headers: {
         'X-serversender': 'prodypanda .inc',
-        'X-Organisation-Name': 'prodypanda .inc',
+        'X-Organisation-Name': 'prodypanda .inc'
       },
-      priority: 'high', //‘high’, ‘normal’ (default) or ‘low’.
+      priority: 'high' // ‘high’, ‘normal’ (default) or ‘low’.
     })
     return res
       .status(200)

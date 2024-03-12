@@ -19,7 +19,7 @@ exports.createRole = async (req, res) => {
   try {
     const role = new Role({
       name,
-      permissions,
+      permissions
     })
     await role.validate()
     const savedRole = await role.save()
@@ -39,13 +39,13 @@ exports.createRole = async (req, res) => {
 
       return res.status(400).json({
         success: false,
-        message: errorMessage,
+        message: errorMessage
       })
     } else {
       // Handle other errors
       return res.status(400).json({
         success: false,
-        message: error.message || 'An error occurred while creating the role.',
+        message: error.message || 'An error occurred while creating the role.'
       })
     }
   }
@@ -58,7 +58,7 @@ exports.updateRole = async (req, res) => {
     if (!role) {
       return res.status(404).json({
         success: false,
-        message: 'Role not found.',
+        message: 'Role not found.'
       })
     }
     role.name = name
@@ -69,7 +69,7 @@ exports.updateRole = async (req, res) => {
   } catch (error) {
     return res.status(400).json({
       success: false,
-      message: error.message || 'An error occurred while updating the role.',
+      message: error.message || 'An error occurred while updating the role.'
     })
   }
 }
@@ -80,7 +80,7 @@ exports.deleteRole = async (req, res) => {
     await Role.findByIdAndDelete(id)
     return res.status(200).json({
       success: true,
-      message: 'Role deleted successfully.',
+      message: 'Role deleted successfully.'
     })
   } catch (error) {
     return res.status(400).json({ message: error.message })

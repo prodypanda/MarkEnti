@@ -9,7 +9,7 @@ exports.getUserProfile = async (req, res) => {
       .populate({
         path: 'roles',
         select: '-password -__v',
-        populate: { path: 'permissions', select: '-__v' },
+        populate: { path: 'permissions', select: '-__v' }
       })
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
@@ -27,7 +27,7 @@ exports.getUsers = async (req, res) => {
       .populate({
         path: 'roles',
         select: '-password -__v',
-        populate: { path: 'permissions', select: '-__v' },
+        populate: { path: 'permissions', select: '-__v' }
       })
     return res.json(users)
   } catch (error) {

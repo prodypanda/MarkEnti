@@ -79,7 +79,7 @@ exports.getMyPermissions = async (req, res) => {
   // const permissions = await Role.find({ _id: { $in: roles } }).populate('permissions').select('permissions').select('name');
   const permissions = await Role.find({ _id: { $in: roles } }).populate({
     path: 'permissions',
-    select: 'name description',
+    select: 'name description'
   })
 
   // // Get the permissions for the user's roles.

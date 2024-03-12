@@ -13,7 +13,7 @@ exports.updateShippingOption = async (req, res) => {
   try {
     const { id } = req.params
     const { type, cost } = req.body
-    let option = await ShippingConfig.findByIdAndUpdate(
+    const option = await ShippingConfig.findByIdAndUpdate(
       id,
       { type, cost },
       { new: true }
