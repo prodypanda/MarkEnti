@@ -31,7 +31,7 @@ exports.createCategory = async (req, res) => {
   }
   // slugifying methode: ancrement or random or slugifyMiddleware
   const slug = await slugify(toslogify, 'category', 'slugifyMiddleware')
-  console.log('slug: ' + slug)
+  console.log(`slug: ${slug}`)
   try {
     const category = new Category({
       name,
@@ -58,7 +58,7 @@ exports.createCategory = async (req, res) => {
       } else if (field === 'slug') {
         errorMessage = `Slug "${slug}" already exists, please choose another slug.`
       } else {
-        errorMessage = field + ' already exists, please choose another one.'
+        errorMessage = `${field} already exists, please choose another one.`
       }
 
       res.status(400).json({
@@ -127,9 +127,9 @@ exports.updateCategory = async (req, res) => {
       await category.validate()
     }
     const savedCategory = await category.save()
-    res.status(201).json(savedCategory)
+    return res.status(201).json(savedCategory)
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -145,7 +145,7 @@ exports.deleteCategory = async (req, res) => {
     const returnMsg = await deleteEntity(id, 'category', WithDescendants)
     return res.status(200).json({ message: returnMsg })
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -179,9 +179,9 @@ exports.getCategories = async (req, res) => {
 
     // Set the x-total-count header with the total count
     res.setHeader('x-total-count', totalCount.toString())
-    res.status(200).json(categoriesTree)
+    return res.status(200).json(categoriesTree)
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -212,7 +212,7 @@ exports.getCategory = async (req, res) => {
       category,
     })
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -231,8 +231,10 @@ exports.uploadCategoryImage = async (req, res) => {
 
     if (!category) return res.status(404).send('Category not found.')
 
-    res.status(200).json({ message: 'Image uploaded successfully.', category })
+    return res
+      .status(200)
+      .json({ message: 'Image uploaded successfully.', category })
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    return res.status(500).json({ error: error.message })
   }
 }

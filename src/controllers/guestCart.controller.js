@@ -7,9 +7,9 @@ exports.createGuestCart = async (req, res) => {
     const guestCart = await guestCartService.createGuestCart(
       req.cookies.guestSessionId
     )
-    res.status(201).json(guestCart)
+    return res.status(201).json(guestCart)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -20,9 +20,9 @@ exports.addItemToGuestCart = async (req, res) => {
       req.body.productId,
       req.body.quantity
     )
-    res.status(201).json(updatedGuestCart)
+    return res.status(201).json(updatedGuestCart)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -32,9 +32,9 @@ exports.removeItemFromGuestCart = async (req, res) => {
       req.cookies.guestSessionId,
       req.params.itemId
     )
-    res.status(200).json(updatedGuestCart)
+    return res.status(200).json(updatedGuestCart)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -43,8 +43,8 @@ exports.getGuestCart = async (req, res) => {
     const guestCart = await guestCartService.getGuestCart(
       req.cookies.guestSessionId
     )
-    res.status(200).json(guestCart)
+    return res.status(200).json(guestCart)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }

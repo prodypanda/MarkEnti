@@ -12,9 +12,9 @@ exports.createPermission = async (req, res) => {
   const { name, description } = req.body
   try {
     const permission = await Permission.create({ name, description })
-    res.status(201).json(permission)
+    return res.status(201).json(permission)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -27,9 +27,9 @@ exports.updatePermission = async (req, res) => {
       { name, description },
       { new: true }
     )
-    res.status(200).json(permission)
+    return res.status(200).json(permission)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -39,66 +39,57 @@ exports.deletePermission = async (req, res) => {
     const permission = await Permission.findByIdAndDelete(id)
     if (!permission) {
       res.status(404).json({ message: 'Permission not found' })
-    }else{
-        res.status(200).json(permission)
+    } else {
+      return res.status(200).json(permission)
     }
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
 exports.getPermissions = async (req, res) => {
   try {
     const permissions = await Permission.find()
-    res.status(200).json(permissions)
+    return res.status(200).json(permissions)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
 exports.getPermission = async (req, res) => {
   const { id } = req.params
-  try{
-    const permission = await Permission.findOne({_id: id})
+  try {
+    const permission = await Permission.findOne({ _id: id })
     if (!permission) {
-        res.status(404).json({ message: 'Permission not found' })
-      }else{
-          res.status(200).json(permission)
-      }
-  }catch(error){
-    res.status(500).json({ message: error.message })
+      return res.status(404).json({ message: 'Permission not found' })
+    } else {
+      return res.status(200).json(permission)
+    }
+  } catch (error) {
+    return res.status(500).json({ message: error.message })
   }
 }
-
-
 
 exports.getMyPermissions = async (req, res) => {
   const { id } = req.user
   // console.log(req.user.roles)
-  const roles = req.user.roles;
+  const roles = req.user.roles
   // const roles = ["65dadfdd645008d3066efe36", "65dae084645008d3066efe3b"];
   // Get the permissions for the user's roles.
   // const permissions = await Role.find({ _id: { $in: roles } }).populate('permissions').select('permissions').select('name');
-  const permissions = await Role.find({ _id: { $in: roles } }).populate({path:'permissions', select: 'name description'});
+  const permissions = await Role.find({ _id: { $in: roles } }).populate({
+    path: 'permissions',
+    select: 'name description',
+  })
 
-  
   // // Get the permissions for the user's roles.
-   const myPermissions = permissions.map(permission => permission.permissions);
+  const myPermissions = permissions.map((permission) => permission.permissions)
   // // Flatten the array of arrays.
-   const flattenedPermissions = myPermissions.flat();
+  const flattenedPermissions = myPermissions.flat()
   // // Remove duplicates.
-   const uniquePermissions = [...new Set(flattenedPermissions)];
-  return res.status(200).json(flattenedPermissions);
+  const uniquePermissions = [...new Set(flattenedPermissions)]
+  return res.status(200).json(flattenedPermissions)
 }
-
-
-
-
-
-
-
-
-
 
 // module.exports.permissionController = {
 //     getPermission: (req, res) =>    {
@@ -143,7 +134,6 @@ exports.getMyPermissions = async (req, res) => {
 //         })
 //     }
 // }
-
 
 // // WEBPACK FOOTER //
 // // ./src/controllers/permission.controller.js

@@ -6,9 +6,9 @@ exports.createPromoCode = async (req, res) => {
     console.log(code)
     let promoCode = new PromoCode({ code, discountPercentage, expirationDate })
     promoCode = await promoCode.save()
-    res.status(201).json(promoCode)
+    return res.status(201).json(promoCode)
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -16,9 +16,9 @@ exports.createPromoCode = async (req, res) => {
 exports.getPromoCodes = async (req, res) => {
   try {
     const promoCodes = await PromoCode.find()
-    res.json(promoCodes)
+    return res.json(promoCodes)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -29,9 +29,9 @@ exports.getPromoCodeByCode = async (req, res) => {
     if (!promoCode) {
       return res.status(404).json({ message: 'Promo code not found' })
     }
-    res.json(promoCode)
+    return res.json(promoCode)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -48,9 +48,9 @@ exports.updatePromoCode = async (req, res) => {
     if (!updatedPromoCode) {
       return res.status(404).json({ message: 'Promo code not found' })
     }
-    res.json(updatedPromoCode)
+    return res.json(updatedPromoCode)
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -62,9 +62,9 @@ exports.deletePromoCode = async (req, res) => {
     if (!promoCode) {
       return res.status(404).json({ message: 'Promo code not found' })
     }
-    res.status(200).json({ message: 'Promo code deleted successfully' })
+    return res.status(200).json({ message: 'Promo code deleted successfully' })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 

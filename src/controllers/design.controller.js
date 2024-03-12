@@ -23,9 +23,7 @@ exports.getDesignConfig = async (req, res) => {
 //   res.json(designConfig);
 // };
 
-
 exports.createDesignConfig = async (req, res) => {
- 
   // Validate input data
   const {
     theme,
@@ -58,7 +56,6 @@ exports.createDesignConfig = async (req, res) => {
 
   try {
     let designConfig = await DesignConfig.create({
- 
       ...(theme && { theme }),
       ...(customCSS && { customCSS }),
       ...(colors && { colors }),
@@ -73,15 +70,11 @@ exports.createDesignConfig = async (req, res) => {
       ...(border && { border }),
     })
 
-    res.json(designConfig)
+    return res.json(designConfig)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    return res.status(500).json({ error: error.message })
   }
 }
-
-
-
-
 
 exports.updateDesignConfig = async (req, res) => {
   const { id } = req.params
@@ -123,8 +116,8 @@ exports.updateDesignConfig = async (req, res) => {
       { new: true, upsert: true, runValidators: true, context: 'query' }
     )
 
-    res.json(designConfig)
+    return res.json(designConfig)
   } catch (error) {
-    res.status(400).json({ error: error.message })
+    return res.status(400).json({ error: error.message })
   }
 }

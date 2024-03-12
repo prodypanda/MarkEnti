@@ -1,5 +1,15 @@
 const Order = require('../models/order.model')
 
+/**
+ * Generates a sales report for the given date range.
+ *
+ * @param {Object} req - Express request object
+ * @param {string} req.query.startDate - Start date for report period
+ * @param {string} req.query.endDate - End date for report period
+ * @param {Object} res - Express response object
+ *
+ * @returns {Promise} Promise that resolves to the generated sales report
+ */
 const getSalesReport = async (req, res) => {
   const { startDate, endDate } = req.query
 
@@ -32,13 +42,13 @@ const getSalesReport = async (req, res) => {
 
     const report = salesData[0] || { totalSales: 0, totalOrders: 0 }
 
-    res.status(200).json({
+    return res.status(200).json({
       report,
     })
   } catch (error) {
-    res
+    return res
       .status(500)
-      .json({ message: 'Error generating sales report: ' + error.message })
+      .json({ message: `Error generating sales report: ${error.message}` })
   }
 }
 

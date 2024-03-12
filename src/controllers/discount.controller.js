@@ -30,9 +30,9 @@ exports.createDiscount = async (req, res) => {
     })
     discount = await discount.save()
 
-    res.status(201).json(discount)
+    return res.status(201).json(discount)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -62,9 +62,9 @@ exports.updateDiscount = async (req, res) => {
     discount.usageCount = usageCount
     await discount.save()
 
-    res.status(200).json(discount)
+    return res.status(200).json(discount)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 

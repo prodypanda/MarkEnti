@@ -27,7 +27,7 @@ exports.processPaypalPayment = async (req, res) => {
           { new: true }
         )
           .then((updatedOrder) => {
-            res.status(200).json(updatedOrder)
+            return res.status(200).json(updatedOrder)
           })
           .catch((err) => {
             throw err
@@ -35,7 +35,7 @@ exports.processPaypalPayment = async (req, res) => {
       }
     })
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: err.message })
   }
 }
 
@@ -56,9 +56,9 @@ exports.confirmPaypalPayment = async (req, res) => {
       },
       { new: true }
     )
-    res.status(200).json(updatedOrder)
+    return res.status(200).json(updatedOrder)
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: err.message })
   }
 }
 
@@ -81,9 +81,9 @@ exports.processStripePayment = async (req, res) => {
       },
       { new: true }
     )
-    res.status(200).json(updatedOrder)
+    return res.status(200).json(updatedOrder)
   } catch (err) {
-    res.status(500).json({ error: err.message })
+    return res.status(500).json({ error: err.message })
   }
 }
 
@@ -114,10 +114,10 @@ exports.handlePaymentFailure = async (req, res) => {
       },
       priority: 'high', //‘high’, ‘normal’ (default) or ‘low’.
     })
-    res
+    return res
       .status(200)
       .json({ message: 'Payment failure processed', order: updatedOrder })
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    return res.status(500).json({ error: error.message })
   }
 }

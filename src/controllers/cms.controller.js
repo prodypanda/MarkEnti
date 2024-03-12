@@ -23,9 +23,9 @@ exports.updatePage = async (req, res) => {
     if (!page) {
       return res.status(404).json({ message: 'Page not found' })
     }
-    res.status(200).json(page)
+    return res.status(200).json(page)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -36,9 +36,9 @@ exports.deletePage = async (req, res) => {
     if (!page) {
       return res.status(404).json({ message: 'Page not found' })
     }
-    res.status(200).json({ message: 'Page deleted successfully' })
+    return res.status(200).json({ message: 'Page deleted successfully' })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -49,17 +49,17 @@ exports.getPage = async (req, res) => {
     if (!page) {
       return res.status(404).json({ message: 'Page not found' })
     }
-    res.status(200).json(page)
+    return res.status(200).json(page)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
 exports.getPages = async (req, res) => {
   try {
     const pages = await Page.find()
-    res.status(200).json(pages)
+    return res.status(200).json(pages)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }

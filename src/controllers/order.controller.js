@@ -72,12 +72,12 @@ exports.placeOrder = async (req, res) => {
       const preferences = await preferenceService.calculatePreferences(customer) // `customer` is the customer's ID
       await Order.findByIdAndUpdate(order._id, { preferences: preferences })
 
-      res.status(201).json({ ...order.toObject(), preferences })
+      return res.status(201).json({ ...order.toObject(), preferences })
     } catch (error) {
-      res.status(400).json({ message: error.message })
+      return res.status(400).json({ message: error.message })
     }
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -97,9 +97,9 @@ exports.updateOrderStatus = async (req, res) => {
     }
 
     const order = await Order.findByIdAndUpdate(id, { status }, { new: true })
-    res.status(200).json(order)
+    return res.status(200).json(order)
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -111,9 +111,9 @@ exports.cancelOrder = async (req, res) => {
       { status: 'cancelled' },
       { new: true }
     )
-    res.status(200).json(order)
+    return res.status(200).json(order)
   } catch (error) {
-    res.status(400).json({ message: error.message })
+    return res.status(400).json({ message: error.message })
   }
 }
 
@@ -122,30 +122,24 @@ exports.refundOrder = async (req, res) => {
     const { id } = req.params
     const order = await Order.findById(id)
     if (!order) {
-      return res
-        .status(404)
-        .json({
-          message: 'Order not found, cannot refund order that does not exist',
-        })
+      return res.status(404).json({
+        message: 'Order not found, cannot refund order that does not exist',
+      })
     }
 
     // Check if the order has already been refunded
     if (order.status === 'refunded') {
-      return res
-        .status(400)
-        .json({
-          message: 'Order is already refunded and cannot be refunded again',
-        })
+      return res.status(400).json({
+        message: 'Order is already refunded and cannot be refunded again',
+      })
     }
 
     // Check if the order has been paid
     if (!order.status === 'processing') {
-      return res
-        .status(400)
-        .json({
-          message:
-            'Order is not paid yet and cannot be refunded, please contact customer support for further assistance if you believe this is a mistake',
-        })
+      return res.status(400).json({
+        message:
+          'Order is not paid yet and cannot be refunded, please contact customer support for further assistance if you believe this is a mistake',
+      })
     }
 
     // Implement logic to refund the order
@@ -178,14 +172,14 @@ exports.getOrders = async (req, res) => {
 exports.getOrder = async (req, res) => {
   try {
     const { id } = req.params
-    theorder = await Order.findById(id)
+    let theorder = await Order.findById(id)
     if (theorder == null) {
       return res.status(404).json({ message: 'Order not found' })
     }
 
     return res.status(200).json(theorder)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -202,9 +196,9 @@ exports.recordPaymentFailure = async (req, res) => {
     order.failureReason = failureReason
     await order.save()
 
-    res.status(200).json({ message: 'Payment failure recorded', order })
+    return res.status(200).json({ message: 'Payment failure recorded', order })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -215,9 +209,9 @@ exports.getCustomerOrders = async (req, res) => {
       'products.product'
     )
     const preferences = await preferenceService.calculatePreferences(customerId)
-    res.status(200).json({ orders, preferences })
+    return res.status(200).json({ orders, preferences })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -240,10 +234,10 @@ exports.retryPayment = async (req, res) => {
     // Logic to initiate the retry payment process goes here...
     // This can be a redirection to the payment service or creation of a new payment intent
 
-    res.status(200).json({ message: 'Payment retry initiated' })
+    return res.status(200).json({ message: 'Payment retry initiated' })
     // On the frontend, handle this response appropriately to guide the user through the retry process
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
@@ -266,8 +260,8 @@ exports.cancelOrder = async (req, res) => {
     order.status = 'cancelled'
     await order.save()
 
-    res.status(200).json({ message: 'Order has been cancelled', order })
+    return res.status(200).json({ message: 'Order has been cancelled', order })
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }

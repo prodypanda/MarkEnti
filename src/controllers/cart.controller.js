@@ -24,9 +24,9 @@ exports.addItemToCart = async (req, res) => {
       quantity,
       product.price
     )
-    res.status(201).json(cart)
+    return res.status(201).json(cart)
   } catch (error) {
-    res.status(500).json({ message: error.message })
+    return res.status(500).json({ message: error.message })
   }
 }
 
