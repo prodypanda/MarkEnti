@@ -11,6 +11,7 @@ passport.use(
     },
     async (email, password, done) => {
       try {
+        // skipcq: JS-0240
         const user = await User.findOne({ email: email }).select('+password')
         if (!user) {
           return done(null, false, { message: 'Incorrect email.' })
