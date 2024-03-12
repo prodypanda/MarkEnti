@@ -14,8 +14,8 @@ const transport = nodemailer.createTransport({
   secure: true,
   auth: {
     user: process.env.EMAIL_SMTP_USERNAME,
-    pass: process.env.EMAIL_SMTP_PASSWORD,
-  },
+    pass: process.env.EMAIL_SMTP_PASSWORD
+  }
 })
 
 /**
@@ -37,7 +37,7 @@ const sendEmail = async ({
   text,
   html,
   headers,
-  priority,
+  priority
 }) => {
   const mailOptions = { from, to, subject, text, html, headers, priority }
 
@@ -50,5 +50,5 @@ const sendEmail = async ({
 }
 
 module.exports = {
-  sendEmail,
+  sendEmail
 }

@@ -15,28 +15,28 @@ const menuSchema = new mongoose.Schema(
       trim: true,
       minlength: 3,
       maxlength: 100,
-      unique: true,
+      unique: true
     },
     slug: {
       type: String,
       required: true,
       unique: true,
       lowercase: true,
-      trim: true,
+      trim: true
     },
     visible: {
       type: Boolean,
-      default: true,
+      default: true
     },
     items: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'MenuItem',
-      },
-    ],
+        ref: 'MenuItem'
+      }
+    ]
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 )
 

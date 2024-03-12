@@ -12,7 +12,7 @@ const guestSession = (req, res, next) => {
     res.cookie('guestSessionId', guestSessionId, {
       httpOnly: true,
       sameSite: 'lax',
-      maxAge: maxAge,
+      maxAge
     })
   }
   next()

@@ -12,7 +12,7 @@ const viewCart = async (userId) => {
   try {
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'items',
-      populate: { path: 'product' },
+      populate: { path: 'product' }
     })
     return cart
   } catch (error) {
@@ -39,8 +39,8 @@ const addItemToCart = async (userId, productId, quantity, price) => {
 
     const cartItem = new CartItem({
       product: productId,
-      quantity: quantity,
-      price: price,
+      quantity,
+      price
     })
 
     await cartItem.save()
@@ -82,5 +82,5 @@ const removeItemFromCart = async (userId, itemId) => {
 module.exports = {
   viewCart,
   addItemToCart,
-  removeItemFromCart,
+  removeItemFromCart
 }

@@ -9,15 +9,17 @@ const rateLimit = require('express-rate-limit')
  */
 
 const timePerMinute = 15 * 60 * 1000 // 15 minutes
-const errorMessage = `Too many requests from this IP address (200 requests per 15 minutes), please try again after ${timePerMinute / 1000 / 60} minutes`
+const errorMessage = `Too many requests from this IP address (200 requests per 15 minutes), please try again after ${
+  timePerMinute / 1000 / 60
+} minutes`
 const apiLimiter = rateLimit({
   windowMs: timePerMinute,
   max: 200, // limit each IP to 200 requests per windowMs
-  message: errorMessage,
+  message: errorMessage
 })
 
 module.exports = {
-  apiLimiter,
+  apiLimiter
 }
 
 // const handleRateLimitExceeded = (req, res, next) => {

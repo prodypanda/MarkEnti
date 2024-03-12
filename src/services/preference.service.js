@@ -29,5 +29,5 @@ const calculatePreferences = async (customerId) => {
 }
 
 module.exports = {
-  calculatePreferences,
+  calculatePreferences
 }

@@ -8,7 +8,7 @@ const { check, validationResult } = require('express-validator')
 exports.validatePaypalPayment = [
   check('orderID').not().isEmpty().withMessage('Order ID is required'),
   check('paymentID').not().isEmpty().withMessage('Payment ID is required'),
-  check('payerID').not().isEmpty().withMessage('Payer ID is required'),
+  check('payerID').not().isEmpty().withMessage('Payer ID is required')
 ]
 
 /**
@@ -24,7 +24,7 @@ exports.validateStripePayment = [
     .isNumeric()
     .withMessage('Amount must be a number')
     .isFloat({ min: '0.50' })
-    .withMessage('Amount must be at least $0.50 usd'),
+    .withMessage('Amount must be at least $0.50 usd')
 ]
 
 /**

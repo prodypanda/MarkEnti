@@ -4,7 +4,7 @@ const Menu = require('../models/menu.model')
 const MenuItem = require('../models/menuItem.model')
 const crypto = require('crypto')
 const slugifyMiddleware = require('slugify')
-//ancrement or random or slugifyMiddleware
+// ancrement or random or slugifyMiddleware
 /**
  * Generates a unique slug for the given model type and slug text.
  *
@@ -64,7 +64,7 @@ const slugify = async (slug, type, methode = 'ancrement') => {
       .replace(/\-\-+/g, '-')
       .replace(/^-+/, '')
       .replace(/-+$/, '')
-    let existingElement = await element.findOne({ slug: newSlug })
+    const existingElement = await element.findOne({ slug: newSlug })
     while (existingElement) {
       newSlug =
         newSlug +
@@ -83,7 +83,7 @@ const slugify = async (slug, type, methode = 'ancrement') => {
     let count = 0
     while (true) {
       try {
-        let existingElement = await element.findOne({ slug: newSlug })
+        const existingElement = await element.findOne({ slug: newSlug })
         if (!existingElement) {
           // No conflict or same element, break the loop
           break

@@ -10,7 +10,7 @@ const applyActiveDiscount = async (product) => {
     productId: product._id,
     isActive: true,
     startDate: { $lte: new Date() },
-    endDate: { $gte: new Date() },
+    endDate: { $gte: new Date() }
   })
 
   if (discount) {
@@ -21,5 +21,5 @@ const applyActiveDiscount = async (product) => {
 }
 
 module.exports = {
-  applyActiveDiscount,
+  applyActiveDiscount
 }

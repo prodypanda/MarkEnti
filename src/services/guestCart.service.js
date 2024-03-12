@@ -9,7 +9,7 @@ const Product = require('../models/product.model')
  * Returns the new guest cart.
  */
 exports.createGuestCart = async (sessionId) => {
-  let guestCart = new GuestCart({ sessionId, items: [] })
+  const guestCart = new GuestCart({ sessionId, items: [] })
   await guestCart.save()
   return guestCart
 }
@@ -59,7 +59,7 @@ exports.addItemToGuestCart = async (sessionId, productId, quantity) => {
  * saves the updated guest cart, and returns it.
  */
 exports.removeItemFromGuestCart = async (sessionId, itemId) => {
-  let guestCart = await GuestCart.findOne({ sessionId })
+  const guestCart = await GuestCart.findOne({ sessionId })
   if (!guestCart) {
     throw new Error('Cart not found')
   }

@@ -7,7 +7,7 @@ const authController = require('../controllers/auth.controller')
  */
 const {
   validateUserRegister,
-  validateUserLogin,
+  validateUserLogin
 } = require('../validation/inputValidator')
 
 /**

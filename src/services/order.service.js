@@ -24,5 +24,5 @@ const recordPaymentFailure = async (orderId, failureReason) => {
 }
 
 module.exports = {
-  recordPaymentFailure,
+  recordPaymentFailure
 }

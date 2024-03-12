@@ -12,20 +12,20 @@ const cartItemSchema = new mongoose.Schema(
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Product',
-      required: true,
+      required: true
     },
     quantity: {
       type: Number,
       required: true,
-      min: [1, 'Quantity must be at least 1'],
+      min: [1, 'Quantity must be at least 1']
     },
     price: {
       type: Number,
-      required: true,
-    },
+      required: true
+    }
   },
   {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
   }
 )
 

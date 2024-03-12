@@ -13,16 +13,16 @@ module.exports = {
     req.sort = {
       sortOrder: req.query.sortOrder
         ? parseInt(req.query.sortOrder)
-        : defaultSort.sortOrder,
+        : defaultSort.sortOrder
     }
 
     req.filter = {
       isActive: req.query.isActive
         ? req.query.isActive === 'true'
         : defaultFilter.isActive,
-      parent: req.query.parent ? req.query.parent : defaultFilter.parent,
+      parent: req.query.parent ? req.query.parent : defaultFilter.parent
     }
 
     next()
-  },
+  }
 }

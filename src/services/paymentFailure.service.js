@@ -9,8 +9,8 @@ const PaymentFailure = require('../models/paymentFailure.model.js')
 const recordPaymentFailure = async (orderId, reason) => {
   try {
     const paymentFailure = new PaymentFailure({
-      orderId: orderId,
-      reason: reason,
+      orderId,
+      reason
     })
     await paymentFailure.save()
   } catch (error) {

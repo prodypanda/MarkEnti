@@ -11,7 +11,7 @@ const maxDepth = 5
  * @returns {Promise<boolean>} Promise that resolves to true if nesting depth is valid
  * @throws {Error} If the parent category is not found or the nesting depth exceeds the max
  */
-async function validateNestingLevel(parentId, elementType) {
+async function validateNestingLevel (parentId, elementType) {
   let Element
   if (elementType === 'category') {
     Element = Category

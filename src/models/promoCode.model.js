@@ -14,24 +14,24 @@ const promoCodeSchema = new mongoose.Schema(
     code: {
       type: String,
       required: true,
-      unique: true,
+      unique: true
     },
     discountPercentage: {
       type: Number,
       required: true,
       min: 0,
-      max: 100,
+      max: 100
     },
     expirationDate: {
-      type: Date,
+      type: Date
     },
     isEnabled: {
       type: Boolean,
-      default: true,
-    },
+      default: true
+    }
   },
   {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
   }
 )
 

@@ -68,7 +68,7 @@ app.use(sanitizeMiddleware())
 // })
 
 app.use((req, res, next) => {
-  //access control allow origin from env variable or '*' for all origins.
+  // access control allow origin from env variable or '*' for all origins.
   res.header('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN || '*')
   res.header(
     'Access-Control-Allow-Headers',

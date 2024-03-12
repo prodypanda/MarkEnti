@@ -75,7 +75,9 @@ module.exports = [
     .withMessage('Password is required')
     .isLength({ min: process.env.REGISTERATION_PASSWORD_MIN_LENGTH || 6 })
     .withMessage(
-      `Password must be at least ${process.env.REGISTERATION_PASSWORD_MIN_LENGTH || 6} characters`
+      `Password must be at least ${
+        process.env.REGISTERATION_PASSWORD_MIN_LENGTH || 6
+      } characters`
     ),
   (req, res, next) => {
     const errors = validationResult(req)
@@ -88,7 +90,7 @@ module.exports = [
           return {
             type: 'field',
             msg: error.msg,
-            path: error.path, // "param" is the field name, equivalent to your desired "path".
+            path: error.path // "param" is the field name, equivalent to your desired "path".
             // Comment out or remove both "value" and "location" as they are not needed in the response.
             // value: error.value,       // This line can be removed as you don't want value in the response.
             // location: error.location, // This line can be removed as you don't want location in the response.
@@ -104,5 +106,5 @@ module.exports = [
       }
     }
     return next()
-  },
+  }
 ]

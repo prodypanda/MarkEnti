@@ -17,25 +17,25 @@ const orderSchema = new Schema(
     customer: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: true
     },
     products: [
       {
         product: {
           type: Schema.Types.ObjectId,
           ref: 'Product',
-          required: true,
+          required: true
         },
         quantity: {
           type: Number,
           required: true,
-          min: [1, 'Quantity can not be less than 1.'],
-        },
-      },
+          min: [1, 'Quantity can not be less than 1.']
+        }
+      }
     ],
     totalAmount: {
       type: Number,
-      required: true,
+      required: true
     },
     status: {
       type: String,
@@ -46,27 +46,27 @@ const orderSchema = new Schema(
         'delivered',
         'cancelled',
         'refunded',
-        'payment_failed',
+        'payment_failed'
       ],
-      default: 'pending',
+      default: 'pending'
     },
     failureReason: { type: String, default: '' },
     preferences: [
       {
-        type: String,
-      },
+        type: String
+      }
     ],
     createdAt: {
       type: Date,
-      default: Date.now,
+      default: Date.now
     },
     updatedAt: {
       type: Date,
-      default: Date.now,
-    },
+      default: Date.now
+    }
   },
   {
-    timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' },
+    timestamps: { createdAt: 'createdAt', updatedAt: 'updatedAt' }
   }
 )
 
@@ -90,12 +90,12 @@ const splitPaymentSchema = new Schema({
   payee: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: true
   },
   amount: {
     type: Number,
-    required: true,
-  },
+    required: true
+  }
 })
 
 /**
@@ -108,13 +108,13 @@ const splitPaymentSchema = new Schema({
 orderSchema.add({
   promotionalCodeApplied: {
     type: String,
-    default: null,
+    default: null
   },
   discount: {
     type: Number,
-    default: 0,
+    default: 0
   },
-  splitPayments: [splitPaymentSchema],
+  splitPayments: [splitPaymentSchema]
 })
 
 const Order = mongoose.model('Order', orderSchema)
