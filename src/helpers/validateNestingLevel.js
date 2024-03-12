@@ -3,6 +3,14 @@ const MenuItem = require('../models/menuItem.model')
 
 const maxDepth = 5
 
+/**
+ * Validates that a category or menu item does not exceed the maximum nesting depth.
+ *
+ * @param {string} parentId - The ID of the parent category
+ * @param {string} elementType - Either 'category' or 'menuItem'
+ * @returns {Promise<boolean>} Promise that resolves to true if nesting depth is valid
+ * @throws {Error} If the parent category is not found or the nesting depth exceeds the max
+ */
 async function validateNestingLevel(parentId, elementType) {
   let Element
   if (elementType === 'category') {

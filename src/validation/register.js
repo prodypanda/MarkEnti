@@ -2,43 +2,87 @@ const { check, validationResult } = require('express-validator')
 const User = require('../models/user.model')
 
 // Register validation
+/**
+ * Validates user input on register route.
+ *
+ * This exports an array of express-validator checks to validate user
+ * input on POST /register route.
+ *
+ * Includes checks for:
+ * - username
+ *   - required
+ *   - length
+ *   - uniqueness
+ * - email
+ *   - valid format
+ *   - uniqueness
+ * - password
+ *   - required
+ *   - minimum length
+ * - role
+ *   - optional
+ *   - valid value
+ *
+ * After running validators, checks for errors.
+ * If errors, sends back array of validation errors.
+ *
+ * Production: Send generic error response
+ * Development: Send more detailed errors without exposing values
+ */
 module.exports = [
-  check('username').not().isEmpty().withMessage('Username is required').trim().escape().isLength({ min: 4, max: 20 }).withMessage('Username must be between 4 and 20 characters')
-  .custom(async value => {
-    const existingUser = await User.findOne({username:value});
-    if (existingUser) {
-      throw new Error('A user already exists with the same username, please choose another username');
-    }
-  }),
-  check('email').trim().isEmail().withMessage('Must be a valid email address').escape()
-  .custom(async value => {
-    const existingUser = await User.findOne({email:value});
-    if (existingUser) {
-      throw new Error('A user already exists with this e-mail address, please choose another e-mail address');
-    }
-  }),
-  check('role').optional().trim().custom((value) => {
-    if (['root', 'admin', 'manager', 'customer', 'guest'].includes(value)) {
-      return true; // Validation succeeded
-    }
-    throw new Error('role is not valid'); // Throw error if validation fails
-  }),
-  check('password').trim()
+  check('username')
+    .not()
+    .isEmpty()
+    .withMessage('Username is required')
+    .trim()
+    .escape()
+    .isLength({ min: 4, max: 20 })
+    .withMessage('Username must be between 4 and 20 characters')
+    .custom(async (value) => {
+      const existingUser = await User.findOne({ username: value })
+      if (existingUser) {
+        throw new Error(
+          'A user already exists with the same username, please choose another username'
+        )
+      }
+    }),
+  check('email')
+    .trim()
+    .isEmail()
+    .withMessage('Must be a valid email address')
+    .escape()
+    .custom(async (value) => {
+      const existingUser = await User.findOne({ email: value })
+      if (existingUser) {
+        throw new Error(
+          'A user already exists with this e-mail address, please choose another e-mail address'
+        )
+      }
+    }),
+  check('role')
+    .optional()
+    .trim()
+    .custom((value) => {
+      if (['root', 'admin', 'manager', 'customer', 'guest'].includes(value)) {
+        return true // Validation succeeded
+      }
+      throw new Error('role is not valid') // Throw error if validation fails
+    }),
+  check('password')
+    .trim()
     .not()
     .isEmpty()
     .withMessage('Password is required')
     .isLength({ min: process.env.REGISTERATION_PASSWORD_MIN_LENGTH || 6 })
-    .withMessage(`Password must be at least ${process.env.REGISTERATION_PASSWORD_MIN_LENGTH || 6} characters`),
+    .withMessage(
+      `Password must be at least ${process.env.REGISTERATION_PASSWORD_MIN_LENGTH || 6} characters`
+    ),
   (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
-
       if (process.env.NODE_ENV === 'production') {
-
         return res.status(422).json({ errors: errors.array() })
-
       } else if (process.env.NODE_ENV === 'dev') {
-
         // Modify the errors array to exclude "value" and "location"
         const filteredErrors = errors.array().map((error) => {
           return {
@@ -53,14 +97,12 @@ module.exports = [
 
         // Send the modified error response
         return res.status(422).json({ errors: filteredErrors })
-
       } else {
-
-        return res.status(500).json({ errors: 'server error 500 - Code*447101' })
-
+        return res
+          .status(500)
+          .json({ errors: 'server error 500 - Code*447101' })
       }
-
     }
-    next()
+    return next()
   },
 ]

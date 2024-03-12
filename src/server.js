@@ -10,6 +10,11 @@ const port = process.env.PORT || 8080
 
 const server = http.createServer(app)
 
+/**
+ * Starts the server listening on the given port.
+ * Logs a message indicating the server has started.
+ * Establishes a database connection once the server has started.
+ */
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`)
   connectDB()

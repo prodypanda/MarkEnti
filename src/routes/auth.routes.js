@@ -2,6 +2,9 @@ const express = require('express')
 const router = express.Router()
 const authController = require('../controllers/auth.controller')
 // const validateRegisterInput = require('../validation/register');
+/**
+ * Validators for user input on register and login.
+ */
 const {
   validateUserRegister,
   validateUserLogin,

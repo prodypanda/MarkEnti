@@ -1,5 +1,9 @@
 const mongoose = require('mongoose')
 
+/**
+ * Schema definition for MenuItem model.
+ * Defines the fields and constraints for MenuItem documents.
+ */
 const menuItemSchema = new mongoose.Schema(
   {
     title: {
@@ -58,15 +62,25 @@ const menuItemSchema = new mongoose.Schema(
 
 menuItemSchema.index({ parent: 1, name: 1 })
 
+/**
+ * Validates that the parent Menu Item specified for this Menu Item exists.
+ * Checks that the parent Menu Item ID refers to a valid document in the MenuItem collection.
+ */
 menuItemSchema.path('parent').validate(async function (value) {
   if (!value) {
     return true // If no parent is specified, that's fine
   }
 
   const parentMenuItem = await this.constructor.findById(value)
-  return !!parentMenuItem // Ensure parent Menu Item exists
+  return Boolean(parentMenuItem) // Ensure parent Menu Item exists
 }, 'The specified parent Menu Item does not exist.')
 
+/**
+ * Populates the ancestors array for the given menuItem recursively based on its parent.
+ *
+ * @param {Object} menuItem - The menuItem document to populate ancestors for
+ * @param {Model} MenuItemModel - The Mongoose model class for MenuItem
+ */
 async function populateAncestors(menuItem, MenuItemModel) {
   if (!menuItem.parent) {
     menuItem.ancestors = []
@@ -80,7 +94,7 @@ async function populateAncestors(menuItem, MenuItemModel) {
     const parentMenuItem = await MenuItemModel.findById(currentParentId)
     if (!parentMenuItem) {
       throw new Error(
-        'Cannot find a parent menu Item with id ' + currentParentId
+        `Cannot find a parent menu Item with id ${currentParentId}`
       )
     }
     ancestors.unshift(parentMenuItem._id)
@@ -90,6 +104,11 @@ async function populateAncestors(menuItem, MenuItemModel) {
   menuItem.ancestors = ancestors
 }
 
+/**
+ * Before saving, populate slug from name if missing,
+ * populate ancestors array recursively based on parent,
+ * and update updated_at timestamp.
+ */
 menuItemSchema.pre('save', async function (next) {
   if (!this.slug && this.name) {
     this.slug = this.name.split(' ').join('-').toLowerCase()

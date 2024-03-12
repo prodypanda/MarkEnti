@@ -1,5 +1,9 @@
 const mongoose = require('mongoose')
 
+/**
+ * Schema for shipping configuration.
+ * Defines shipping type, cost rules based on type.
+ */
 const shippingConfigSchema = new mongoose.Schema(
   {
     type: {

@@ -1,6 +1,12 @@
 const Order = require('../models/order.model')
-const Product = require('../models/product.model')
+// const Product = require('../models/product.model')
 
+/**
+ * Calculates the unique product categories that a customer has ordered.
+ *
+ * @param {string} customerId - The ID of the customer to get orders for.
+ * @returns {Promise<string[]>} A promise that resolves to an array of unique category strings.
+ */
 const calculatePreferences = async (customerId) => {
   try {
     const orders = await Order.find({ customer: customerId }).populate(
@@ -23,5 +29,5 @@ const calculatePreferences = async (customerId) => {
 }
 
 module.exports = {
-  calculatePreferences
+  calculatePreferences,
 }
