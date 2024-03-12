@@ -15,7 +15,7 @@ const connectDB = async () => {
     mongoose.set('strictQuery', false)
     const conn = await mongoose.connect(connectionString, {
       dbName: 'pandavee3db',
-      ssl: false, // Ensure this is true for encrypted connections
+      ssl: false // Ensure this is true for encrypted connections
     })
     console.log(`Database Connected: ${conn.connection.host}`)
   } catch (err) {
