@@ -5,7 +5,7 @@ const doc = {
     title: 'MarkEnti API',
     description:
       'API documentation for MarkEnti application, written in Node.js and Express.js',
-    version: '1.0.0',
+    version: '1.0.0'
   },
   host: 'localhost:8080', // Replace with your actual host if different
   basePath: '',
@@ -15,9 +15,9 @@ const doc = {
       type: 'apiKey',
       in: 'header', // can be 'header', 'query' or 'cookie'
       name: 'token', // name of the header, query parameter or cookie
-      description: 'API Key for authentication',
-    },
-  },
+      description: 'API Key for authentication'
+    }
+  }
 }
 const outputFile = './swagger-output.json' // Output file for the spec
 // const endpointsFiles = ['../routes/*.js'] // Path to your route files
