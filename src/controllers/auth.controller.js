@@ -8,6 +8,11 @@ const passport = require('passport')
  * @param {object} res - The response object to send back the HTTP response.
  */
 exports.register = async (req, res) => {
+  // #swagger.tags = ['auth']
+  // #swagger.summary = 'Register a new user in the system.'
+  // #swagger.description = 'Registers a new user in the system with the provided username, email, and password.'
+  // #swagger.operationId = 'register'
+
   try {
     const { username, email, password } = req.body
 
@@ -36,7 +41,12 @@ exports.register = async (req, res) => {
 }
 
 /**
- * Authenticate a user and issue a JWT token for further API calls.
+ * Authenticates a user with local strategy and issues JWT token if valid.
+ *
+ * Authenticates the user with passport local strategy.
+ * If valid user, creates JWT payload with user ID and role.
+ * Signs and returns JWT token in response with user object.
+ *
  * @param {object} req - The request object containing the user's credentials.
  * @param {object} res - The response object to send back the HTTP response with the JWT token.
  * @returns {Object} - A JSON response containing the authenticated user's ID, username, role, and a JWT token.

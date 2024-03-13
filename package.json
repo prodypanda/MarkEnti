@@ -8,7 +8,8 @@
     "start": "node src/server.js",
     "dev": "nodemon --watch src --watch .env src/server.js --verbose",
     "gdoc": "npm run docs",
-    "docs": "node ./scripts/generateDocs.js"
+    "docs": "node ./scripts/generateDocs.js",
+    "swagger": "node src/services/generateSwagger.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -38,7 +39,8 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "swagger-autogen": "^2.23.7"
   },
   "repository": {
     "type": "git",

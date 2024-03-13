@@ -32,7 +32,12 @@ const menuRoutes = require('./routes/menu.routes')
 const cartRoutes = require('./routes/cart.routes')
 const guestCartRoutes = require('./routes/guestCart.routes')
 
+const swaggerUi = require('swagger-ui-express')
+const swaggerDocument = require('./services/swagger-output.json')
+
 const app = express()
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 // app.use(loggerMiddleware)
 
@@ -50,7 +55,7 @@ require('./config/passport')
  * Responds to a GET request to /ping with a 200 status code and 'pong' message.
  * Can be used as a health check endpoint.
  */
-app.get('/ping', (req, res) => {
+app.get('/api/ping', (req, res) => {
   res.status(200).send('pong')
 })
 
