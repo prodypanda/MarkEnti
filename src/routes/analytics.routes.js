@@ -6,7 +6,7 @@ const analyticsController = require('../controllers/analytics.controller')
  * Redirects to the login page if not authenticated.
  */
 const {
-  isAuthenticated,
+  isAuthenticated
 } = require('../middlewares/security/authenticate.middleware')
 const router = express.Router()
 
