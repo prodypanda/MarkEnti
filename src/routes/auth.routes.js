@@ -9,7 +9,6 @@ const {
   validateUserRegister,
   validateUserLogin,
 } = require('../validation/inputValidator')
-
 /**
  * @swagger
  * tags:
@@ -19,38 +18,28 @@ const {
 
 /**
  * @swagger
- *  /api/auth/register:
- *    post:
- *      summary: Registers a new user
- *      tags: [Authentication]
- *      requestBody:
- *        required: true
- *        content:
- *          application/json:
- *            schema:
- *              type: object
- *              required:
- *                - username
- *                - email
- *                - password
- *              properties:
- *                username:
- *                  type: string
- *                email:
- *                  type: string
- *                  format: email
- *                password:
- *                  type: string
- *                  format: password
- *              example:
- *                username: johndoe
- *                email: johndoe@example.com
- *                password: Password123
- *      responses:
- *        "201":
- *          description: User registered successfully
- *        "500":
- *          description: Server error
+ * /api/auth/register:
+ *   post:
+ *     summary: Registers a new user
+ *     tags: [Authentication]
+ *     description: This endpoint is used for registering a new user. It requires valid user details.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       200:
+ *         description: Successfully registered the user.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Validation error - Invalid request data.
+ *     security:
+ *       - bearerAuth: []
  */
 
 router.post('/register', validateUserRegister, authController.register)

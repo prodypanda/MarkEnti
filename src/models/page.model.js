@@ -1,4 +1,37 @@
 const mongoose = require('mongoose')
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Page:
+ *       type: object
+ *       required:
+ *         - title
+ *         - content
+ *         - slug
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: Page title
+ *         content:
+ *           type: string
+ *           description: Page content
+ *         slug:
+ *           type: string
+ *           description: Page slug
+ *         published:
+ *           type: boolean
+ *           default: false
+ *           description: Published status
+ *         publishedAt:
+ *           type: string
+ *           format: date
+ *           description: Publish date
+ *       middleware:
+ *         - pre('save') hook to generate slug from title if new document
+ *         - pre('save') hook to update publishedAt date if published status changes to true
+ */
+
 const { slugify } = require('../utils/stringUtils')
 
 /**

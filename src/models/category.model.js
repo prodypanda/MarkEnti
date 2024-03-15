@@ -1,3 +1,76 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Category:
+ *       type: object
+ *       required:
+ *         - name
+ *         - description
+ *         - isActive
+ *         - slug
+ *       properties:
+ *         name:
+ *           type: string
+ *           description: Name of the category
+ *         description:
+ *           type: string
+ *           description: Description of the category
+ *         parent:
+ *           type: string
+ *           description: ObjectId of parent category
+ *           default: null
+ *         ancestors:
+ *           type: array
+ *           items:
+ *             type: string
+ *             description: Array of ObjectIds of ancestor categories
+ *         isActive:
+ *           type: boolean
+ *           description: Whether the category is active or not
+ *           default: true
+ *         sortOrder:
+ *           type: integer
+ *           description: Sort order of category
+ *           default: 0
+ *         image:
+ *           type: string
+ *           description: Image URL for the category
+ *         icon:
+ *           type: string
+ *           description: Icon name for the category
+ *         seoTitle:
+ *           type: string
+ *           description: SEO title for the category
+ *           default: ''
+ *         seoDescription:
+ *           type: string
+ *           description: SEO description for the category
+ *           default: ''
+ *         slug:
+ *           type: string
+ *           description: Slugified name for URLs
+ *         created_at:
+ *           type: string
+ *           format: date
+ *           description: Creation timestamp
+ *         updated_at:
+ *           type: string
+ *           format: date
+ *           description: Last updated timestamp
+ *       example:
+ *         name: Books
+ *         description: This is the book category
+ *         isActive: true
+ *         slug: books
+ *
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *
+ */
 const mongoose = require('mongoose')
 
 /**

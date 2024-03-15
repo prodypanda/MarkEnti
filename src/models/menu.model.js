@@ -1,4 +1,33 @@
 const mongoose = require('mongoose')
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Menu:
+ *       type: object
+ *       required:
+ *         - title
+ *         - slug
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: Menu title
+ *           minLength: 3
+ *           maxLength: 100
+ *         slug:
+ *           type: string
+ *           description: Menu slug
+ *           format: lowercase
+ *         visible:
+ *           type: boolean
+ *           default: true
+ *           description: Whether menu is visible
+ *         items:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/MenuItem'
+ *       additionalProperties: false
+ */
 
 /**
  * Schema for menu model. Defines fields for:

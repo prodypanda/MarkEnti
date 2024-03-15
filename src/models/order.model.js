@@ -1,5 +1,73 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Order:
+ *       type: object
+ *       required:
+ *         - customer
+ *         - products
+ *         - totalAmount
+ *       properties:
+ *         customer:
+ *           type: string
+ *           description: The user that placed the order
+ *         products:
+ *           type: array
+ *           items:
+ *             type: object
+ *             required:
+ *               - product
+ *               - quantity
+ *             properties:
+ *               product:
+ *                 type: string
+ *                 description: The product ID
+ *               quantity:
+ *                 type: integer
+ *                 minimum: 1
+ *                 description: The quantity of the product ordered
+ *         totalAmount:
+ *           type: number
+ *           description: The total monetary amount for the order
+ *         status:
+ *           type: string
+ *           enum:
+ *             - pending
+ *             - processing
+ *             - shipped
+ *             - delivered
+ *             - cancelled
+ *             - refunded
+ *             - payment_failed
+ *           default: pending
+ *         failureReason:
+ *           type: string
+ *         preferences:
+ *           type: array
+ *           items:
+ *             type: string
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *       example:
+ *         customer: 5e2e7dde3c40b0b3b4ae9ae2
+ *         products:
+ *           - product: 5e2e7dde3c40b0b3b4ae9ae3
+ *             quantity: 2
+ *         totalAmount: 99.98
+ *         status: pending
+ *         failureReason:
+ *         preferences:
+ *           - expressShipping
+ *         createdAt: 2020-01-27T01:14:41.618Z
+ *         updatedAt: 2020-01-27T01:14:41.618Z
+ */
 
 /**
  * Defines the Mongoose schema for an order.

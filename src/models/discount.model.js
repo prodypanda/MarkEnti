@@ -1,4 +1,53 @@
 const mongoose = require('mongoose')
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Discount:
+ *       type: object
+ *       required:
+ *         - productId
+ *         - discountPercentage
+ *         - startDate
+ *         - endDate
+ *       properties:
+ *         productId:
+ *           type: string
+ *           description: MongoDB object id of the associated product
+ *         discountPercentage:
+ *           type: integer
+ *           minimum: 0
+ *           maximum: 100
+ *           description: The percentage discount amount
+ *         startDate:
+ *           type: string
+ *           format: date
+ *           description: The start date of the discount period
+ *         endDate:
+ *           type: string
+ *           format: date
+ *           description: The end date of the discount period
+ *         isActive:
+ *           type: boolean
+ *           default: false
+ *           description: Whether the discount is currently active
+ *         maxUsage:
+ *           type: integer
+ *           minimum: 0
+ *           description: The maximum number of times this discount can be used (0 for unlimited)
+ *         usageCount:
+ *           type: integer
+ *           minimum: 0
+ *           description: The number of times this discount has been used so far
+ *       example:
+ *         productId: 5f9f5d9c9c9d9c9c9c9c9c9c
+ *         discountPercentage: 10
+ *         startDate: '2020-01-01'
+ *         endDate: '2020-12-31'
+ *         isActive: true
+ *         maxUsage: 10
+ *         usageCount: 5
+ */
 
 /**
  * Schema definition for the Discount model.

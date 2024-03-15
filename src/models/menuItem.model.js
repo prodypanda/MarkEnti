@@ -1,4 +1,84 @@
 const mongoose = require('mongoose')
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     MenuItem:
+ *       type: object
+ *       required:
+ *         - title
+ *         - slug
+ *         - link
+ *         - orderIndex
+ *         - istoplevel
+ *         - createdBy
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: Menu item title
+ *         slug:
+ *           type: string
+ *           description: Menu item slug
+ *         link:
+ *           type: string
+ *           description: Menu item link
+ *         orderIndex:
+ *           type: integer
+ *           description: Menu item order index
+ *         istoplevel:
+ *           type: boolean
+ *           description: Whether menu item is top level
+ *         parent:
+ *           type: string
+ *           description: Menu item parent object id
+ *         ancestors:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Array of menu item ancestor ids
+ *         createdBy:
+ *           type: string
+ *           description: User id that created the menu item
+ *         updatedBy:
+ *           type: string
+ *           description: User id that updated the menu item
+ *       example:
+ *         title: "About"
+ *         slug: "about"
+ *         link: "/about"
+ *         orderIndex: 1
+ *         istoplevel: true
+ *         parent: null
+ *         ancestors: []
+ *         createdBy: "1234abcd"
+ *         updatedBy: null
+ *
+ *   parameters:
+ *     menuItemId:
+ *       name: id
+ *       in: path
+ *       description: Menu item id
+ *       required: true
+ *       schema:
+ *         type: string
+ *
+ *   responses:
+ *     MenuItem:
+ *       description: Menu item object
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/MenuItem'
+ *
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ *
+ * security:
+ *   - bearerAuth: []
+ */
 
 /**
  * Schema definition for MenuItem model.

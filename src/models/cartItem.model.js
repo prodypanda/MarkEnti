@@ -1,3 +1,29 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     CartItem:
+ *       type: object
+ *       required:
+ *         - product
+ *         - quantity
+ *         - price
+ *       properties:
+ *         product:
+ *           type: string
+ *           description: ObjectId reference to a Product document
+ *         quantity:
+ *           type: integer
+ *           minimum: 1
+ *           description: Number of this product in the cart
+ *         price:
+ *           type: number
+ *           description: Price of the product
+ *       example:
+ *         product: 5e2e7ad9860b2b5de45b493b
+ *         quantity: 2
+ *         price: 9.99
+ */
 const mongoose = require('mongoose')
 
 /**
@@ -7,6 +33,7 @@ const mongoose = require('mongoose')
  * - quantity: Number of this product in the cart. Required and minimum 1.
  * - price: Price of the product. Required.
  */
+
 const cartItemSchema = new mongoose.Schema(
   {
     product: {

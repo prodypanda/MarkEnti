@@ -1,3 +1,33 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Cart:
+ *       type: object
+ *       required:
+ *         - user
+ *       properties:
+ *         items:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/CartItem'
+ *         user:
+ *           $ref: '#/components/schemas/User'
+ *         totalCost:
+ *           type: number
+ *           readOnly: true
+ *           description: Virtual property that calculates the total cost of all items in the cart
+ *       middleware:
+ *         - name: populate
+ *           options:
+ *             path: items
+ *             model: CartItem
+ *         - name: populate
+ *           options:
+ *             path: user
+ *             model: User
+ */
+
 const mongoose = require('mongoose')
 
 /**
@@ -5,6 +35,7 @@ const mongoose = require('mongoose')
  * Defines cart properties like items array of CartItem refs,
  * and user ref to User model.
  */
+
 const cartSchema = new mongoose.Schema(
   {
     items: [

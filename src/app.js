@@ -42,7 +42,7 @@ const options = {
   definition: {
     // swagger: '2.0',
     // openapi: '3.0.0',
-    // openapi: '3.1.0',
+    openapi: '3.1.0',
     // restapi: '3.0.0',
     info: {
       title: 'MarkEnti API',
@@ -78,7 +78,7 @@ const options = {
       },
     },
   },
-  apis: ['./src/routes/*.routes.js'],
+  apis: ['./src/routes/*.routes.js', './src/models/*.model.js'],
 }
 
 // const specs = require('./services/swaggerConfig')

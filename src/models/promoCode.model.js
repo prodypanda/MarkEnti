@@ -1,6 +1,38 @@
 const mongoose = require('mongoose')
 
 /**
+ * @swagger
+ * components:
+ *   schemas:
+ *     PromoCode:
+ *       type: object
+ *       required:
+ *         - code
+ *         - discountPercentage
+ *       properties:
+ *         code:
+ *           type: string
+ *           description: Unique promo code string
+ *         discountPercentage:
+ *           type: number
+ *           minimum: 0
+ *           maximum: 100
+ *           description: Discount percentage
+ *         expirationDate:
+ *           type: string
+ *           format: date
+ *           description: Expiration date for the promo code
+ *         isEnabled:
+ *           type: boolean
+ *           default: true
+ *           description: Whether the promo code is enabled
+ *       example:
+ *         code: PROMO10
+ *         discountPercentage: 10
+ *         expirationDate: 2022-12-31
+ *         isEnabled: true
+ */
+/**
  * Schema for promo code documents.
  *
  * @typedef {Object} PromoCode

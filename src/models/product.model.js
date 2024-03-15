@@ -1,3 +1,66 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Product:
+ *       type: object
+ *       required:
+ *         - name
+ *         - description
+ *         - price
+ *         - inventoryCount
+ *       properties:
+ *         name:
+ *           type: string
+ *         slug:
+ *           type: string
+ *           unique: true
+ *         description:
+ *           type: string
+ *         price:
+ *           type: number
+ *         images:
+ *           type: array
+ *           items:
+ *             type: string
+ *         category:
+ *           type: string
+ *           format: objectId
+ *         variations:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               color:
+ *                 type: string
+ *               size:
+ *                 type: string
+ *               stock:
+ *                 type: number
+ *               additionalPrice:
+ *                 type: number
+ *         inventoryCount:
+ *           type: number
+ *           minimum: 0
+ *         created_at:
+ *           type: string
+ *           format: date
+ *         updated_at:
+ *           type: string
+ *           format: date
+ *       example:
+ *         name: "Product 1"
+ *         slug: "product-1"
+ *         description: "This is product 1"
+ *         price: 100
+ *         images: ["image1.jpg"]
+ *         category: "5f32291b2a7908662c33e252"
+ *         variations: [{color: "Red", size: "M", stock: 10, additionalPrice: 10}]
+ *         inventoryCount: 15
+ *         created_at: "2020-08-01T00:00:00.000Z"
+ *         updated_at: "2020-08-01T00:00:00.000Z"
+ */
+
 const slugify = require('slugify')
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema

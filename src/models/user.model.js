@@ -1,3 +1,45 @@
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - username
+ *         - email
+ *         - password
+ *       properties:
+ *         username:
+ *           type: string
+ *           description: The username of the user
+ *         email:
+ *           type: string
+ *           description: The email of the user
+ *         password:
+ *           type: string
+ *           description: The hashed password of the user
+ *         role:
+ *           type: string
+ *           enum: [root, admin, manager, customer, guest]
+ *           default: customer
+ *           description: The role of the user
+ *         roles:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Role'
+ *           description: Array of role objects for the user
+ *         created_at:
+ *           type: string
+ *           format: date
+ *           description: The date when the user was created
+ *         updated_at:
+ *           type: string
+ *           format: date
+ *           description: The date when the user was last updated
+ *       middlewares:
+ *         - bcrypt password hashing on save
+ *         - bcrypt password verification method
+ */
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const Schema = mongoose.Schema
@@ -9,6 +51,7 @@ const Schema = mongoose.Schema
  * Defines the schema for User documents in MongoDB.
  * Includes fields like username, email, password, roles, etc.
  */
+
 const userSchema = new Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
@@ -52,4 +95,5 @@ userSchema.methods.verifyPassword = async function (password) {
 
 // Create the model from the schema and export it
 const User = mongoose.model('User', userSchema)
+
 module.exports = User

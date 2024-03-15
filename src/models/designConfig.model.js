@@ -1,6 +1,160 @@
 const mongoose = require('mongoose')
 
 /**
+ * @swagger
+ * components:
+ *   schemas:
+ *     DesignConfig:
+ *       type: object
+ *       properties:
+ *         user:
+ *           type: string
+ *           description: ObjectID of the user this design config belongs to
+ *         theme:
+ *           type: string
+ *           default: 'default'
+ *         customCSS:
+ *           type: string
+ *         colors:
+ *           type: object
+ *           properties:
+ *             primary:
+ *               type: string
+ *               default: '#333'
+ *             secondary:
+ *               type: string
+ *               default: '#666'
+ *             background:
+ *               type: string
+ *               default: '#fff'
+ *             accent:
+ *               type: string
+ *               default: '#f00'
+ *         layout:
+ *           type: object
+ *           properties:
+ *             headerPosition:
+ *               type: string
+ *               enum: ['top', 'left', 'right', 'bottom']
+ *               default: 'top'
+ *             menuPosition:
+ *               type: string
+ *               enum: ['side', 'top']
+ *               default: 'top'
+ *             sidebarPosition:
+ *               type: string
+ *               enum: ['left', 'right']
+ *               default: 'left'
+ *             roundedCorners:
+ *               type: boolean
+ *               default: true
+ *         logo:
+ *           type: object
+ *           properties:
+ *             url:
+ *               type: string
+ *               default: 'path/to/default/logo.png'
+ *             altText:
+ *               type: string
+ *               default: 'Company Logo'
+ *         favicon:
+ *           type: string
+ *         backgroundImage:
+ *           type: string
+ *         socialMediaLinks:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               platform:
+ *                 type: string
+ *               link:
+ *                 type: string
+ *               icon:
+ *                 type: string
+ *         typography:
+ *           type: object
+ *           properties:
+ *             fonts:
+ *               type: object
+ *               properties:
+ *                 header:
+ *                   type: string
+ *                   default: 'Arial, sans-serif'
+ *                 body:
+ *                   type: string
+ *                   default: 'Georgia, serif'
+ *             baseFontSize:
+ *               type: string
+ *               default: '16px'
+ *             headingStyles:
+ *               type: object
+ *               properties:
+ *                 h1:
+ *                   type: string
+ *                   default: '2em'
+ *                 h2:
+ *                   type: string
+ *                   default: '1.5em'
+ *                 h3:
+ *                   type: string
+ *                   default: '1.17em'
+ *                 h4:
+ *                   type: string
+ *                   default: '1em'
+ *                 h5:
+ *                   type: string
+ *                   default: '.83em'
+ *                 h6:
+ *                   type: string
+ *                   default: '.67em'
+ *         breakpoints:
+ *           type: object
+ *           properties:
+ *             xs:
+ *               type: string
+ *               default: '320px'
+ *             sm:
+ *               type: string
+ *               default: '480px'
+ *             md:
+ *               type: string
+ *               default: '768px'
+ *             lg:
+ *               type: string
+ *               default: '992px'
+ *             xl:
+ *               type: string
+ *               default: '1200px'
+ *         spacing:
+ *           type: object
+ *           properties:
+ *             small:
+ *               type: string
+ *               default: '8px'
+ *             medium:
+ *               type: string
+ *               default: '16px'
+ *             large:
+ *               type: string
+ *               default: '24px'
+ *             extraLarge:
+ *               type: string
+ *               default: '32px'
+ *         border:
+ *           type: object
+ *           properties:
+ *             width:
+ *               type: string
+ *               default: '1px'
+ *             style:
+ *               type: string
+ *               default: 'solid'
+ *             color:
+ *               type: string
+ *               default: '#000'
+ */
+/**
  * Schema for design configuration settings. Allows customization of theme colors,
  * layout, typography, spacing, etc.
  *

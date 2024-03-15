@@ -1,4 +1,40 @@
 const mongoose = require('mongoose')
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     GuestCartItem:
+ *       type: object
+ *       required:
+ *         - product
+ *         - quantity
+ *         - price
+ *       properties:
+ *         product:
+ *           type: string
+ *           description: MongoDB object id reference to Product model
+ *         quantity:
+ *           type: integer
+ *           minimum: 1
+ *           description: Quantity of product in cart
+ *         price:
+ *           type: number
+ *           description: Price of product
+ *     GuestCart:
+ *       type: object
+ *       required:
+ *         - sessionId
+ *         - items
+ *       properties:
+ *         sessionId:
+ *           type: string
+ *           description: Session id
+ *         items:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/GuestCartItem'
+ *           description: Array of cart items
+ */
 
 /**
  * Schema for guest cart items.
