@@ -93,6 +93,31 @@ router.put('/:id', isAuthenticated, shippingController.updateShippingOption)
  * Deletes a shipping option by ID
  * Requires authentication
  */
+/**
+ * @swagger
+ * /api/shipping/{id}:
+ *   delete:
+ *     summary: Deletes a shipping option
+ *     description: Deletes a shipping option by ID. Requires authentication.
+ *     tags: [Shipping]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of shipping option to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Shipping option deleted successfully
+ *       401:
+ *         $ref: '#/components/responses/UnauthorizedError'
+ *       404:
+ *         description: Shipping option not found
+ */
+
 router.delete('/:id', isAuthenticated, shippingController.deleteShippingOption)
 
 module.exports = router
