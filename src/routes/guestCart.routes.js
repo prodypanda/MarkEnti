@@ -7,35 +7,6 @@ const { csrfProtection } = require('../middlewares/security/csrf.middleware')
 
 /**
  * @swagger
- * tags:
- *   name: GuestCart
- *   description: Category management
- * components:
- *   schemas:
- *     GuestCartItem:
- *       type: object
- *       properties:
- *         product:
- *           type: string
- *         quantity:
- *           type: integer
- *         price:
- *           type: number
- *       required:
- *         - product
- *         - quantity
- *         - price
- *     GuestCart:
- *       type: object
- *       properties:
- *         sessionId:
- *           type: string
- *         items:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/GuestCartItem'
- *
- * @swagger
  * /api/carts/guest:
  *   get:
  *     summary: Retrieve current guest cart
@@ -62,7 +33,13 @@ const { csrfProtection } = require('../middlewares/security/csrf.middleware')
  *               $ref: '#/components/schemas/GuestCart'
  *       500:
  *         description: Error creating a new guest cart
- *
+ */
+router.post(
+  '/',
+  [guestSessionMiddleware, csrfProtection],
+  guestCartController.createGuestCart
+)
+/**
  * @swagger
  * /api/carts/guest/items:
  *   post:
@@ -87,7 +64,13 @@ const { csrfProtection } = require('../middlewares/security/csrf.middleware')
  *         description: Item added to guest cart
  *       500:
  *         description: Error adding item to guest cart
- *
+ */
+router.post(
+  '/items',
+  [guestSessionMiddleware, csrfProtection],
+  guestCartController.addItemToGuestCart
+)
+/**
  * @swagger
  * /api/carts/guest/items/{itemId}:
  *   delete:
@@ -106,17 +89,6 @@ const { csrfProtection } = require('../middlewares/security/csrf.middleware')
  *       500:
  *         description: Error removing item from guest cart
  */
-
-router.post(
-  '/',
-  [guestSessionMiddleware, csrfProtection],
-  guestCartController.createGuestCart
-)
-router.post(
-  '/items',
-  [guestSessionMiddleware, csrfProtection],
-  guestCartController.addItemToGuestCart
-)
 router.delete(
   '/items/:itemId',
   [guestSessionMiddleware, csrfProtection],

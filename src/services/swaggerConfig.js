@@ -1,24 +1,25 @@
-const swaggerOptions = {
-  swaggerDefinition: {
+const swaggerJsdoc = require('swagger-jsdoc')
+
+const options = {
+  // swaggerDefinition: {
+  definition: {
+    // openapi: '3.0.0',
+    swagger: '2.0',
     info: {
       title: 'MarkEnti API',
       description:
         'API documentation for MarkEnti application, written in Node.js and Express.js',
-      version: '1.0.0'
+      version: '1.0.0',
     },
     host: 'localhost:8080', // Replace with your actual host if different
-    basePath: '/api',
     schemes: ['http'], // Or 'https' if applicable
-    securityDefinitions: {
-      apiKeyAuth: {
-        type: 'apiKey',
-        in: 'header', // can be 'header', 'query' or 'cookie'
-        name: 'token', // name of the header, query parameter or cookie
-        description: 'API Key for authentication'
-      }
-    }
+    servers: [
+      {
+        url: 'http://localhost:8080/api',
+      },
+    ],
   },
-  apis: ['../routes/auth.routes.js'] // Path to your route files
+  apis: ['../routes/analytics.routes.js'], // Files containing API definitions
 }
 
-module.exports = swaggerOptions
+const specs = swaggerJsdoc(options)

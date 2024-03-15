@@ -31,13 +31,71 @@ const cmsRoutes = require('./routes/cms.routes')
 const menuRoutes = require('./routes/menu.routes')
 const cartRoutes = require('./routes/cart.routes')
 const guestCartRoutes = require('./routes/guestCart.routes')
+const userTRoutes = require('./routes/users')
 
+// const swaggerUi = require('swagger-ui-express')
+
+const swaggerJsdoc = require('swagger-jsdoc')
 const swaggerUi = require('swagger-ui-express')
-const swaggerDocument = require('./services/swagger-output.json')
 
+const options = {
+  definition: {
+    // swagger: '2.0',
+    // openapi: '3.0.0',
+    // openapi: '3.1.0',
+    // restapi: '3.0.0',
+    info: {
+      title: 'MarkEnti API',
+      description:
+        'API documentation for MarkEnti application, written in Node.js and Express.js',
+      version: '1.0.0',
+      license: {
+        name: 'MarkEnti License',
+        url: 'https://github.com/prodypanda/MarkEnti?tab=License-1-ov-file',
+      },
+      contact: {
+        name: 'ProdyPanda',
+        url: 'https://prodypanda.com',
+        email: 'admin@prodypanda.com',
+      },
+    },
+
+    schemes: ['http'], // Or 'https' if applicable
+    // basedir: __dirname, // app absolute path
+
+    securityDefinitions: {
+      apiKeyAuth: {
+        type: 'apiKey',
+        in: 'header', // can be 'header', 'query' or 'cookie'
+        name: 'token', // name of the header, query parameter or cookie
+        description: 'API Key for authentication',
+      },
+      JWT: {
+        type: 'apiKey',
+        in: 'header',
+        name: 'Authorization',
+        description: 'Basic apiKey authorization in the system',
+      },
+    },
+  },
+  apis: ['./src/routes/*.routes.js'],
+}
+
+// const specs = require('./services/swaggerConfig')
+
+// const swaggerDocument = require('./services/swagger-output.json')
+const swaggerSpecs = swaggerJsdoc(options)
 const app = express()
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpecs, { explorer: true })
+)
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs))
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 // app.use(loggerMiddleware)
 
@@ -82,6 +140,8 @@ app.use((req, res, next) => {
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
   return next()
 })
+
+app.use('/api/v1', userTRoutes) // Mount routes with a base path
 
 app.use('/api/auth', authRoutes)
 app.use('/api/roles', roleRoutes)

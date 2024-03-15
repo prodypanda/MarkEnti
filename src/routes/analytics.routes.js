@@ -1,12 +1,13 @@
 // skipcq: JS-0258
 const express = require('express')
 const analyticsController = require('../controllers/analytics.controller')
+
 /**
  * Middleware that checks if the user is authenticated.
  * Redirects to the login page if not authenticated.
  */
 const {
-  isAuthenticated
+  isAuthenticated,
 } = require('../middlewares/security/authenticate.middleware')
 const router = express.Router()
 
@@ -16,13 +17,33 @@ const router = express.Router()
  */
 /**
  * @swagger
- * /analytics/registration:
+ * /registration:
  *   get:
  *     summary: Get analytics registration stats
- *     description: Requires authentication. Returns analytics data on user registrations.
+ *     description: Fetches statistics related to user registrations. Requires user to be authenticated.
+ *     tags:
+ *       - Analytics
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Registration stats returned successfully.
+ *         description: Successfully retrieved registration statistics.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 totalRegistrations:
+ *                   type: integer
+ *                   description: Total number of registrations.
+ *                 successfulRegistrations:
+ *                   type: integer
+ *                   description: Number of successful registrations.
+ *                 failedRegistrations:
+ *                   type: integer
+ *                   description: Number of failed registrations.
+ *       401:
+ *         description: Unauthorized. User is not authenticated.
  */
 router.get(
   '/registration',
@@ -38,8 +59,8 @@ router.get(
  * @swagger
  * /sales:
  *   get:
- *     summary: Get sales statistics
- *     description: Requires authentication to access sales statistics.
+ *     summary: Gets sales statistics
+ *     description: Retrieve sales statistics. Requires user to be authenticated.
  *     tags:
  *       - Analytics
  *     security:
@@ -53,19 +74,55 @@ router.get(
  *               type: object
  *               properties:
  *                 totalSales:
- *                   type: integer
- *                   description: Total number of sales.
- *                 totalRevenue:
  *                   type: number
- *                   format: float
- *                   description: Total revenue from sales.
+ *                   description: Total sales amount.
+ *                 salesCount:
+ *                   type: integer
+ *                   description: Number of sales transactions.
  *       401:
- *         description: Unauthorized, valid user authentication required.
+ *         description: Unauthorized, user not authenticated.
  */
 router.get('/sales', isAuthenticated, analyticsController.getSalesStats)
+
 /**
  * GET analytics for payment failures.
  * Requires authentication.
+ */
+/**
+ * @swagger
+ * /payment-failures:
+ *   get:
+ *     summary: Gets analytics for payment failures
+ *     description: Retrieve analytics data for payment failures. Requires user authentication.
+ *     tags:
+ *       - Analytics
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successful operation, returns payment failure analytics data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: success
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       date:
+ *                         type: string
+ *                         format: date
+ *                         example: '2023-01-01'
+ *                       failures:
+ *                         type: integer
+ *                         example: 5
+ *       401:
+ *         description: Unauthorized, user not authenticated.
  */
 router.get(
   '/payment-failures',
