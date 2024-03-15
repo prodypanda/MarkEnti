@@ -1,15 +1,15 @@
 const express = require('express')
 const inventoryController = require('../controllers/inventory.controller')
 const {
-  isAuthenticated,
+  isAuthenticated
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validateMongoId,
-  validateInventoryNumeric,
+  validateInventoryNumeric
 } = require('../validation/inputValidator')
 const router = express.Router()
 
-//id: the id of product (productId)
+// id: the id of product (productId)
 router.put(
   '/:id',
   isAuthenticated,
