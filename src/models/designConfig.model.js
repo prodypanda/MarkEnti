@@ -169,27 +169,27 @@ const designConfigSchema = new mongoose.Schema(
       primary: { type: String, default: '#333' }, // Adding default color values
       secondary: { type: String, default: '#666' },
       background: { type: String, default: '#fff' }, // Adding a background color option
-      accent: { type: String, default: '#f00' }, // Adding an accent color option
+      accent: { type: String, default: '#f00' } // Adding an accent color option
     },
     layout: {
       // Adding layout configuration options
       headerPosition: {
         type: String,
         enum: ['top', 'left', 'right', 'bottom'],
-        default: 'top',
+        default: 'top'
       },
       menuPosition: { type: String, enum: ['side', 'top'], default: 'top' },
       sidebarPosition: {
         type: String,
         enum: ['left', 'right'],
-        default: 'left',
+        default: 'left'
       },
-      roundedCorners: { type: Boolean, default: true }, // Whether elements should have rounded corners
+      roundedCorners: { type: Boolean, default: true } // Whether elements should have rounded corners
     },
     logo: {
       // Adding logo configuration options
       url: { type: String, default: 'path/to/default/logo.png' },
-      altText: { type: String, default: 'Company Logo' },
+      altText: { type: String, default: 'Company Logo' }
     },
     favicon: { type: String }, // URL to the favicon image
     backgroundImage: { type: String }, // URL to the background image
@@ -198,14 +198,14 @@ const designConfigSchema = new mongoose.Schema(
       {
         platform: String, // Platform name (e.g. 'Facebook', 'Twitter')
         link: String, // Link to the platform
-        icon: String,
-      },
+        icon: String
+      }
     ],
     typography: {
       // Adding typography options
       fonts: {
         header: { type: String, default: 'Arial, sans-serif' }, // Providing a default header font
-        body: { type: String, default: 'Georgia, serif' }, // Providing a default body font
+        body: { type: String, default: 'Georgia, serif' } // Providing a default body font
       },
       baseFontSize: { type: String, default: '16px' },
       headingStyles: {
@@ -214,8 +214,8 @@ const designConfigSchema = new mongoose.Schema(
         h3: { type: String, default: '1.17em' },
         h4: { type: String, default: '1em' },
         h5: { type: String, default: '.83em' },
-        h6: { type: String, default: '.67em' },
-      },
+        h6: { type: String, default: '.67em' }
+      }
     },
     breakpoints: {
       // For responsive design settings
@@ -223,27 +223,27 @@ const designConfigSchema = new mongoose.Schema(
       sm: { type: String, default: '480px' },
       md: { type: String, default: '768px' },
       lg: { type: String, default: '992px' },
-      xl: { type: String, default: '1200px' },
+      xl: { type: String, default: '1200px' }
     },
     spacing: {
       // Adding spacing configuration for margins and padding
       small: { type: String, default: '8px' },
       medium: { type: String, default: '16px' },
       large: { type: String, default: '24px' },
-      extraLarge: { type: String, default: '32px' },
+      extraLarge: { type: String, default: '32px' }
     },
     border: {
       // Border styles configuration
       width: { type: String, default: '1px' },
       style: { type: String, default: 'solid' },
-      color: { type: String, default: '#000' },
-    },
+      color: { type: String, default: '#000' }
+    }
     // FURTHER_CUSTOMIZATION: Add more design configuration options as desired
 
     // INPUT_REQUIRED {Add other design configurations as needed}
   },
   {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
   }
 )
 

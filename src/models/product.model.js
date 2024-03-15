@@ -74,51 +74,51 @@ const Schema = mongoose.Schema
 const productSchema = new Schema({
   name: {
     type: String,
-    required: true,
+    required: true
   },
   slug: {
     type: String,
-    unique: true,
+    unique: true
   },
   description: {
     type: String,
-    required: true,
+    required: true
   },
   price: {
     type: Number,
-    required: true,
+    required: true
   },
   images: [
     {
-      type: String,
-    },
+      type: String
+    }
   ],
   category: {
     type: Schema.Types.ObjectId,
     ref: 'Category',
-    required: true,
+    required: true
   },
   variations: [
     {
       color: String,
       size: String,
       stock: Number,
-      additionalPrice: Number,
-    },
+      additionalPrice: Number
+    }
   ],
   inventoryCount: {
     type: Number,
     required: true,
-    min: [0, 'Inventory count cannot be negative.'],
+    min: [0, 'Inventory count cannot be negative.']
   },
   created_at: {
     type: Date,
-    default: Date.now,
+    default: Date.now
   },
   updated_at: {
     type: Date,
-    default: Date.now,
-  },
+    default: Date.now
+  }
 })
 
 // Generate slug before saving the product
@@ -135,7 +135,7 @@ productSchema.pre('save', async function (next) {
   let count = 0
   while (true) {
     try {
-      let existingProduct = await Product.findOne({ slug: this.slug })
+      const existingProduct = await Product.findOne({ slug: this.slug })
       if (!existingProduct || existingProduct._id.equals(this._id)) {
         // No conflict or same product, break the loop
         break

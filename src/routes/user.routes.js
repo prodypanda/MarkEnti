@@ -141,18 +141,18 @@ const {
   getUserProfile,
   getUserById,
   updateUserProfile,
-  deleteUser,
+  deleteUser
 } = require('../controllers/user.controller')
 // const { isAuthenticated, isAdminOrOwner } = require('../middleware/authenticate.middleware');
 const {
-  isAuthenticated,
+  isAuthenticated
 } = require('../middlewares/security/authenticate.middleware')
 const {
-  isAdminOrOwner,
+  isAdminOrOwner
 } = require('../middlewares/security/verifyRoles.middleware')
 const {
   validateMongoId,
-  validateUserUpdate,
+  validateUserUpdate
 } = require('../validation/inputValidator')
 const router = express.Router()
 

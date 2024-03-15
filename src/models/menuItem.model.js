@@ -89,54 +89,54 @@ const menuItemSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
     slug: {
       type: String,
       required: true,
       trim: true,
-      lowercase: true,
+      lowercase: true
     },
     link: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
     orderIndex: {
       type: Number,
       required: true,
       default: 0,
-      unique: false,
+      unique: false
     },
     istoplevel: {
       type: Boolean,
       required: true,
-      default: false,
+      default: false
     },
     parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'MenuItem',
-      default: null,
+      default: null
     },
     ancestors: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'MenuItem',
-      },
+        ref: 'MenuItem'
+      }
     ],
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      required: true,
+      required: true
     },
     updatedBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
-      default: null,
-    },
+      default: null
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 )
 
@@ -161,13 +161,13 @@ menuItemSchema.path('parent').validate(async function (value) {
  * @param {Object} menuItem - The menuItem document to populate ancestors for
  * @param {Model} MenuItemModel - The Mongoose model class for MenuItem
  */
-async function populateAncestors(menuItem, MenuItemModel) {
+async function populateAncestors (menuItem, MenuItemModel) {
   if (!menuItem.parent) {
     menuItem.ancestors = []
     return
   }
 
-  let ancestors = []
+  const ancestors = []
   let currentParentId = menuItem.parent
 
   while (currentParentId) {

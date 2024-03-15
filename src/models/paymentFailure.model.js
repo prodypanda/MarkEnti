@@ -34,19 +34,19 @@ const paymentFailureSchema = new mongoose.Schema(
     orderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Order',
-      required: true,
+      required: true
     },
     reason: {
       type: String,
-      required: true,
+      required: true
     },
     occurredAt: {
       type: Date,
-      default: Date.now,
-    },
+      default: Date.now
+    }
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 )
 

@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const shippingController = require('../controllers/shipping.controller')
 const {
-  isAuthenticated,
+  isAuthenticated
 } = require('../middlewares/security/authenticate.middleware')
 
 router.get('/', isAuthenticated, shippingController.getShippingOptions)
