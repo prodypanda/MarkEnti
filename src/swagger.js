@@ -9,7 +9,7 @@ const options = {
       title: 'MarkEnti API',
       description:
         'API documentation for MarkEnti application, written in Node.js and Express.js',
-      version: '1.0.0',
+      version: '1.0.0'
     },
     restapi: '3.0.0',
     schemes: ['http'], // Or 'https' if applicable
@@ -17,25 +17,25 @@ const options = {
     // basedir: __dirname, // app absolute path
     servers: [
       {
-        url: 'http://localhost:8080',
-      },
+        url: 'http://localhost:8080'
+      }
     ],
     securityDefinitions: {
       apiKeyAuth: {
         type: 'apiKey',
         in: 'header', // can be 'header', 'query' or 'cookie'
         name: 'token', // name of the header, query parameter or cookie
-        description: 'API Key for authentication',
+        description: 'API Key for authentication'
       },
       JWT: {
         type: 'apiKey',
         in: 'header',
         name: 'Authorization',
-        description: 'Basic apiKey authorization in the system',
-      },
-    },
+        description: 'Basic apiKey authorization in the system'
+      }
+    }
   },
-  apis: ['./routes/*.routes.js'],
+  apis: ['./routes/*.routes.js']
 }
 
 const specs = swaggerJsdoc(options)

@@ -9,17 +9,17 @@ const options = {
       title: 'MarkEnti API',
       description:
         'API documentation for MarkEnti application, written in Node.js and Express.js',
-      version: '1.0.0',
+      version: '1.0.0'
     },
     host: 'localhost:8080', // Replace with your actual host if different
     schemes: ['http'], // Or 'https' if applicable
     servers: [
       {
-        url: 'http://localhost:8080/api',
-      },
-    ],
+        url: 'http://localhost:8080/api'
+      }
+    ]
   },
-  apis: ['../routes/analytics.routes.js'], // Files containing API definitions
+  apis: ['../routes/analytics.routes.js'] // Files containing API definitions
 }
 
 const specs = swaggerJsdoc(options)
