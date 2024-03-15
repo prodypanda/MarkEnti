@@ -1,7 +1,7 @@
 const express = require('express')
 const productController = require('../controllers/product.controller')
 const {
-  isAuthenticated,
+  isAuthenticated
 } = require('../middlewares/security/authenticate.middleware')
 const router = express.Router()
 const loggerMiddleware = require('../middlewares/logger.middleware')

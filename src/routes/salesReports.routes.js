@@ -1,7 +1,7 @@
 const express = require('express')
 const { getSalesReport } = require('../controllers/salesReports.controller')
 const {
-  isAuthenticated,
+  isAuthenticated
 } = require('../middlewares/security/authenticate.middleware')
 const router = express.Router()
 

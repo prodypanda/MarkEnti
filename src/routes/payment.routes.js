@@ -1,12 +1,12 @@
 const express = require('express')
 const paymentController = require('../controllers/payment.controller')
 const {
-  isAuthenticated,
+  isAuthenticated
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validatePaypalPayment,
   validateStripePayment,
-  handleValidationErrors,
+  handleValidationErrors
 } = require('../validation/payment')
 const { handlePaymentFailure } = require('../controllers/payment.controller')
 
