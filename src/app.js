@@ -47,7 +47,9 @@ const options = {
     info: {
       title: 'MarkEnti API',
       description:
-        'API documentation for MarkEnti application, written in Node.js and Express.js',
+        'This interactive documentation provides a comprehensive overview of the MarkEnti API, built with Node.js and Express.js. <br>Explore the available endpoints, their parameters, request and response structures, and authentication mechanisms. <br>You can also test API calls directly from this interface.' +
+        "For deepper information about the MarkEnti API platform, its features,  architecture, and its usage, please visit [the project's GitHub repository WIKIs [here](https://github.com/prodypanda/MarkEnti/wiki).",
+
       version: '1.0.0',
       license: {
         name: 'MarkEnti License',
@@ -90,7 +92,23 @@ const app = express()
 app.use(
   '/api-docs',
   swaggerUi.serve,
-  swaggerUi.setup(swaggerSpecs, { explorer: true })
+  swaggerUi.setup(swaggerSpecs, {
+    explorer: false,
+    // customCss: '.swagger-ui .topbar { display: none }',
+    // customCssUrl: '/custom.css',
+    // customJs: '/custom.js',
+    swaggerOptions: {
+      // layout: 'BaseLayout',
+      deepLinkings: true,
+      deepLinkPaths: true,
+      displayOperationIds: true,
+
+      tagsSorter: 'alpha',
+      // defaultModelsExpandDepth: 0,
+      // defaultModelExpandDepth: -1,
+      docExpansion: 'none',
+    },
+  })
 )
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
 
