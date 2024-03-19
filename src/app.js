@@ -12,6 +12,7 @@ const { csrfProtection } = require('./middlewares/security/csrf.middleware')
 const guestSessionMiddleware = require('./middlewares/guestSession.middleware')
 
 // routes
+// this is where all the routes are defined
 const authRoutes = require('./routes/auth.routes')
 const roleRoutes = require('./routes/role.routes')
 const permissionRoutes = require('./routes/permission.routes')
