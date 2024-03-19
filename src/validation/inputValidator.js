@@ -123,17 +123,21 @@ exports.validateUserLogin = [
   check('email')
     .trim()
     .isEmail()
-    .withMessage('You must provide a valid email address')
+    .withMessage('You must provide a valid email address to login')
     .escape()
     .custom(async (value) => {
       const existingUser = await User.findOne({ email: value })
       if (!existingUser) {
         throw new Error(
-          'No user exists with this e-mail address, please register first'
+          'No user exists with this e-mail address, please register first or try a different e-mail address'
         )
       }
     }),
-  check('password').trim().not().isEmpty().withMessage('Password is required'),
+  check('password')
+    .trim()
+    .not()
+    .isEmpty()
+    .withMessage('Password is required, please provide a password to login'),
   (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {
