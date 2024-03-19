@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 
-//[Error Prone] Require statement not part of import statement.Codacy [ESLint]ESLint8_@typescript-eslint_no-var-requires)
+// [Error Prone] Require statement not part of import statement.Codacy [ESLint]ESLint8_@typescript-eslint_no-var-requires)
 const authController = require('../controllers/auth.controller')
 // const validateRegisterInput = require('../validation/register');
 
@@ -10,7 +10,7 @@ const authController = require('../controllers/auth.controller')
  */
 const {
   validateUserRegister,
-  validateUserLogin,
+  validateUserLogin
 } = require('../validation/inputValidator')
 
 router.post('/register', validateUserRegister, authController.register)
