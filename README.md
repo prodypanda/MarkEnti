@@ -5,6 +5,7 @@ Welcome to the backend repository of the **markenti** project, a comprehensive s
 This repository serves as a valuable resource for developers and entrepreneurs who are interested in learning more about the backend architecture of an e-commerce platform.
 
 ## Overview
+
 markenti is an e-commerce platform back-end REST API that facilitates online storefront management for businesses.
 
 The API supports operations such as product listing, order processing, customer relationship management, and secure payment transactions. The technology stack includes Node.js, Express, MongoDB, Mongoose, axios, jsonwebtoken, and other libraries to create a robust and secure service.
@@ -32,6 +33,7 @@ The API supports operations such as product listing, order processing, customer 
 - Rate limiting to prevent system abuse.
 
 ## User Stories
+
 - Secure login for store admins and owner operations
 - Dynamic product and inventory management by store owners
 - Secure checkout for customers
@@ -67,7 +69,6 @@ The API supports operations such as product listing, order processing, customer 
 - System integrity through compliance with security standards and rate limiting features
 - Comprehensive customer management features
 
-
 ## Technology Stack
 
 - **Node.js & Express.js:** For creating a robust and scalable server-side application.
@@ -91,7 +92,6 @@ The API supports operations such as product listing, order processing, customer 
 ## Project Architecture
 
 The project follows a modular architecture, with separate components for configuration, controllers, models, routes, helpers, and middleware. This structure allows for easy organization and maintenance of the code.
-
 
 ## Deployment
 
@@ -133,11 +133,16 @@ If you have any questions or suggestions, please feel free to reach out to us at
 - Add a knowledge base.
 - Add a help center.
 - Add a support forum.
-- Add a live
+- Add a live chat support.
+- Add a payment gateway integration.
+- Add a shipping carrier integration.
+- Add a referral program.
+- Add a social media integration.
 
 Additional libraries and middlewares are used to ensure performance, security, and functionality which are detailed in the project's `package.json` file.
 
 ## Project Structure
+
 ```
 /project_root
     /src
@@ -189,7 +194,6 @@ Additional libraries and middlewares are used to ensure performance, security, a
 
 Refer to the [API Documentation](/docs/api.md) for detailed information on endpoint usage and examples.
 
-
 ## Contributing
 
 We welcome contributions to the **markenti** project! If you'd like to contribute, please follow these steps:
@@ -200,11 +204,9 @@ We welcome contributions to the **markenti** project! If you'd like to contribut
 4. Push to the branch (`git push origin feature/AmazingFeature`).
 5. Open a pull request.
 
-
 Please note that this project is released with a Contributor Code of Conduct. By participating in this project you agree to abide by its terms.
 
 Please ensure your code adheres to the project's coding standards and includes appropriate tests.
-
 
 ## License
 
@@ -212,8 +214,8 @@ Distributed under the MIT License. See [`LICENSE`](/LICENSE) for more informatio
 
 ## Acknowledgments
 
-- Node.js community 
-- MongoDB documentation 
+- Node.js community
+- MongoDB documentation
 - Stripe and PayPal APIs documentation
 - [Nodemailer](https://nodemailer.com/about/)
 - [Cloudinary](https://cloudinary.com/)
@@ -228,9 +230,7 @@ Distributed under the MIT License. See [`LICENSE`](/LICENSE) for more informatio
 - [Mongoose](https://mongoosejs.com/)
 - [Jest](https://jestjs.io/)
 
-
 ---
-
 
 Feel free to customize this template further to match your project's specific requirements and personal style.
 
