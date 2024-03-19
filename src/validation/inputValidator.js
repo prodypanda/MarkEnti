@@ -118,6 +118,7 @@ exports.validateUserRegister = [
  *
  * Returns 422 error response if any validation fails.
  */
+
 exports.validateUserLogin = [
   check('email')
     .trim()
