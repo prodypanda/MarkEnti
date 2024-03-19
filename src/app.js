@@ -54,13 +54,13 @@ const options = {
       version: '1.0.1',
       license: {
         name: 'MarkEnti License',
-        url: 'https://github.com/prodypanda/MarkEnti?tab=License-1-ov-file',
+        url: 'https://github.com/prodypanda/MarkEnti?tab=License-1-ov-file'
       },
       contact: {
         name: 'ProdyPanda',
         url: 'https://prodypanda.com',
-        email: 'admin@prodypanda.com',
-      },
+        email: 'admin@prodypanda.com'
+      }
     },
 
     schemes: ['http'], // Or 'https' if applicable
@@ -71,17 +71,17 @@ const options = {
         type: 'apiKey',
         in: 'header', // can be 'header', 'query' or 'cookie'
         name: 'token', // name of the header, query parameter or cookie
-        description: 'API Key for authentication',
+        description: 'API Key for authentication'
       },
       JWT: {
         type: 'apiKey',
         in: 'header',
         name: 'Authorization',
-        description: 'Basic apiKey authorization in the system',
-      },
-    },
+        description: 'Basic apiKey authorization in the system'
+      }
+    }
   },
-  apis: ['./src/routes/*.routes.js', './src/models/*.model.js'],
+  apis: ['./src/routes/*.routes.js', './src/models/*.model.js']
 }
 
 // const specs = require('./services/swaggerConfig')
@@ -115,8 +115,8 @@ app.use(
       tagsSorter: 'alpha',
       // defaultModelsExpandDepth: 0,
       // defaultModelExpandDepth: -1,
-      docExpansion: 'none',
-    },
+      docExpansion: 'none'
+    }
   })
 )
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
@@ -158,7 +158,7 @@ app.use(sanitizeMiddleware())
 // })
 
 app.use((req, res, next) => {
-  //access control allow origin from env variable or '*' for all origins.
+  // access control allow origin from env variable or '*' for all origins.
   res.header('Access-Control-Allow-Origin', process.env.ALLOWED_ORIGIN || '*')
   res.header(
     'Access-Control-Allow-Headers',
