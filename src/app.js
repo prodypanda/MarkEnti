@@ -48,9 +48,9 @@ const options = {
       title: 'MarkEnti API',
       description:
         'This interactive documentation provides a comprehensive overview of the MarkEnti API, built with Node.js and Express.js. <br>Explore the available endpoints, their parameters, request and response structures, and authentication mechanisms. <br>You can also test API calls directly from this interface.<br>' +
-        "For deepper information about the MarkEnti API platform, its features,  architecture, and its usage, please visit [the project's GitHub repository WIKIs [here](https://github.com/prodypanda/MarkEnti/wiki).",
+        " For deepper information about the MarkEnti API platform, its features,  architecture, and its usage, please visit [the project's GitHub repository WIKIs [here](https://github.com/prodypanda/MarkEnti/wiki).",
 
-      version: '1.0.0',
+      version: '1.0.1',
       license: {
         name: 'MarkEnti License',
         url: 'https://github.com/prodypanda/MarkEnti?tab=License-1-ov-file',
