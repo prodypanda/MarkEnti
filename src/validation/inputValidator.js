@@ -17,7 +17,7 @@ exports.validateMongoId = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where user creation or updation is handled.
@@ -89,7 +89,7 @@ exports.validateUserRegister = [
           return {
             type: 'field',
             msg: error.msg,
-            path: error.path, // "param" is the field name, equivalent to your desired "path".
+            path: error.path // "param" is the field name, equivalent to your desired "path".
             // Comment out or remove both "value" and "location" as they are not needed in the response.
             // value: error.value,       // This line can be removed as you don't want value in the response.
             // location: error.location, // This line can be removed as you don't want location in the response.
@@ -104,7 +104,7 @@ exports.validateUserRegister = [
       }
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where permission creation or updation is handled.
@@ -140,7 +140,7 @@ exports.validateUserLogin = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where permission creation or updation is handled.
@@ -232,7 +232,7 @@ exports.validateUserUpdate = [
           return {
             type: 'field',
             msg: error.msg,
-            path: error.path, // "param" is the field name, equivalent to your desired "path".
+            path: error.path // "param" is the field name, equivalent to your desired "path".
             // Comment out or remove both "value" and "location" as they are not needed in the response.
             // value: error.value,       // This line can be removed as you don't want value in the response.
             // location: error.location, // This line can be removed as you don't want location in the response.
@@ -247,7 +247,7 @@ exports.validateUserUpdate = [
       }
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where permission creation or updation is handled.
@@ -284,7 +284,7 @@ exports.validatePermission = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where role creation or updation is handled.
@@ -312,7 +312,7 @@ exports.validateRole = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where category creation or updation is handled.
@@ -370,7 +370,7 @@ exports.validateCategoryCreate = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 // Product Name Blacklist
 // const productNameBlacklist = '/\\|&@#%^\\*'
@@ -437,7 +437,7 @@ exports.validateCategoryUpdate = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where permission creation or updation is handled.
@@ -463,7 +463,7 @@ exports.validateInventoryNumeric = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where permission creation or updation is handled.
@@ -491,7 +491,7 @@ exports.validateCartImput = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where category creation or updation is handled.
@@ -535,7 +535,7 @@ exports.validatePageCreate = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where category creation or updation is handled.
@@ -582,7 +582,7 @@ exports.validatePageUpdate = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where category creation is handled.
@@ -602,7 +602,7 @@ exports.validateDesignConfigCreate = [
     .optional()
     .custom(async (value) => {
       const lintResult = await stylelint.lint({
-        code: value,
+        code: value
       })
 
       if (lintResult.errored) {
@@ -818,7 +818,7 @@ exports.validateDesignConfigCreate = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where category updation is handled.
@@ -839,7 +839,7 @@ exports.validateDesignConfigUpdate = [
     .optional()
     .custom(async (value) => {
       const lintResult = await stylelint.lint({
-        code: value,
+        code: value
       })
 
       if (lintResult.errored) {
@@ -1055,7 +1055,7 @@ exports.validateDesignConfigUpdate = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where category creation or updation is handled.
@@ -1128,7 +1128,7 @@ exports.validateDiscountCreate = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 // Include this file in routes where category creation or updation is handled.
@@ -1212,7 +1212,7 @@ exports.validateDiscountUpdate = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 /**
@@ -1265,7 +1265,7 @@ exports.validateMenuCreate = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 /**
@@ -1318,7 +1318,7 @@ exports.validateMenuUpdate = [
       return res.status(422).json({ errors: errors.array() })
     }
     return next()
-  },
+  }
 ]
 
 /**
