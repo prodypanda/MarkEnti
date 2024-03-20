@@ -13,7 +13,7 @@ const task = cron.schedule(
   },
   {
     scheduled: true,
-    timezone: 'Africa/Tunis',
+    timezone: 'Africa/Tunis'
   }
 )
 
