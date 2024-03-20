@@ -71,36 +71,20 @@ const discountSchema = new mongoose.Schema(
     },
     startDate: {
       type: Date,
-      required: true,
-      validate: {
-        validator: function (v) {
-          return mongoose.Types.ObjectId.isValid(v)
-        },
-        message:
-          'Invalid date format. Please use the following format: YYYY-MM-DD',
-      },
+      default: Date.now,
+      min: '1987-09-28',
+      max: '2200-05-23',
     },
+
     endDate: {
       type: Date,
       required: true,
-      validate: {
-        validator: function (v) {
-          return mongoose.Types.Date.isValid(v)
-        },
-        message:
-          'Invalid date format. Please use the following format: YYYY-MM-DD',
-      },
+      min: '1987-09-28',
+      max: '2200-05-23',
     },
     isActive: {
       type: Boolean,
-      default: false,
-      validate: {
-        validator: function (v) {
-          return mongoose.Types.Boolean.isValid(v)
-        },
-        message:
-          'Invalid Boolean format. Please use the following format: True or False',
-      },
+      default: false, // default to inactive upon creation
     },
     maxUsage: {
       type: Number,
@@ -127,6 +111,8 @@ const discountSchema = new mongoose.Schema(
  * to deactivate expired discounts.
  */
 discountSchema.pre('save', function (next) {
+  console.log('endDate in pre save: ' + this.endDate)
+
   if (this.endDate < new Date()) {
     this.isActive = false
   }

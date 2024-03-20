@@ -11,6 +11,9 @@ const {
 } = require('../validation/inputValidator')
 const router = express.Router()
 
+router.get('/', discountController.getAllDiscounts)
+router.get('/:id', validateMongoId, discountController.getDiscountById)
+
 router.post(
   '/',
   isAuthenticated,

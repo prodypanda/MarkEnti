@@ -5,12 +5,12 @@ exports.createDiscount = async (req, res) => {
   try {
     const {
       productId,
-      discountPercentage,
-      startDate,
-      endDate,
+      discountPercentage = 100,
+      startDate = Date.now(),
+      endDate = Date.now() + 1 * 24 * 60 * 60 * 1000, // 1 day in milliseconds,
       isActive = false,
-      maxUsage = 0,
-      usageCount = 0,
+      maxUsage = 1,
+      // usageCount = 0,
     } = req.body
 
     // Check if product exists
@@ -26,7 +26,7 @@ exports.createDiscount = async (req, res) => {
       endDate,
       isActive,
       maxUsage,
-      usageCount,
+      // usageCount,
     })
     discount = await discount.save()
 
@@ -40,6 +40,7 @@ exports.updateDiscount = async (req, res) => {
   try {
     const { id } = req.params
     const {
+      productId,
       discountPercentage,
       startDate,
       endDate,
@@ -52,6 +53,15 @@ exports.updateDiscount = async (req, res) => {
     let discount = await Discount.findById(id)
     if (!discount) {
       return res.status(404).json({ message: 'Discount not found' })
+    }
+
+    if (productId) {
+      const product = await Product.findById(productId)
+      if (!product) {
+        return res.status(404).json({ message: 'Product not found' })
+      } else {
+        discount.productId = productId
+      }
     }
 
     discount.discountPercentage = discountPercentage
@@ -79,23 +89,43 @@ exports.updateDiscount = async (req, res) => {
 
 exports.deactivateDiscounts = async () => {
   try {
-    // await Discount.updateMany({ endDate: { $lt: new Date().toISOString() } }, { $set: { isActive: false }  });
-
-    // Deactivating all discounts that have expired or reached their maximum usage count
-    const conditions = [
-      { endDate: { $lt: new Date().toISOString() }, isActive: true }, // x AND x
-      { usageCount: { $lt: maxUsage }, isActive: true }, // y AND y
-    ]
-    // Use the UTC date for consistency across different server timezones
+    // Use aggregation to update discounts directly in the database
     const result = await Discount.updateMany(
-      { $or: conditions }, // x AND x OR y AND y
+      {
+        $or: [
+          { endDate: { $lt: new Date().toISOString() }, isActive: true },
+          { usageCount: { $gte: '$maxUsage' }, isActive: true }, // Use $gte to compare with maxUsage field
+        ],
+      },
       { $set: { isActive: false } }
     )
-    console.log(`${result.nModified} discounts have been deactivated.`)
-    console.log(`${result.modifiedCount} discounts have been deactivated.`)
 
+    console.log(`${result.nModified} discounts have been deactivated.`)
     console.log('Expired discounts have been deactivated.')
+    console.log(`${result.modifiedCount} discounts have been deactivated.`)
   } catch (error) {
     console.error('Error deactivating expired discounts:', error)
+  }
+}
+
+exports.getAllDiscounts = async (req, res) => {
+  try {
+    const discounts = await Discount.find()
+    return res.status(200).json(discounts)
+  } catch (error) {
+    return res.status(500).json({ message: error.message })
+  }
+}
+
+exports.getDiscountById = async (req, res) => {
+  try {
+    const { id } = req.params
+    const discount = await Discount.findById(id)
+    if (!discount) {
+      return res.status(404).json({ message: 'Discount not found' })
+    }
+    return res.status(200).json(discount)
+  } catch (error) {
+    return res.status(500).json({ message: error.message })
   }
 }

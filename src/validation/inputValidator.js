@@ -1090,9 +1090,7 @@ exports.validateDiscountCreate = [
     .withMessage('Percentage must be a number between 0 and 100'),
 
   check('startDate')
-    .not()
-    .isEmpty()
-    .withMessage('StartDate is required')
+    .optional()
     .trim()
     .escape()
     .isDate()
@@ -1100,9 +1098,10 @@ exports.validateDiscountCreate = [
   // .isDate({ format: 'YYYY-MM-DD', strict: true, min: new Date(), max: new Date() }),
 
   check('endDate')
-    .not()
-    .isEmpty()
-    .withMessage('endDate is required')
+    .optional()
+    // .not()
+    // .isEmpty()
+    // .withMessage('endDate is required')
     .trim()
     .escape()
     .isDate()
