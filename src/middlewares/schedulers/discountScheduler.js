@@ -7,8 +7,8 @@ const discountController = require('../../controllers/discount.controller')
 // Schedule the task to run Every minutes
 const task = cron.schedule(
   // '* * * * * *', // every second
-  '0 * * * * *', // every minute
-  // '0 0 0 * * *', // every hours
+  // '0 * * * * *', // every minute
+  '0 0 0 * * *', // every hours
   async () => {
     await console.log('Running scheduled task to check for expired discounts')
     discountController.deactivateDiscounts()
