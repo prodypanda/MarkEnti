@@ -13,7 +13,14 @@ const router = express.Router()
 
 router.get('/', discountController.getAllDiscounts)
 router.get('/:id', validateMongoId, discountController.getDiscountById)
-
+router.delete('/:id', validateMongoId, discountController.deleteDiscount)
+// now for useDiscount
+router.put(
+  '/useDiscount/:id',
+  isAuthenticated,
+  validateMongoId,
+  discountController.useDiscount
+)
 router.post(
   '/',
   isAuthenticated,

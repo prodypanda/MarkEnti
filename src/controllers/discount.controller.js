@@ -157,3 +157,18 @@ exports.useDiscount = async (req, res) => {
     return res.status(500).json({ message: error.message })
   }
 }
+
+exports.deleteDiscount = async (req, res) => {
+  try {
+    const { id } = req.params
+    const discount = await Discount.findById(id)
+    if (!discount) {
+      return res.status(404).json({ message: 'Discount not found' })
+    }
+    await Discount.deleteOne({ _id: id })
+    return res.status(200).json({ message: 'Discount deleted' })
+    // return res.status(200).json({ message: 'Discount deleted' })
+  } catch (error) {
+    return res.status(500).json({ message: error.message })
+  }
+}
