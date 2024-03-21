@@ -50,7 +50,7 @@ exports.updateDiscount = async (req, res) => {
     } = req.body
 
     // skipcq: JS-0242
-    let discount = await Discount.findById(id)
+    const discount = await Discount.findById(id)
     if (!discount) {
       return res.status(404).json({ message: 'Discount not found' })
     }
@@ -94,15 +94,20 @@ exports.deactivateDiscounts = async () => {
       {
         $or: [
           { endDate: { $lt: new Date().toISOString() }, isActive: true },
-          { usageCount: { $gte: '$maxUsage' }, isActive: true }, // Use $gte to compare with maxUsage field
+          { $expr: { $gte: ['$usageCount', '$maxUsage'] }, isActive: true },
+          // { usageCount: { $gte: '$maxUsage' }, isActive: true }, // Use $gte to compare with maxUsage field
         ],
       },
       { $set: { isActive: false } }
     )
 
-    console.log(`${result.nModified} discounts have been deactivated.`)
-    console.log('Expired discounts have been deactivated.')
-    console.log(`${result.modifiedCount} discounts have been deactivated.`)
+    if (result) {
+      console.log(
+        `${result.modifiedCount} Expired or Max Usage Reached discounts have been deactivated.`
+      )
+    } else {
+      console.log('No discounts have been deactivated.')
+    }
   } catch (error) {
     console.error('Error deactivating expired discounts:', error)
   }
@@ -125,6 +130,29 @@ exports.getDiscountById = async (req, res) => {
       return res.status(404).json({ message: 'Discount not found' })
     }
     return res.status(200).json(discount)
+  } catch (error) {
+    return res.status(500).json({ message: error.message })
+  }
+}
+
+//
+exports.useDiscount = async (req, res) => {
+  try {
+    const { id } = req.params
+    const discount = await Discount.findById(id)
+    if (!discount) {
+      return res.status(404).json({ message: 'Discount not found' })
+    }
+    if (discount.isActive === false) {
+      return res.status(403).json({
+        message:
+          'Discount usage limit reached or expired! Please try another discount.',
+      })
+    }
+    discount.usageCount += 1
+    await discount.save()
+    return res.status(200).json(discount)
+    // return res.status(200).json({ message: 'Discount used' })
   } catch (error) {
     return res.status(500).json({ message: error.message })
   }
