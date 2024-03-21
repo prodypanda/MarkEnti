@@ -9,7 +9,7 @@ exports.createDiscount = async (req, res) => {
       startDate = Date.now(),
       endDate = Date.now() + 1 * 24 * 60 * 60 * 1000, // 1 day in milliseconds,
       isActive = false,
-      maxUsage = 1,
+      maxUsage = 1
       // usageCount = 0,
     } = req.body
 
@@ -25,7 +25,7 @@ exports.createDiscount = async (req, res) => {
       startDate,
       endDate,
       isActive,
-      maxUsage,
+      maxUsage
       // usageCount,
     })
     discount = await discount.save()
@@ -46,7 +46,7 @@ exports.updateDiscount = async (req, res) => {
       endDate,
       isActive,
       maxUsage,
-      usageCount,
+      usageCount
     } = req.body
 
     // skipcq: JS-0242
@@ -94,9 +94,9 @@ exports.deactivateDiscounts = async () => {
       {
         $or: [
           { endDate: { $lt: new Date().toISOString() }, isActive: true },
-          { $expr: { $gte: ['$usageCount', '$maxUsage'] }, isActive: true },
+          { $expr: { $gte: ['$usageCount', '$maxUsage'] }, isActive: true }
           // { usageCount: { $gte: '$maxUsage' }, isActive: true }, // Use $gte to compare with maxUsage field
-        ],
+        ]
       },
       { $set: { isActive: false } }
     )
@@ -146,7 +146,7 @@ exports.useDiscount = async (req, res) => {
     if (discount.isActive === false) {
       return res.status(403).json({
         message:
-          'Discount usage limit reached or expired! Please try another discount.',
+          'Discount usage limit reached or expired! Please try another discount.'
       })
     }
     discount.usageCount += 1
