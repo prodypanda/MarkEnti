@@ -61,46 +61,46 @@ const discountSchema = new mongoose.Schema(
     productId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Product',
-      required: true,
+      required: true
     },
     discountPercentage: {
       type: Number,
       required: true,
       min: 0,
-      max: 100,
+      max: 100
     },
     startDate: {
       type: Date,
       default: Date.now,
       min: '1987-09-28',
-      max: '2200-05-23',
+      max: '2200-05-23'
     },
 
     endDate: {
       type: Date,
       required: true,
       min: '1987-09-28',
-      max: '2200-05-23',
+      max: '2200-05-23'
     },
     isActive: {
       type: Boolean,
-      default: false, // default to inactive upon creation
+      default: false // default to inactive upon creation
     },
     maxUsage: {
       type: Number,
       default: 0,
       min: 0, // 0 is for unlimited usage
-      max: 10000000000,
+      max: 10000000000
     },
     usageCount: {
       type: Number,
       default: 0,
       min: 0,
-      max: 10000000000,
-    },
+      max: 10000000000
+    }
   },
   {
-    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' },
+    timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
   }
 )
 
