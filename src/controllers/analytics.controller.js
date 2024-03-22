@@ -7,9 +7,18 @@ const User = require('../models/user.model')
  * @param {object} res - The response object used to send the JSON response.
  * @returns {Promise<void>} - A promise that resolves with the registration statistics as a JSON response.
  */
+// GET /api/analytics/registration-stats?sortBy=created_at&sortOrder=asc&limit=10
 exports.getRegistrationStats = async (req, res) => {
   try {
-    const stats = await User.aggregate([
+    const { sortBy, sortOrder, limit } = req.query
+
+    // Validate sortOrder (asc or desc)
+    const validSortOrder = ['asc', 'desc'].includes(sortOrder)
+      ? sortOrder
+      : 'asc'
+
+    // Build the aggregation pipeline
+    const pipeline = [
       {
         $group: {
           _id: { $dateToString: { format: '%Y-%m-%d', date: '$created_at' } },
@@ -18,10 +27,19 @@ exports.getRegistrationStats = async (req, res) => {
       },
       {
         $sort: {
-          _id: 1,
+          // Dynamically set the sort field and order
+          [sortBy || '_id']: validSortOrder === 'asc' ? 1 : -1,
         },
       },
-    ])
+    ]
+
+    // Apply limit if provided
+    if (limit && !isNaN(limit)) {
+      pipeline.push({ $limit: Number(limit) })
+    }
+
+    const stats = await User.aggregate(pipeline)
+
     // if (stats.length === 0) {
     //   res.json([])
     // } else {
