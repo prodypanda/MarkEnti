@@ -45,6 +45,26 @@ const options = {
     // openapi: '3.0.0',
     openapi: '3.1.0',
     // restapi: '3.0.0',
+    schemes: ['http'], // Or 'https' if applicable
+    basePath: '/api',
+    // basedir: __dirname, // app absolute path
+    servers: [
+      {
+        url: 'http://localhost:8080/{basePath}',
+        description: 'Development server',
+        variables: {
+          basePath: {
+            default: 'api',
+            enum: ['api', 'api/v1', 'api/v2'],
+            description: 'API version',
+          },
+        },
+      },
+      {
+        url: 'https://api.markenti.com',
+        description: 'Production server',
+      },
+    ],
     info: {
       title: 'MarkEnti API',
       description:

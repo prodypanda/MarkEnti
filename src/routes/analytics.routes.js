@@ -17,7 +17,7 @@ const router = express.Router()
  */
 /**
  * @swagger
- * /registration:
+ * /analytics/registration:
  *   get:
  *     summary: Get analytics registration stats
  *     description: Fetches statistics related to user registrations. Requires user to be authenticated.
@@ -57,7 +57,7 @@ router.get(
  */
 /**
  * @swagger
- * /sales:
+ * /analytics/sales:
  *   get:
  *     summary: Gets sales statistics
  *     description: Retrieve sales statistics. Requires user to be authenticated.
@@ -90,7 +90,7 @@ router.get('/sales', isAuthenticated, analyticsController.getSalesStats)
  */
 /**
  * @swagger
- * /payment-failures:
+ * /analytics/payment-failures:
  *   get:
  *     summary: Gets analytics for payment failures
  *     description: Retrieve analytics data for payment failures. Requires user authentication.

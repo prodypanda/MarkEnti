@@ -24,7 +24,7 @@ router.post('/login', validateUserLogin, authController.login)
 
 /**
  * @swagger
- * /api/auth/register:
+ * /auth/register:
  *   post:
  *     summary: Register a new user
  *     description: This endpoint is used for registering a new user. It requires valid user details.
@@ -71,7 +71,7 @@ router.post('/login', validateUserLogin, authController.login)
 
 /**
  * @swagger
- * /api/auth/login:
+ * /auth/login:
  *   post:
  *     summary: Authenticate a user and return a token
  *     tags: [Auth]
