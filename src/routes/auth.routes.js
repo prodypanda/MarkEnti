@@ -8,7 +8,7 @@ const authController = require('../controllers/auth.controller')
  */
 const {
   validateUserRegister,
-  validateUserLogin,
+  validateUserLogin
 } = require('../validation/inputValidator')
 
 router.post('/register', validateUserRegister, authController.register)
