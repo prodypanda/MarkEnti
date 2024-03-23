@@ -124,6 +124,7 @@ app.use(
     // customCss: '.swagger-ui .topbar { display: none }',
     // customCssUrl: '/custom.css',
     // customJs: '/custom.js',
+    persistAuthorization: true,
     exposeSwaggerUI: true,
     exposeApiDocs: false,
     swaggerOptions: {
