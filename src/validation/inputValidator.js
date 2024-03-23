@@ -487,8 +487,8 @@ exports.validateCartImput = [
     .isNumeric()
     .withMessage('Count must be a number')
     .isInt({ min: 0, max: 99999 })
-    .withMessage('Count must be a positive integer'),
-  check('id').isMongoId().withMessage('Invalid id format'),
+    .withMessage('Count must be a positive integer, between 0 and 99999'),
+  check('productId').isMongoId().withMessage('Invalid id format'),
   (req, res, next) => {
     const errors = validationResult(req)
     if (!errors.isEmpty()) {

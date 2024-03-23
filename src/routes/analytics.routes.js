@@ -12,6 +12,13 @@ const {
 const router = express.Router()
 
 /**
+ * @swagger
+ * tags:
+ *   name: Analytics
+ *   description: Analytics management
+ */
+
+/**
  * GET analytics registration stats.
  * Requires authentication.
  */
@@ -21,12 +28,47 @@ const router = express.Router()
  *   get:
  *     summary: Get analytics registration stats
  *     description: Fetches statistics related to user registrations. Requires user to be authenticated.
+ *     parameters:
+ *       - name: sortBy
+ *         in: query
+ *         description: The field to sort the results by.
+ *         schema:
+ *           type: string
+ *           enum: [_id, count]
+ *       - name: sortOrder
+ *         in: query
+ *         description: The order to sort the results in.
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *       - name: limit
+ *         in: query
+ *         description: The maximum number of documents to return.
+ *         schema:
+ *           type: integer
+ *           minimum: 1
  *     tags:
  *       - Analytics
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
+ *         description: Registration statistics retrieved successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     format: date
+ *                   count:
+ *                     type: integer
+ *       500:
+ *         description: Internal server error.
+ *       204:
  *         description: Successfully retrieved registration statistics.
  *         content:
  *           application/json:
@@ -61,6 +103,38 @@ router.get(
  *   get:
  *     summary: Gets sales statistics
  *     description: Retrieve sales statistics. Requires user to be authenticated.
+ *     parameters:
+ *       - name: groupBy
+ *         in: query
+ *         description: The field to group the results by.
+ *         schema:
+ *           type: string
+ *           enum: [createdAt,status]
+ *       - name: status
+ *         in: query
+ *         description: The status of the sales transaction.
+ *         schema:
+ *           type: string
+ *           enum: [all,failed,pending,paid,refunded,processing,cancelled,delivered,completed]
+ *       - name: sortBy
+ *         in: query
+ *         description: The field to sort the results by.
+ *         schema:
+ *           type: string
+ *           enum: [_id, totalSales, totalOrders]
+ *       - name: sortOrder
+ *         in: query
+ *         description: The order to sort the results in.
+ *         schema:
+ *           type: string
+ *           enum: [asc, desc]
+ *       - name: limit
+ *         in: query
+ *         description: The maximum number of documents to return.
+ *         schema:
+ *           type: integer
+ *           minimum: 1
+ *           maximum: 1000
  *     tags:
  *       - Analytics
  *     security:
@@ -76,7 +150,7 @@ router.get(
  *                 totalSales:
  *                   type: number
  *                   description: Total sales amount.
- *                 salesCount:
+ *                 totalOrders:
  *                   type: integer
  *                   description: Number of sales transactions.
  *       401:

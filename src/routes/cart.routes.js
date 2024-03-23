@@ -1,9 +1,9 @@
 /**
  * @swagger
- * /Cart:
+ * /cart:
  *   get:
- *     summary: Get analytics registration stats
- *     description: Fetches statistics related to user registrations. Requires user to be authenticated.
+ *     summary: Get cart data for authenticated user
+ *     description: Fetches cart data for authenticated user. Requires user to be authenticated.
  *     tags:
  *       - Cart
  *     security:
@@ -13,6 +13,10 @@
  *         description: Cart data
  *       401:
  *         description: Unauthorized, invalid or missing authentication token
+ *       500:
+ *         description: Internal server error
+ *
+ * /cart/item:
  *   post:
  *     summary: Add item to cart for authenticated user
  *     description: Adds item to cart for authenticated user.
@@ -32,6 +36,9 @@
  *         description: Validation error
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
+ *
+ *
+ *
  *   delete:
  *     summary: Remove item from cart for authenticated user
  *     description: Removes item from cart for authenticated user.

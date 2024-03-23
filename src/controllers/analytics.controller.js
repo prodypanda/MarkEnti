@@ -17,6 +17,9 @@ exports.getRegistrationStats = async (req, res) => {
       ? sortOrder
       : 'asc'
 
+    // Validate sortBy (_id or desc)
+    const validsortBy = ['_id', 'count'].includes(sortBy) ? sortBy : '_id'
+
     // Build the aggregation pipeline
     const pipeline = [
       {
@@ -28,7 +31,7 @@ exports.getRegistrationStats = async (req, res) => {
       {
         $sort: {
           // Dynamically set the sort field and order
-          [sortBy || '_id']: validSortOrder === 'asc' ? 1 : -1,
+          [validsortBy || '_id']: validSortOrder === 'asc' ? 1 : -1,
         },
       },
     ]
@@ -53,18 +56,99 @@ exports.getRegistrationStats = async (req, res) => {
 }
 
 exports.getSalesStats = async (req, res) => {
-  const stats = await Order.aggregate([
-    { $match: { status: 'delivered' } },
-    {
-      $group: {
-        _id: '$date',
-        totalSales: { $sum: '$totalAmount' },
-        totalOrders: { $sum: 1 },
+  try {
+    const { groupBy, status, sortBy, sortOrder, limit } = req.query
+
+    // Validate sortOrder (asc or desc)
+    const validSortOrder = ['asc', 'desc'].includes(sortOrder)
+      ? sortOrder
+      : 'asc'
+
+    // Validate sortBy (_id or desc)
+    const validsortBy = ['_id', 'totalSales', 'totalOrders'].includes(sortBy)
+      ? sortBy
+      : '_id'
+
+    // Validate status (_id or desc)
+    const validstatus = [
+      'all',
+      'failed',
+      'pending',
+      'paid',
+      'refunded',
+      'processing',
+      'cancelled',
+      'delivered',
+      'completed',
+    ].includes(status)
+      ? status
+      : 'all'
+
+    // Validate groupBy (createdAt, status)
+    const validGroupBy = ['createdAt', 'status'].includes(groupBy)
+      ? groupBy
+      : 'createdAt'
+
+    // Build the aggregation pipeline
+    const pipeline = [
+      // { $match: { status: 'pending' } }, // Filter by status
+      // Filter by status (if provided)
+      ...(status && status !== 'all'
+        ? [{ $match: { status: validstatus } }]
+        : []), // Use spread syntax to conditionally add the $match stage to the pipeline
+    ]
+
+    if (validGroupBy === 'createdAt') {
+      pipeline.push({
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          totalSales: { $sum: '$totalAmount' },
+          totalOrders: { $sum: 1 },
+        },
+      })
+    } else if (validGroupBy === 'status') {
+      pipeline.push({
+        $group: {
+          _id: '$status',
+          totalSales: { $sum: '$totalAmount' },
+          totalOrders: { $sum: 1 },
+        },
+      })
+    } else {
+      // Default grouping by date
+      pipeline.push({
+        $group: {
+          _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt' } },
+          totalSales: { $sum: '$totalAmount' },
+          totalOrders: { $sum: 1 },
+        },
+      })
+    }
+
+    // Sort the results
+    pipeline.push({
+      $sort: {
+        [validsortBy || '_id']: validSortOrder === 'asc' ? 1 : -1,
       },
-    },
-    { $sort: { _id: 1 } },
-  ])
-  res.json(stats)
+    })
+
+    // Apply limit if provided
+    if (limit && !isNaN(limit)) {
+      pipeline.push({ $limit: Number(limit) })
+    }
+
+    const stats = await Order.aggregate(pipeline)
+
+    // if (stats.length === 0) {
+    //   res.json([])
+    // } else {
+    //   res.json(stats)
+    // }
+    res.json(stats.length === 0 ? [] : stats)
+  } catch (error) {
+    console.error('Error retrieving sales statistics:', error)
+    res.status(500).json({ error: 'Internal Server Error' })
+  }
 }
 
 const { getPaymentFailures } = require('../services/paymentFailure.service.js')

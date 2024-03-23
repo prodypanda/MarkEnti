@@ -13,6 +13,7 @@ exports.viewCart = async (req, res) => {
 exports.addItemToCart = async (req, res) => {
   try {
     const { productId, quantity } = req.body
+    // const product = await Product.findOne({ _id: productId })
     const product = await Product.findById(productId)
     if (!product) {
       return res.status(404).json({ message: 'Product not found' })

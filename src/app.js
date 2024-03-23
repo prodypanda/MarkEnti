@@ -122,9 +122,9 @@ app.use(
   swaggerUi.setup(swaggerSpecs, {
     explorer: false,
     // customCss: '.swagger-ui .topbar { display: none }',
+    customCss: '.swagger-ui .authorization__btn .locked {fill: #49cc90;}',
     // customCssUrl: '/custom.css',
     // customJs: '/custom.js',
-    persistAuthorization: true,
     exposeSwaggerUI: true,
     exposeApiDocs: false,
     swaggerOptions: {
@@ -132,6 +132,8 @@ app.use(
       deepLinkings: true,
       deepLinkPaths: true,
       displayOperationIds: true,
+      // keep user logged in (remember the token)
+      persistAuthorization: true,
 
       tagsSorter: 'alpha',
       // defaultModelsExpandDepth: 0,
