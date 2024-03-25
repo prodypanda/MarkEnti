@@ -407,11 +407,11 @@
 const express = require('express')
 const cartController = require('../controllers/cart.controller')
 const {
-  isAuthenticated,
+  isAuthenticated
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validateMongoId,
-  validateCartImput,
+  validateCartImput
 } = require('../validation/inputValidator')
 const router = express.Router()
 
