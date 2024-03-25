@@ -13,10 +13,10 @@ const guestSession = async (req, res, next) => {
     await res.cookie('XSRF-TOKEN', csrfToken, {
       httpOnly: false,
       sameSite: 'lax',
-      maxAge: maxAge,
+      maxAge
     })
     console.log('XSRF-TOKEN not found, generating new one')
-    console.log(`req.cookies.XSRF-TOKEN= ` + csrfToken)
+    console.log('req.cookies.XSRF-TOKEN= ' + csrfToken)
     req.csrfToken = csrfToken
     // return res.json({
     //   state: 'new',

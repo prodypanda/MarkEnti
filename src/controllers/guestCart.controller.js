@@ -64,7 +64,7 @@ exports.updateAllItemsInGuestCart = async (req, res) => {
         .map((item) => {
           return {
             productId: item.productId,
-            quantity: item.quantity,
+            quantity: item.quantity
           }
         })
         .filter((item) => item.quantity !== 0)
@@ -72,11 +72,11 @@ exports.updateAllItemsInGuestCart = async (req, res) => {
           return {
             productId: item.productId,
             quantity: item.quantity,
-            price: item.price,
+            price: item.price
           }
         })
         .filter((item) => item.price !== 0)
-      //.map(item => {
+      // .map(item => {
       // return {
       // productId: item.productId,
       // quantity: item.quantity,
