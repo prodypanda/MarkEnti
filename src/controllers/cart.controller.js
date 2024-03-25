@@ -42,3 +42,16 @@ exports.removeItemFromCart = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
+
+exports.clearCart = async (req, res) => {
+  try {
+    const cart = await cartService.clearCart(req.user.id)
+    res.status(200).json({ message: 'Cart cleared successfully' }) // Send response in the controller
+  } catch (error) {
+    if (error.message === 'Cart not found') {
+      res.status(404).json({ message: error.message })
+    } else {
+      res.status(500).json({ message: error.message })
+    }
+  }
+}

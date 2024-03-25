@@ -9,8 +9,17 @@ const Product = require('../models/product.model')
  * Returns the new guest cart.
  */
 exports.createGuestCart = async (sessionId) => {
-  let guestCart = new GuestCart({ sessionId, items: [] })
-  await guestCart.save()
+  if (!sessionId) {
+    throw new Error('Session ID is required')
+  }
+
+  let guestCart = await GuestCart.findOne({ sessionId }) // Check if cart exists
+  if (!guestCart) {
+    // Create new cart if not found
+    guestCart = new GuestCart({ sessionId, items: [] }) // Create new cart model instance
+
+    await guestCart.save()
+  }
   return guestCart
 }
 
@@ -22,13 +31,22 @@ exports.createGuestCart = async (sessionId) => {
  * saves the updated guest cart, and returns it.
  */
 exports.addItemToGuestCart = async (sessionId, productId, quantity) => {
+  if (!productId || !quantity) {
+    throw new Error('Product ID and quantity are required')
+  } else if (quantity <= 0) {
+    throw new Error('Quantity must be greater than 0')
+  }
+
+  // Find product by ID and validate inventory count
   const product = await Product.findById(productId)
   if (!product) {
     throw new Error('Product not found')
   }
 
   if (product.inventoryCount < quantity) {
-    throw new Error('Not enough inventory for the product')
+    throw new Error(
+      'Not enough inventory for the product, please reduce quantity or choose a different product.'
+    )
   }
 
   product.inventoryCount -= quantity
@@ -36,10 +54,16 @@ exports.addItemToGuestCart = async (sessionId, productId, quantity) => {
 
   let guestCart = await GuestCart.findOne({ sessionId })
   if (!guestCart) {
-    guestCart = new GuestCart({ sessionId, items: [] })
-    await guestCart.save()
+    // guestCart = new GuestCart({ sessionId, items: [] })
+    // await guestCart.save()
+    guestCart = await this.createGuestCart(sessionId) // Create if not found
   }
 
+  // Add/update item in cart items array
+  // Check if item already exists in cart items array by product ID
+  // If item exists, update quantity, else add new item to array
+  // Save updated cart
+  // Return updated cart
   const cartItemIndex = guestCart.items.findIndex(
     (item) => item.product.toString() === productId
   )
@@ -53,6 +77,72 @@ exports.addItemToGuestCart = async (sessionId, productId, quantity) => {
 }
 
 /**
+ * Gets the guest cart for the provided session ID.
+ * Finds the guest cart by session ID and populates the product references in the items array.
+ * Returns the found guest cart.
+ */
+exports.getGuestCart = async (sessionId) => {
+  if (!sessionId) {
+    throw new Error('Session ID is required')
+  }
+
+  // Find guest cart by session ID and populate product references in items array
+  // Return found guest cart
+  const guestCart = await GuestCart.findOne({ sessionId }).populate(
+    'items.product'
+  )
+  if (!guestCart) {
+    throw new Error('Cart not found, please refresh the page and try again')
+  } else if (guestCart.items.length === 0) {
+    return { sessionId, items: [] }
+  } else {
+    return guestCart
+  }
+}
+
+exports.updateAllItemsInGuestCart = async (sessionId, items) => {
+  if (!sessionId) {
+    throw new Error('Session ID is required')
+  } else if (!items || items.length === 0) {
+    // throw new Error('Items array is required and cannot be empty')
+    items = []
+  }
+  let guestCart = await GuestCart.findOne({ sessionId })
+  if (!guestCart) {
+    throw new Error('Cart not found, please refresh the page and try again')
+  }
+  guestCart.items = items
+  await guestCart.save()
+  return guestCart
+}
+
+exports.updateItemInGuestCart = async (sessionId, itemId, quantity) => {
+  if (!sessionId) {
+    throw new Error('Session ID is required')
+  } else if (!itemId) {
+    throw new Error('Item ID is required')
+  } else if (!quantity) {
+    throw new Error('Quantity is required')
+  } else if (quantity <= 0) {
+    return await this.removeItemFromGuestCart(sessionId, itemId)
+  }
+  let guestCart = await GuestCart.findOne({ sessionId })
+  if (!guestCart) {
+    throw new Error('Cart not found, please refresh the page and try again')
+  }
+  const cartItemIndex = guestCart.items.findIndex(
+    (item) => item.product.toString() === itemId
+  )
+  if (cartItemIndex > -1) {
+    guestCart.items[cartItemIndex].quantity = quantity
+    await guestCart.save()
+    return guestCart
+  } else {
+    throw new Error('Item not found')
+  }
+}
+
+/**
  * Removes an item from the guest cart with the provided session ID and item ID.
  * Finds the guest cart by session ID, validates it exists,
  * removes the item by ID from the cart items array,
@@ -61,21 +151,31 @@ exports.addItemToGuestCart = async (sessionId, productId, quantity) => {
 exports.removeItemFromGuestCart = async (sessionId, itemId) => {
   let guestCart = await GuestCart.findOne({ sessionId })
   if (!guestCart) {
-    throw new Error('Cart not found')
+    throw new Error('Cart not found, please refresh the page and try again')
   }
-  guestCart.items.id(itemId).remove()
+  if (!itemId) {
+    guestCart.items = []
+  } else {
+    const cartItemIndex = guestCart.items.findIndex(
+      (item) => item.product.toString() === itemId
+    )
+    if (cartItemIndex > -1) {
+      guestCart.items.splice(cartItemIndex, 1)
+    }
+  }
+  // guestCart.items.id(itemId).remove()
   await guestCart.save()
   return guestCart
 }
 
-/**
- * Gets the guest cart for the provided session ID.
- * Finds the guest cart by session ID and populates the product references in the items array.
- * Returns the found guest cart.
- */
-exports.getGuestCart = async (sessionId) => {
-  const guestCart = await GuestCart.findOne({ sessionId }).populate(
-    'items.product'
-  )
-  return guestCart
+exports.deleteGuestCart = async (sessionId) => {
+  if (!sessionId) {
+    throw new Error('Session ID is required')
+  }
+  const guestCart = await GuestCart.findOne({ sessionId })
+  if (!guestCart) {
+    throw new Error('Cart not found, please refresh the page and try again')
+  }
+  await guestCart.delete()
+  return true
 }

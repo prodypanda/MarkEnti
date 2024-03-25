@@ -8,9 +8,8 @@
  *         - user
  *       properties:
  *         items:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/CartItem'
+ *           $ref: '#/components/schemas/CartItem'
+ *
  *         user:
  *           $ref: '#/components/schemas/User'
  *         totalCost:

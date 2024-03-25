@@ -36,69 +36,26 @@ router.put(
   discountController.updateDiscount
 )
 
+module.exports = router
+
 /**
  * @swagger
- * /discount/{id}:
- *   get:
- *     summary: Get discount by id
- *     tags: [Discount]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         required: true
- *         name: id
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: OK
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                   description: The discount id
- *                 name:
- *                   type: string
- *                   description: The discount name
- *                 percent:
- *                   type: number
- *                   description: The discount percentage
- *                 startDate:
- *                   type: string
- *                   description: The discount start date
- *                 endDate:
- *                   type: string
- *                   description: The discount end date
- *                 products:
- *                   type: array
- *                   description: The list of products that the discount applies to
- *                 categories:
- *                   type: array
- *                   description: The list of categories that the discount applies to
- *                 stores:
- *                   type: array
- *                   description: The list of stores that the discount applies to
- *                 isActive:
- *                   type: boolean
- *                   description: The status of the discount
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: Not Found
+ * tags:
+ *   name: Discounts
+ *   description: Discounts management APIs
+ * security:
+ *   - bearerAuth: []
  */
 
 /**
  * @swagger
- * /discount:
+ * /discounts:
  *   post:
  *     summary: Create a new discount
- *     tags: [Discount]
+ *     description: This endpoint is used for creating a new discount. It requires valid discount details.
  *     security:
  *       - bearerAuth: []
+ *     tags: [Discounts]
  *     requestBody:
  *       required: true
  *       content:
@@ -106,33 +63,33 @@ router.put(
  *           schema:
  *             type: object
  *             properties:
- *               name:
+ *               productId:
  *                 type: string
- *                 description: The discount name
- *               percent:
- *                 type: number
- *                 description: The discount percentage
+ *                 description: MongoDB object id of the associated product
+ *               discountPercentage:
+ *                 type: integer
+ *                 minimum: 0
+ *                 maximum: 100
+ *                 description: The percentage discount amount
  *               startDate:
  *                 type: string
- *                 description: The discount start date
+ *                 format: date
+ *                 description: The start date of the discount period (optional, defaults to now)
  *               endDate:
  *                 type: string
- *                 description: The discount end date
- *               products:
- *                 type: array
- *                 description: The list of products that the discount applies to
- *               categories:
- *                 type: array
- *                 description: The list of categories that the discount applies to
- *               stores:
- *                 type: array
- *                 description: The list of stores that the discount applies to
+ *                 format: date
+ *                 description: The end date of the discount period (optional, defaults to 1 day from now)
  *               isActive:
  *                 type: boolean
- *                 description: The status of the discount
+ *                 default: false
+ *                 description: Whether the discount is currently active (optional)
+ *               maxUsage:
+ *                 type: integer
+ *                 minimum: 0
+ *                 description: The maximum number of times this discount can be used (0 for unlimited, optional)
  *     responses:
  *       201:
- *         description: Created
+ *         description: Discount created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -141,158 +98,51 @@ router.put(
  *                 _id:
  *                   type: string
  *                   description: The discount id
- *                 name:
+ *                 productId:
  *                   type: string
- *                   description: The discount name
- *                 percent:
- *                   type: number
+ *                   description: MongoDB object id of the associated product
+ *                 discountPercentage:
+ *                   type: integer
  *                   description: The discount percentage
  *                 startDate:
  *                   type: string
+ *                   format: date
  *                   description: The discount start date
  *                 endDate:
  *                   type: string
+ *                   format: date
  *                   description: The discount end date
- *                 products:
- *                   type: array
- *                   description: The list of products that the discount applies to
- *                 categories:
- *                   type: array
- *                   description: The list of categories that the discount applies to
- *                 stores:
- *                   type: array
- *                   description: The list of stores that the discount applies to
  *                 isActive:
  *                   type: boolean
  *                   description: The status of the discount
+ *                 maxUsage:
+ *                   type: integer
+ *                   description: The maximum number of times this discount can be used
+ *                 usageCount:
+ *                   type: integer
+ *                   description: The number of times this discount has been used
  *       400:
- *         description: Bad Request
- *       401:
- *         description: Unauthorized
- */
-
-/**
- * @swagger
- * /discount/{id}:
- *   put:
- *     summary: Update a discount by id
- *     tags: [Discount]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         required: true
- *         name: id
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: The discount name
- *               percent:
- *                 type: number
- *                 description: The discount percentage
- *               startDate:
- *                 type: string
- *                 description: The discount start date
- *               endDate:
- *                 type: string
- *                 description: The discount end date
- *               products:
- *                 type: array
- *                 description: The list of products that the discount applies to
- *               categories:
- *                 type: array
- *                 description: The list of categories that the discount applies to
- *               stores:
- *                 type: array
- *                 description: The list of stores that the discount applies to
- *               isActive:
- *                 type: boolean
- *                 description: The status of the discount
- *     responses:
- *       200:
- *         description: OK
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 _id:
- *                   type: string
- *                   description: The discount id
- *                 name:
- *                   type: string
- *                   description: The discount name
- *                 percent:
- *                   type: number
- *                   description: The discount percentage
- *                 startDate:
- *                   type: string
- *                   description: The discount start date
- *                 endDate:
- *                   type: string
- *                   description: The discount end date
- *                 products:
- *                   type: array
- *                   description: The list of products that the discount applies to
- *                 categories:
- *                   type: array
- *                   description: The list of categories that the discount applies to
- *                 stores:
- *                   type: array
- *                   description: The list of stores that the discount applies to
- *                 isActive:
- *                   type: boolean
- *                   description: The status of the discount
- *       400:
- *         description: Bad Request
+ *         description: Bad Request (e.g., invalid product ID)
  *       401:
  *         description: Unauthorized
  *       404:
- *         description: Not Found
+ *         description: Product not found
+ *       500:
+ *         description: Internal server error
  */
 
 /**
  * @swagger
- * /discount/{id}:
- *   delete:
- *     summary: Delete a discount by id
- *     tags: [Discount]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         required: true
- *         name: id
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: OK
- *       401:
- *         description: Unauthorized
- *       404:
- *         description: Not Found
- */
-
-/**
- * @swagger
- * /discount/all:
+ * /discounts:
  *   get:
  *     summary: Get all discounts
- *     tags: [Discount]
+ *     description: This endpoint is used for retrieving all discounts.
  *     security:
  *       - bearerAuth: []
+ *     tags: [Discounts]
  *     responses:
  *       200:
- *         description: OK
+ *         description: Discounts retrieved successfully
  *         content:
  *           application/json:
  *             schema:
@@ -303,31 +153,275 @@ router.put(
  *                   _id:
  *                     type: string
  *                     description: The discount id
- *                   name:
+ *                   productId:
  *                     type: string
- *                     description: The discount name
- *                   percent:
- *                     type: number
+ *                     description: MongoDB object id of the associated product
+ *                   discountPercentage:
+ *                     type: integer
  *                     description: The discount percentage
  *                   startDate:
  *                     type: string
+ *                     format: date
  *                     description: The discount start date
  *                   endDate:
  *                     type: string
+ *                     format: date
  *                     description: The discount end date
- *                   products:
- *                     type: array
- *                     description: The list of products that the discount applies to
- *                   categories:
- *                     type: array
- *                     description: The list of categories that the discount applies to
- *                   stores:
- *                     type: array
- *                     description: The list of stores that the discount applies to
  *                   isActive:
  *                     type: boolean
  *                     description: The status of the discount
+ *                   maxUsage:
+ *                     type: integer
+ *                     description: The maximum number of times this discount can be used
+ *                   usageCount:
+ *                     type: integer
+ *                     description: The number of times this discount has been used
  *       401:
  *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
  */
-module.exports = router
+
+/**
+ * @swagger
+ * /discounts/{id}:
+ *   get:
+ *     summary: Get discount by id
+ *     description: This endpoint is used for retrieving a discount by id.
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [Discounts]
+ *     parameters:
+ *       - in: path
+ *         required: true
+ *         name: id
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Discount retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The discount id
+ *                 productId:
+ *                   type: string
+ *                   description: MongoDB object id of the associated product
+ *                 discountPercentage:
+ *                   type: integer
+ *                   description: The discount percentage
+ *                 startDate:
+ *                   type: string
+ *                   format: date
+ *                   description: The discount start date
+ *                 endDate:
+ *                   type: string
+ *                   format: date
+ *                   description: The discount end date
+ *                 isActive:
+ *                   type: boolean
+ *                   description: The status of the discount
+ *                 maxUsage:
+ *                   type: integer
+ *                   description: The maximum number of times this discount can be used
+ *                 usageCount:
+ *                   type: integer
+ *                   description: The number of times this discount has been used
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Discount not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /discounts/{id}:
+ *   put:
+ *     summary: Update a discount by id
+ *     description: This endpoint is used for updating a discount by id.
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [Discounts]
+ *     parameters:
+ *       - in: path
+ *         required: true
+ *         name: id
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               productId:
+ *                 type: string
+ *                 description: MongoDB object id of the associated product (optional)
+ *               discountPercentage:
+ *                 type: integer
+ *                 minimum: 0
+ *                 maximum: 100
+ *                 description: The percentage discount amount (optional)
+ *               startDate:
+ *                 type: string
+ *                 format: date
+ *                 description: The start date of the discount period (optional)
+ *               endDate:
+ *                 type: string
+ *                 format: date
+ *                 description: The end date of the discount period (optional)
+ *               isActive:
+ *                 type: boolean
+ *                 description: The status of the discount (optional)
+ *               maxUsage:
+ *                 type: integer
+ *                 minimum: 0
+ *                 description: The maximum number of times this discount can be used (0 for unlimited, optional)
+ *               usageCount:
+ *                 type: integer
+ *                 minimum: 0
+ *                 description: The number of times this discount has been used (optional)
+ *     responses:
+ *       200:
+ *         description: Discount updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The discount id
+ *                 productId:
+ *                   type: string
+ *                   description: MongoDB object id of the associated product
+ *                 discountPercentage:
+ *                   type: integer
+ *                   description: The discount percentage
+ *                 startDate:
+ *                   type: string
+ *                   format: date
+ *                   description: The discount start date
+ *                 endDate:
+ *                   type: string
+ *                   format: date
+ *                   description: The discount end date
+ *                 isActive:
+ *                   type: boolean
+ *                   description: The status of the discount
+ *                 maxUsage:
+ *                   type: integer
+ *                   description: The maximum number of times this discount can be used
+ *                 usageCount:
+ *                   type: integer
+ *                   description: The number of times this discount has been used
+ *       400:
+ *         description: Bad Request (e.g., invalid product ID)
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Discount not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /discounts/{id}:
+ *   delete:
+ *     summary: Delete a discount by id
+ *     description: This endpoint is used for deleting a discount by id.
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [Discounts]
+ *     parameters:
+ *       - in: path
+ *         required: true
+ *         name: id
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Discount deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Discount deleted
+ *                   example: Discount deleted
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Discount not found
+ *       500:
+ *         description: Internal server error
+ */
+
+/**
+ * @swagger
+ * /discounts/useDiscount/{id}:
+ *   put:
+ *     summary: Use a discount by id
+ *     description: This endpoint is used for using a discount by id.
+ *     security:
+ *       - bearerAuth: []
+ *     tags: [Discounts]
+ *     parameters:
+ *       - in: path
+ *         required: true
+ *         name: id
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Discount used successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 _id:
+ *                   type: string
+ *                   description: The discount id
+ *                 productId:
+ *                   type: string
+ *                   description: MongoDB object id of the associated product
+ *                 discountPercentage:
+ *                   type: integer
+ *                   description: The discount percentage
+ *                 startDate:
+ *                   type: string
+ *                   format: date
+ *                   description: The discount start date
+ *                 endDate:
+ *                   type: string
+ *                   format: date
+ *                   description: The discount end date
+ *                 isActive:
+ *                   type: boolean
+ *                   description: The status of the discount
+ *                 maxUsage:
+ *                   type: integer
+ *                   description: The maximum number of times this discount can be used
+ *                 usageCount:
+ *                   type: integer
+ *                   description: The number of times this discount has been used
+ *       401:
+ *         description: Unauthorized
+ *       403:
+ *         description: Discount usage limit reached or expired
+ *       404:
+ *         description: Discount not found
+ *       500:
+ *         description: Internal server error
+ */

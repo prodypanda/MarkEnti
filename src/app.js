@@ -8,7 +8,7 @@ const helmet = require('helmet')
 const loggerMiddleware = require('./middlewares/logger.middleware')
 const rateLimitMiddleware = require('./middlewares/security/rateLimit.middleware')
 const sanitizeMiddleware = require('./middlewares/sanitize.middleware')
-const { csrfProtection } = require('./middlewares/security/csrf.middleware')
+// const { csrfProtection } = require('./middlewares/security/csrf.middleware')
 const guestSessionMiddleware = require('./middlewares/guestSession.middleware')
 
 // routes
@@ -114,7 +114,6 @@ app.get('/api-docs.json', (req, res) => {
   res.setHeader('Content-Type', 'application/json')
   // res.end(JSON.stringify({ swaggerSpecs }));
   res.json(swaggerSpecs)
-  // res.status(200).send('pong')
 })
 app.use(
   '/api-docs',
@@ -174,8 +173,9 @@ app.use(sanitizeMiddleware())
 
 // app.use((req, res, next) => {
 //   res.cookie('XSRF-TOKEN', req.csrfToken(), {
-//     httpOnly: false,
-//     sameSite: 'none',
+//     httpOnly: true,
+//     sameSite: 'Strict',
+//     secure: true,
 //   })
 //   next()
 // })

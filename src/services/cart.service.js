@@ -62,16 +62,24 @@ const addItemToCart = async (userId, productId, quantity, price) => {
  */
 const removeItemFromCart = async (userId, itemId) => {
   try {
-    const cart = await Cart.findOne({ user: userId })
-    const cartItem = await CartItem.findById(itemId)
+    const cart = await Cart.findOne({
+      user: userId,
+      items: { $elemMatch: { $in: itemId } }, // Use $elemMatch to check for item within items array
+    })
+    if (!cart) {
+      throw new Error('Cart empty or item not found in cart') // Throw error if cart not found or item not in cart
+    }
 
-    if (!cart || !cartItem) {
+    // Remove cartItem directly using findById and remove
+    const removedCartItem = await CartItem.findByIdAndDelete({ _id: itemId })
+
+    if (!removedCartItem) {
       throw new Error('Item not found in cart')
     }
 
-    cart.items.pull(cartItem)
+    // Update cart's items array (optional, depending on your schema)
+    cart.items.pull(removedCartItem._id)
     await cart.save()
-    await cartItem.remove()
 
     return cart
   } catch (error) {
@@ -79,8 +87,42 @@ const removeItemFromCart = async (userId, itemId) => {
   }
 }
 
+/**
+ * Clears the cart for the authenticated user.
+ *
+ * @param {Object} req - Express request object
+ * @param {Object} res - Express response object
+ * @returns {Promise<void>}
+ */
+const clearCart = async (userId) => {
+  try {
+    // Find the cart for the user
+    const cart = await Cart.findOne({ user: userId })
+
+    if (!cart) {
+      // If the cart doesn't exist, return a 404
+      throw new Error('Cart not found')
+    }
+
+    // Remove all cart items associated with the cart
+    await CartItem.deleteMany({ _id: { $in: cart.items } })
+
+    // Clear the items array in the cart document
+    cart.items = []
+    await cart.save()
+
+    return cart
+  } catch (error) {
+    console.error('Error clearing cart:', error)
+    throw error // Re-throw the error to be handled by the controller
+  }
+}
+
+// Export the service methods
+
 module.exports = {
   viewCart,
   addItemToCart,
   removeItemFromCart,
+  clearCart,
 }

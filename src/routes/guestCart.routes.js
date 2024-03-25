@@ -3,24 +3,10 @@ const express = require('express')
 const router = express.Router()
 const guestCartController = require('../controllers/guestCart.controller.js')
 const guestSessionMiddleware = require('../middlewares/guestSession.middleware.js')
-const { csrfProtection } = require('../middlewares/security/csrf.middleware')
 
 /**
  * @swagger
- * /api/carts/guest:
- *   get:
- *     summary: Retrieve current guest cart
- *     tags: [Guest Cart]
- *     responses:
- *       200:
- *         description: The current guest cart
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/GuestCart'
- *       500:
- *         description: Error retrieving guest cart
- *
+ * /carts/guest:
  *   post:
  *     summary: Create a new guest cart
  *     tags: [Guest Cart]
@@ -34,14 +20,10 @@ const { csrfProtection } = require('../middlewares/security/csrf.middleware')
  *       500:
  *         description: Error creating a new guest cart
  */
-router.post(
-  '/',
-  [guestSessionMiddleware, csrfProtection],
-  guestCartController.createGuestCart
-)
+router.post('/', [guestSessionMiddleware], guestCartController.createGuestCart)
 /**
  * @swagger
- * /api/carts/guest/items:
+ * /carts/guest/items:
  *   post:
  *     summary: Add an item to the guest cart
  *     tags: [Guest Cart]
@@ -67,12 +49,42 @@ router.post(
  */
 router.post(
   '/items',
-  [guestSessionMiddleware, csrfProtection],
+  [guestSessionMiddleware],
   guestCartController.addItemToGuestCart
 )
+
 /**
  * @swagger
- * /api/carts/guest/items/{itemId}:
+ * /carts/guest:
+ *   get:
+ *     summary: Retrieve current guest cart
+ *     tags: [Guest Cart]
+ *     responses:
+ *       200:
+ *         description: The current guest cart
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GuestCart'
+ *       500:
+ *         description: Error retrieving guest cart
+ */
+router.get('/', guestSessionMiddleware, guestCartController.getGuestCart)
+
+router.put(
+  '/',
+  [guestSessionMiddleware],
+  guestCartController.updateAllItemsInGuestCart
+)
+router.put(
+  '/items/:itemId',
+  [guestSessionMiddleware],
+  guestCartController.updateItemInGuestCart
+)
+
+/**
+ * @swagger
+ * /carts/guest/items/{itemId}:
  *   delete:
  *     summary: Remove an item from the guest cart
  *     tags: [Guest Cart]
@@ -91,9 +103,13 @@ router.post(
  */
 router.delete(
   '/items/:itemId',
-  [guestSessionMiddleware, csrfProtection],
+  [guestSessionMiddleware],
   guestCartController.removeItemFromGuestCart
 )
-router.get('/', guestSessionMiddleware, guestCartController.getGuestCart)
 
+router.delete(
+  '/',
+  [guestSessionMiddleware],
+  guestCartController.deleteGuestCart
+)
 module.exports = router
