@@ -1,23 +1,45 @@
 const passport = require('passport')
 
-// exports.isAuthenticated = passport.authenticate('jwt', { session: false, failWithError: false })
+// exports.authMiddleware = passport.authenticate('jwt', { session: false, failWithError: false })
 
+exports.authMiddleware = (req, res, next) => {
+  passport.authenticate(
+    'jwt',
+    { session: false, failWithError: true },
+    (err, user, info) => {
+      if (err) {
+        return next(err)
+      } // Handle general errors
+      if (!user) {
+        return res.status(401).json({
+          message: 'You do not have access to this resource, please login.',
+        })
+      }
+      req.user = user // Attach the user to the request
+      next() // Continue to the next middleware or route handler
+    }
+  )(req, res, next)
+}
 
 exports.isAuthenticated = (req, res, next) => {
-  passport.authenticate('jwt', { session: false, failWithError: true }, (err, user, info) => {
-    if (err) { return next(err); } // Handle general errors
-    if (!user) { 
-      return res.status(401).json({ message: 'You do not have access to this resource, please login.' });
+  return passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    if (err) {
+      return false
     }
-    req.user = user; // Attach the user to the request
-    next(); // Continue to the next middleware or route handler
-  })(req, res, next);
-};
 
+    if (!user) {
+      return false
+    }
+
+    req.user = user
+
+    return true
+  })(req, res, next)
+}
 
 //second solution
 // const jwt = require('jsonwebtoken'); //you need to install jsonwebtoken first
-// require('dotenv').config(); 
+// require('dotenv').config();
 // exports.verifyToken  = (req, res, next) => {
 //     const authHeader = req.headers.authorization;
 //     const token = authHeader && authHeader.split(' ')[1];
@@ -26,7 +48,7 @@ exports.isAuthenticated = (req, res, next) => {
 //     }
 //     try {
 //         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//         req.user = decoded; 
+//         req.user = decoded;
 //         next();
 //     } catch (err) {
 //         res.status(400).json({ error: 'Invalid token.' });

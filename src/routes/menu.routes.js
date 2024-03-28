@@ -10,37 +10,37 @@ const {
   deleteMenuItem,
   getMenuItems,
   reorderMenuItems,
-  getMenuItemsById
+  getMenuItemsById,
 } = require('../controllers/menu.controller')
 const {
-  isAuthenticated
+  authMiddleware,
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validateMongoId,
   validateMenuCreate,
-  validateMenuUpdate
+  validateMenuUpdate,
 } = require('../validation/inputValidator')
 
 const router = express.Router()
 
-router.post('/items', isAuthenticated, createMenuItem)
-router.put('/items/:id', isAuthenticated, validateMongoId, updateMenuItem)
-router.delete('/items/:id', isAuthenticated, validateMongoId, deleteMenuItem)
-router.get('/items/:id', isAuthenticated, getMenuItemsById)
-router.get('/items', isAuthenticated, getMenuItems)
-router.post('/items/reorder', isAuthenticated, reorderMenuItems)
+router.post('/items', authMiddleware, createMenuItem)
+router.put('/items/:id', authMiddleware, validateMongoId, updateMenuItem)
+router.delete('/items/:id', authMiddleware, validateMongoId, deleteMenuItem)
+router.get('/items/:id', authMiddleware, getMenuItemsById)
+router.get('/items', authMiddleware, getMenuItems)
+router.post('/items/reorder', authMiddleware, reorderMenuItems)
 
-router.post('/', isAuthenticated, validateMenuCreate, createMenu)
+router.post('/', authMiddleware, validateMenuCreate, createMenu)
 router.put(
   '/:id',
-  isAuthenticated,
+  authMiddleware,
   validateMongoId,
   validateMenuUpdate,
   updateMenu
 )
-router.delete('/:id', isAuthenticated, validateMongoId, deleteMenu)
-router.get('/', isAuthenticated, getMenus)
-router.get('/:id', isAuthenticated, validateMongoId, getMenusById)
+router.delete('/:id', authMiddleware, validateMongoId, deleteMenu)
+router.get('/', authMiddleware, getMenus)
+router.get('/:id', authMiddleware, validateMongoId, getMenusById)
 
 /**
  * @swagger

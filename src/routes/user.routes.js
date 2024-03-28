@@ -143,9 +143,9 @@ const {
   updateUserProfile,
   deleteUser,
 } = require('../controllers/user.controller')
-// const { isAuthenticated, isAdminOrOwner } = require('../middleware/authenticate.middleware');
+// const { authMiddleware, isAdminOrOwner } = require('../middleware/authenticate.middleware');
 const {
-  isAuthenticated,
+  authMiddleware,
 } = require('../middlewares/security/authenticate.middleware')
 const {
   isAdminOrOwner,
@@ -156,12 +156,12 @@ const {
 } = require('../validation/inputValidator')
 const router = express.Router()
 
-router.get('/', isAuthenticated, getUsers)
-router.get('/profile', isAuthenticated, getUserProfile)
-router.get('/:id', isAuthenticated, validateMongoId, getUserById)
+router.get('/', authMiddleware, getUsers)
+router.get('/profile', authMiddleware, getUserProfile)
+router.get('/:id', authMiddleware, validateMongoId, getUserById)
 router.put(
   '/profile/:id',
-  isAuthenticated,
+  authMiddleware,
   isAdminOrOwner,
   validateMongoId,
   validateUserUpdate,
@@ -169,7 +169,7 @@ router.put(
 )
 router.delete(
   '/:id',
-  isAuthenticated,
+  authMiddleware,
   validateMongoId,
   isAdminOrOwner,
   deleteUser

@@ -1,6 +1,8 @@
 const express = require('express')
 const categoryController = require('../controllers/category.controller')
-const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
+const {
+  authMiddleware,
+} = require('../middlewares/security/authenticate.middleware')
 const {
   sortAndFilterCategories,
 } = require('../middlewares/categorySorting.middleware')
@@ -8,7 +10,11 @@ const {
   uploadSingleImage,
   resizeAndFormatImage,
 } = require('../middlewares/multer.middleware')
-const { validateMongoId, validateCategoryCreate, validateCategoryUpdate } = require('../validation/inputValidator')
+const {
+  validateMongoId,
+  validateCategoryCreate,
+  validateCategoryUpdate,
+} = require('../validation/inputValidator')
 const router = express.Router()
 
 /**
@@ -36,7 +42,12 @@ const router = express.Router()
  *        "400":
  *          description: Bad request
  */
-router.post('/',isAuthenticated , validateCategoryCreate, categoryController.createCategory)
+router.post(
+  '/',
+  authMiddleware,
+  validateCategoryCreate,
+  categoryController.createCategory
+)
 
 /**
  * @swagger
@@ -66,7 +77,13 @@ router.post('/',isAuthenticated , validateCategoryCreate, categoryController.cre
  *          description: Category not found
  */
 
-router.put('/:id',isAuthenticated, validateMongoId, validateCategoryUpdate, categoryController.updateCategory)
+router.put(
+  '/:id',
+  authMiddleware,
+  validateMongoId,
+  validateCategoryUpdate,
+  categoryController.updateCategory
+)
 
 /**
  * @swagger
@@ -90,7 +107,12 @@ router.put('/:id',isAuthenticated, validateMongoId, validateCategoryUpdate, cate
  *          description: Category not found
  */
 
-router.delete('/:id',isAuthenticated, validateMongoId, categoryController.deleteCategory)
+router.delete(
+  '/:id',
+  authMiddleware,
+  validateMongoId,
+  categoryController.deleteCategory
+)
 
 /**
  * @swagger
@@ -127,7 +149,12 @@ router.get('/', sortAndFilterCategories, categoryController.getCategories)
  *          description: Category not found
  */
 
-router.get('/:id', isAuthenticated, validateMongoId, categoryController.getCategory)
+router.get(
+  '/:id',
+  authMiddleware,
+  validateMongoId,
+  categoryController.getCategory
+)
 
 router.post(
   '/upload-image/:id',

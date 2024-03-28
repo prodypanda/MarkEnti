@@ -7,7 +7,7 @@ const analyticsController = require('../controllers/analytics.controller')
  * Redirects to the login page if not authenticated.
  */
 const {
-  isAuthenticated,
+  authMiddleware,
 } = require('../middlewares/security/authenticate.middleware')
 const router = express.Router()
 
@@ -89,7 +89,7 @@ const router = express.Router()
  */
 router.get(
   '/registration',
-  isAuthenticated,
+  authMiddleware,
   analyticsController.getRegistrationStats
 )
 
@@ -156,7 +156,7 @@ router.get(
  *       401:
  *         description: Unauthorized, user not authenticated.
  */
-router.get('/sales', isAuthenticated, analyticsController.getSalesStats)
+router.get('/sales', authMiddleware, analyticsController.getSalesStats)
 
 /**
  * GET analytics for payment failures.
@@ -200,7 +200,7 @@ router.get('/sales', isAuthenticated, analyticsController.getSalesStats)
  */
 router.get(
   '/payment-failures',
-  isAuthenticated,
+  authMiddleware,
   analyticsController.getPaymentFailureAnalytics
 )
 

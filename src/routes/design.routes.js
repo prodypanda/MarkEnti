@@ -2,7 +2,7 @@
 const express = require('express')
 const designController = require('../controllers/design.controller')
 const {
-  isAuthenticated,
+  authMiddleware,
 } = require('../middlewares/security/authenticate.middleware')
 const {
   isAdminOrOwner,
@@ -12,13 +12,13 @@ const {
   validateDesignConfigCreate,
   validateDesignConfigUpdate,
 } = require('../validation/inputValidator')
-// const { isAuthenticated, isAdminOrOwner } = require('../middleware/authenticate.middleware');
+// const { authMiddleware, isAdminOrOwner } = require('../middleware/authenticate.middleware');
 const router = express.Router()
 
 // just for the first time for configuration
 router.post(
   '/config',
-  isAuthenticated,
+  authMiddleware,
   validateDesignConfigCreate,
   isAdminOrOwner,
   designController.createDesignConfig
@@ -26,14 +26,14 @@ router.post(
 
 router.get(
   '/config/:id',
-  isAuthenticated,
+  authMiddleware,
   validateMongoId,
   isAdminOrOwner,
   designController.getDesignConfig
 )
 router.put(
   '/config/:id',
-  isAuthenticated,
+  authMiddleware,
   validateMongoId,
   validateDesignConfigUpdate,
   isAdminOrOwner,

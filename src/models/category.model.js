@@ -71,6 +71,7 @@
  *       bearerFormat: JWT
  *
  */
+
 const mongoose = require('mongoose')
 
 /**

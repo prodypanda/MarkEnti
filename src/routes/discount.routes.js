@@ -2,7 +2,7 @@
 const express = require('express')
 const discountController = require('../controllers/discount.controller')
 const {
-  isAuthenticated,
+  authMiddleware,
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validateMongoId,
@@ -18,19 +18,19 @@ router.delete('/:id', validateMongoId, discountController.deleteDiscount)
 // now for useDiscount
 router.put(
   '/useDiscount/:id',
-  isAuthenticated,
+  authMiddleware,
   validateMongoId,
   discountController.useDiscount
 )
 router.post(
   '/',
-  isAuthenticated,
+  authMiddleware,
   validateDiscountCreate,
   discountController.createDiscount
 )
 router.put(
   '/:id',
-  isAuthenticated,
+  authMiddleware,
   validateMongoId,
   validateDiscountUpdate,
   discountController.updateDiscount

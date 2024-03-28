@@ -406,30 +406,40 @@
 
 const express = require('express')
 const cartController = require('../controllers/cart.controller')
+const guestCartController = require('../controllers/guestCart.controller.js')
 const {
+  authMiddleware,
   isAuthenticated,
 } = require('../middlewares/security/authenticate.middleware')
+const {
+  guestSessionMiddleware,
+} = require('../middlewares/guestSession.middleware.js')
+
 const {
   validateMongoId,
   validateCartImput,
 } = require('../validation/inputValidator')
 const router = express.Router()
 
-// Apply isAuthenticated middleware to ensure only authenticated users can access the cart
-router.get('/', isAuthenticated, cartController.viewCart)
+console.log(isAuthenticated)
+if (isAuthenticated) {
+  router.get('/', authMiddleware, cartController.viewCart)
+} else {
+  router.get('/', guestSessionMiddleware, guestCartController.getGuestCart)
+}
 
 router.post(
   '/item',
-  isAuthenticated,
+  authMiddleware,
   validateCartImput,
   cartController.addItemToCart
 )
 router.delete(
   '/item/:id',
-  isAuthenticated,
+  authMiddleware,
   validateMongoId,
   cartController.removeItemFromCart
 )
 
-router.delete('/clear', isAuthenticated, cartController.clearCart)
+router.delete('/clear', authMiddleware, cartController.clearCart)
 module.exports = router

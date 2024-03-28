@@ -1,7 +1,7 @@
 const express = require('express')
 const { getSalesReport } = require('../controllers/salesReports.controller')
 const {
-  isAuthenticated,
+  authMiddleware,
 } = require('../middlewares/security/authenticate.middleware')
 const router = express.Router()
 
@@ -37,6 +37,6 @@ const router = express.Router()
  *         $ref: '#/components/responses/ForbiddenError'
  */
 
-router.get('/report', isAuthenticated, getSalesReport)
+router.get('/report', authMiddleware, getSalesReport)
 
 module.exports = router

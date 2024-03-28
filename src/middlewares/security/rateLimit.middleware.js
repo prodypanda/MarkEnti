@@ -14,6 +14,13 @@ const apiLimiter = rateLimit({
   windowMs: timePerMinute,
   max: 200, // limit each IP to 200 requests per windowMs
   message: errorMessage,
+  legacyHeaders: true, // Disable the `X-RateLimit-*` headers.
+  standardHeaders: 'draft-7',
+  // standardHeaders: true,
+  // validate: {
+  //   ip: false,
+  //   default: true,
+  // },
 })
 
 module.exports = {

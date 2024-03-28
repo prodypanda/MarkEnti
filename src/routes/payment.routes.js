@@ -1,7 +1,7 @@
 const express = require('express')
 const paymentController = require('../controllers/payment.controller')
 const {
-  isAuthenticated,
+  authMiddleware,
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validatePaypalPayment,
@@ -14,21 +14,21 @@ const router = express.Router()
 
 router.post(
   '/process-paypal-payment',
-  isAuthenticated,
+  authMiddleware,
   validatePaypalPayment,
   handleValidationErrors,
   paymentController.processPaypalPayment
 )
 router.post(
   '/process-stripe-payment',
-  isAuthenticated,
+  authMiddleware,
   validateStripePayment,
   handleValidationErrors,
   paymentController.processStripePayment
 )
 
 // POST route to capture payment failure notifications
-router.post('/payment-failure', isAuthenticated, handlePaymentFailure)
+router.post('/payment-failure', authMiddleware, handlePaymentFailure)
 
 /**
  * @swagger

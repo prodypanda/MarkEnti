@@ -1,6 +1,6 @@
 const express = require('express')
 const {
-  isAuthenticated,
+  authMiddleware,
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validateRole,
@@ -18,15 +18,15 @@ const {
 
 const router = express.Router()
 
-router.get('/myRole', isAuthenticated, getMyRole)
+router.get('/myRole', authMiddleware, getMyRole)
 
-router.post('/', isAuthenticated, validateRole, createRole)
-router.put('/:id', isAuthenticated, validateRole, validateMongoId, updateRole)
-router.delete('/:id', isAuthenticated, validateMongoId, deleteRole)
-router.get('/', isAuthenticated, getRoles)
-router.get('/:id', isAuthenticated, validateMongoId, getRole)
+router.post('/', authMiddleware, validateRole, createRole)
+router.put('/:id', authMiddleware, validateRole, validateMongoId, updateRole)
+router.delete('/:id', authMiddleware, validateMongoId, deleteRole)
+router.get('/', authMiddleware, getRoles)
+router.get('/:id', authMiddleware, validateMongoId, getRole)
 
-// router.put('/myRole', isAuthenticated,  updateMyRole)
+// router.put('/myRole', authMiddleware,  updateMyRole)
 
 /**
  * @swagger

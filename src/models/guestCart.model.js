@@ -34,6 +34,9 @@ const mongoose = require('mongoose')
  *           items:
  *             $ref: '#/components/schemas/GuestCartItem'
  *           description: Array of cart items
+ *
+ *
+ *
  */
 
 /**

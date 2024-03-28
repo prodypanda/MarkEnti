@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const shippingController = require('../controllers/shipping.controller')
 const {
-  isAuthenticated,
+  authMiddleware,
 } = require('../middlewares/security/authenticate.middleware')
 
 /**
@@ -30,7 +30,7 @@ const {
  * Route handler for GET /shipping
  * Requires authentication
  */
-router.get('/', isAuthenticated, shippingController.getShippingOptions)
+router.get('/', authMiddleware, shippingController.getShippingOptions)
 
 /**
  * @swagger
@@ -55,7 +55,7 @@ router.get('/', isAuthenticated, shippingController.getShippingOptions)
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
  */
-router.post('/', isAuthenticated, shippingController.createShippingOption)
+router.post('/', authMiddleware, shippingController.createShippingOption)
 
 /**
  * @swagger
@@ -88,7 +88,7 @@ router.post('/', isAuthenticated, shippingController.createShippingOption)
  *       422:
  *         description: Validation failed
  */
-router.put('/:id', isAuthenticated, shippingController.updateShippingOption)
+router.put('/:id', authMiddleware, shippingController.updateShippingOption)
 /**
  * Deletes a shipping option by ID
  * Requires authentication
@@ -118,6 +118,6 @@ router.put('/:id', isAuthenticated, shippingController.updateShippingOption)
  *         description: Shipping option not found
  */
 
-router.delete('/:id', isAuthenticated, shippingController.deleteShippingOption)
+router.delete('/:id', authMiddleware, shippingController.deleteShippingOption)
 
 module.exports = router

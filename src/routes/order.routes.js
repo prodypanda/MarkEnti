@@ -1,40 +1,40 @@
 const express = require('express')
 const orderController = require('../controllers/order.controller')
 const {
-  isAuthenticated,
+  authMiddleware,
 } = require('../middlewares/security/authenticate.middleware')
 const {
   calculatePreferencesOnOrderCompletion,
 } = require('../middlewares/orderEvent.middleware')
 const router = express.Router()
 
-router.post('/', isAuthenticated, orderController.placeOrder)
+router.post('/', authMiddleware, orderController.placeOrder)
 router.put(
   '/:id/status',
-  isAuthenticated,
+  authMiddleware,
   calculatePreferencesOnOrderCompletion,
   orderController.updateOrderStatus
 )
-router.put('/:id/cancel', isAuthenticated, orderController.cancelOrder)
-router.put('/:id/refund', isAuthenticated, orderController.refundOrder)
-router.get('/', isAuthenticated, orderController.getOrders)
-router.get('/:id', isAuthenticated, orderController.getOrder)
+router.put('/:id/cancel', authMiddleware, orderController.cancelOrder)
+router.put('/:id/refund', authMiddleware, orderController.refundOrder)
+router.get('/', authMiddleware, orderController.getOrders)
+router.get('/:id', authMiddleware, orderController.getOrder)
 router.get(
   '/customer/:customerId',
-  isAuthenticated,
+  authMiddleware,
   orderController.getCustomerOrders
 )
 
 // Add route to record payment failure
 router.post(
   '/:id/payment-failure',
-  isAuthenticated,
+  authMiddleware,
   orderController.recordPaymentFailure
 )
 // Add route to retry payment, which might redirect to the payment gateway or similar action
-router.post('/:id/retry-payment', isAuthenticated, orderController.retryPayment)
+router.post('/:id/retry-payment', authMiddleware, orderController.retryPayment)
 // Add route to cancel the order after payment has failed
-router.post('/:id/cancel-order', isAuthenticated, orderController.cancelOrder)
+router.post('/:id/cancel-order', authMiddleware, orderController.cancelOrder)
 
 /**
  * @swagger

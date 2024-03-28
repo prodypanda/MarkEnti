@@ -1,10 +1,10 @@
 const express = require('express')
 
 // const { getUserProfile, updateUserProfile } = require('../controllers/user.controller');
-// const { isAuthenticated } = require('../middlewares/security/authenticate.middleware');
+// const { authMiddleware } = require('../middlewares/security/authenticate.middleware');
 // const { isAdminOrOwner } = require('../middlewares/security/verifyRoles.middleware');
 const {
-  isAuthenticated,
+  authMiddleware,
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validatePermission,
@@ -22,20 +22,20 @@ const {
 
 const router = express.Router()
 
-router.get('/myPermissions', isAuthenticated, getMyPermissions)
+router.get('/myPermissions', authMiddleware, getMyPermissions)
 
-router.post('/', isAuthenticated, validatePermission, createPermission)
+router.post('/', authMiddleware, validatePermission, createPermission)
 router.put(
   '/:id',
-  isAuthenticated,
+  authMiddleware,
   validateMongoId,
   validatePermission,
   updatePermission
 )
 
-router.delete('/:id', isAuthenticated, validateMongoId, deletePermission)
-router.get('/', isAuthenticated, getPermissions)
-router.get('/:id', isAuthenticated, validateMongoId, getPermission)
+router.delete('/:id', authMiddleware, validateMongoId, deletePermission)
+router.get('/', authMiddleware, getPermissions)
+router.get('/:id', authMiddleware, validateMongoId, getPermission)
 
 /**
  * @swagger

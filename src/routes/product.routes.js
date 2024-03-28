@@ -1,12 +1,12 @@
 const express = require('express')
 const productController = require('../controllers/product.controller')
 const {
-  isAuthenticated,
+  authMiddleware,
 } = require('../middlewares/security/authenticate.middleware')
 const router = express.Router()
 const loggerMiddleware = require('../middlewares/logger.middleware')
 
-// router.get('/', isAuthenticated, productController.getProducts);
+// router.get('/', authMiddleware, productController.getProducts);
 router.post('/', productController.createProduct)
 router.put('/:id', productController.updateProduct)
 router.delete('/:id', productController.deleteProduct)
