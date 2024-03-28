@@ -4,11 +4,11 @@ const express = require('express')
 // const { authMiddleware } = require('../middlewares/security/authenticate.middleware');
 // const { isAdminOrOwner } = require('../middlewares/security/verifyRoles.middleware');
 const {
-  authMiddleware,
+  authMiddleware
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validatePermission,
-  validateMongoId,
+  validateMongoId
 } = require('../validation/inputValidator')
 
 const {
@@ -17,7 +17,7 @@ const {
   getPermissions,
   createPermission,
   updatePermission,
-  deletePermission,
+  deletePermission
 } = require('../controllers/permission.controller')
 
 const router = express.Router()

@@ -1,10 +1,10 @@
 const express = require('express')
 const {
-  authMiddleware,
+  authMiddleware
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validateRole,
-  validateMongoId,
+  validateMongoId
 } = require('../validation/inputValidator')
 const {
   getMyRole,
@@ -12,7 +12,7 @@ const {
   getRoles,
   createRole,
   updateRole,
-  deleteRole,
+  deleteRole
 } = require('../controllers/role.controller')
 // const {  createRole } = require('../controllers/role.controller');
 

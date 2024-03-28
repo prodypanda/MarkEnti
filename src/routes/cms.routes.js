@@ -1,17 +1,17 @@
 const express = require('express')
 const cmsController = require('../controllers/cms.controller')
 const {
-  authMiddleware,
+  authMiddleware
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validateMongoId,
   validatePageCreate,
-  validatePageUpdate,
+  validatePageUpdate
 } = require('../validation/inputValidator')
 
 const router = express.Router()
 
-//removed.
+// removed.
 router.post(
   '/pages',
   authMiddleware,

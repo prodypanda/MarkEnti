@@ -12,7 +12,7 @@ exports.authMiddleware = (req, res, next) => {
       } // Handle general errors
       if (!user) {
         return res.status(401).json({
-          message: 'You do not have access to this resource, please login.',
+          message: 'You do not have access to this resource, please login.'
         })
       }
       req.user = user // Attach the user to the request
@@ -37,7 +37,7 @@ exports.isAuthenticated = (req, res, next) => {
   })(req, res, next)
 }
 
-//second solution
+// second solution
 // const jwt = require('jsonwebtoken'); //you need to install jsonwebtoken first
 // require('dotenv').config();
 // exports.verifyToken  = (req, res, next) => {

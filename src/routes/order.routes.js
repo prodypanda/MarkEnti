@@ -1,10 +1,10 @@
 const express = require('express')
 const orderController = require('../controllers/order.controller')
 const {
-  authMiddleware,
+  authMiddleware
 } = require('../middlewares/security/authenticate.middleware')
 const {
-  calculatePreferencesOnOrderCompletion,
+  calculatePreferencesOnOrderCompletion
 } = require('../middlewares/orderEvent.middleware')
 const router = express.Router()
 

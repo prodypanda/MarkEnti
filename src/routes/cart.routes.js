@@ -409,15 +409,15 @@ const cartController = require('../controllers/cart.controller')
 const guestCartController = require('../controllers/guestCart.controller.js')
 const {
   authMiddleware,
-  isAuthenticated,
+  isAuthenticated
 } = require('../middlewares/security/authenticate.middleware')
 const {
-  guestSessionMiddleware,
+  guestSessionMiddleware
 } = require('../middlewares/guestSession.middleware.js')
 
 const {
   validateMongoId,
-  validateCartImput,
+  validateCartImput
 } = require('../validation/inputValidator')
 const router = express.Router()
 

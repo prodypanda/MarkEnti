@@ -1,7 +1,7 @@
 const express = require('express')
 const promoCodeController = require('../controllers/promoCode.controller')
 const {
-  authMiddleware,
+  authMiddleware
 } = require('../middlewares/security/authenticate.middleware')
 const router = express.Router()
 

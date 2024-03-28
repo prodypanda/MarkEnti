@@ -1,19 +1,19 @@
 const express = require('express')
 const categoryController = require('../controllers/category.controller')
 const {
-  authMiddleware,
+  authMiddleware
 } = require('../middlewares/security/authenticate.middleware')
 const {
-  sortAndFilterCategories,
+  sortAndFilterCategories
 } = require('../middlewares/categorySorting.middleware')
 const {
   uploadSingleImage,
-  resizeAndFormatImage,
+  resizeAndFormatImage
 } = require('../middlewares/multer.middleware')
 const {
   validateMongoId,
   validateCategoryCreate,
-  validateCategoryUpdate,
+  validateCategoryUpdate
 } = require('../validation/inputValidator')
 const router = express.Router()
 

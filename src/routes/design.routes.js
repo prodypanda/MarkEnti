@@ -2,15 +2,15 @@
 const express = require('express')
 const designController = require('../controllers/design.controller')
 const {
-  authMiddleware,
+  authMiddleware
 } = require('../middlewares/security/authenticate.middleware')
 const {
-  isAdminOrOwner,
+  isAdminOrOwner
 } = require('../middlewares/security/verifyRoles.middleware')
 const {
   validateMongoId,
   validateDesignConfigCreate,
-  validateDesignConfigUpdate,
+  validateDesignConfigUpdate
 } = require('../validation/inputValidator')
 // const { authMiddleware, isAdminOrOwner } = require('../middleware/authenticate.middleware');
 const router = express.Router()
