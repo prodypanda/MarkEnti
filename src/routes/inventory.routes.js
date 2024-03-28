@@ -1,11 +1,11 @@
 const express = require('express')
 const inventoryController = require('../controllers/inventory.controller')
 const {
-  authMiddleware,
+  authMiddleware
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validateMongoId,
-  validateInventoryNumeric,
+  validateInventoryNumeric
 } = require('../validation/inputValidator')
 const router = express.Router()
 

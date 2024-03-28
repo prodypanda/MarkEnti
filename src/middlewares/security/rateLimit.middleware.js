@@ -15,7 +15,7 @@ const apiLimiter = rateLimit({
   max: 200, // limit each IP to 200 requests per windowMs
   message: errorMessage,
   legacyHeaders: true, // Disable the `X-RateLimit-*` headers.
-  standardHeaders: 'draft-7',
+  standardHeaders: 'draft-7'
   // standardHeaders: true,
   // validate: {
   //   ip: false,
@@ -24,7 +24,7 @@ const apiLimiter = rateLimit({
 })
 
 module.exports = {
-  apiLimiter,
+  apiLimiter
 }
 
 // const handleRateLimitExceeded = (req, res, next) => {

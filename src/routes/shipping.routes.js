@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const shippingController = require('../controllers/shipping.controller')
 const {
-  authMiddleware,
+  authMiddleware
 } = require('../middlewares/security/authenticate.middleware')
 
 /**

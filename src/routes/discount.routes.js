@@ -2,12 +2,12 @@
 const express = require('express')
 const discountController = require('../controllers/discount.controller')
 const {
-  authMiddleware,
+  authMiddleware
 } = require('../middlewares/security/authenticate.middleware')
 const {
   validateMongoId,
   validateDiscountCreate,
-  validateDiscountUpdate,
+  validateDiscountUpdate
 } = require('../validation/inputValidator')
 const router = express.Router()
 
