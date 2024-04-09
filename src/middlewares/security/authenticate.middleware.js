@@ -1,22 +1,43 @@
 const passport = require('passport')
+const logger = require('logger').createLogger('development.log') // logs to a file
 
 // exports.authMiddleware = passport.authenticate('jwt', { session: false, failWithError: false })
 
-exports.authMiddleware = (req, res, next) => {
+exports.authMiddleware = async (req, res, next) => {
   passport.authenticate(
     'jwt',
     { session: false, failWithError: true },
-    (err, user, info) => {
-      if (err) {
-        return next(err)
-      } // Handle general errors
-      if (!user) {
-        return res.status(401).json({
-          message: 'You do not have access to this resource, please login.',
-        })
+    (err, user, info, isAuthenticated) => {
+      if (!req.headers.authorization) {
+        req.auth = false
+        return next()
       }
-      req.user = user // Attach the user to the request
-      next() // Continue to the next middleware or route handler
+
+      console.log('startauthMiddleware')
+      console.log('--------------')
+      console.log('--------------')
+
+      console.log('req.headers.authorization: ' + req.headers.authorization)
+      console.log('agagagag')
+      if (err) {
+        req.auth = false
+        console.log('err')
+        return next(err)
+      }
+      if (!user) {
+        console.log('!user')
+        console.log(info.message)
+        req.auth = false
+        return res.status(401).json({ message: info.message })
+      }
+      console.log('info.message: ' + info.message)
+      req.auth = true
+      req.user = user
+      console.log('req.user._id= ' + req.user._id)
+      console.log('--------------')
+      console.log('--------------')
+      console.log('endauthMiddleware')
+      next()
     }
   )(req, res, next)
 }
@@ -24,13 +45,15 @@ exports.authMiddleware = (req, res, next) => {
 exports.isAuthenticated = (req, res, next) => {
   return passport.authenticate('jwt', { session: false }, (err, user, info) => {
     if (err) {
+      console.log(err)
       return false
     }
 
     if (!user) {
+      console.log('not authenticated')
       return false
     }
-
+    console.log('authenticated')
     req.user = user
 
     return true

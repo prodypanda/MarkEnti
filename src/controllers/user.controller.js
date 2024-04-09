@@ -45,7 +45,7 @@ exports.getUserById = async (req, res) => {
 }
 
 exports.updateUserProfile = async (req, res) => {
-  const { email, password, username, roles } = req.body // INPUT_REQUIRED {Add any additional user fields that need to be updated}
+  const { email, password, username, roles, active } = req.body // INPUT_REQUIRED {Add any additional user fields that need to be updated}
   const updateFields = {}
   if (username) updateFields.username = username // INPUT_REQUIRED {Handle any additional fields here}
   if (email) updateFields.email = email
@@ -54,13 +54,18 @@ exports.updateUserProfile = async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     updateFields.password = await bcrypt.hash(password, salt)
   }
+  if (active) updateFields.active = active
   try {
-    const user = await User.findById(req.user.id)
+    // const user = await User.findById(req.user.id)
+    const user = await User.findById(req.params.id)
+
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
     const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
+      // req.user.id,
+      req.params.id,
+
       { $set: updateFields },
       { new: true }
     ).select('-password')

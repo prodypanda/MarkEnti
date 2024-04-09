@@ -1,43 +1,103 @@
 const cartService = require('../services/cart.service')
+const guestCartService = require('../services/guestCart.service.js')
 const Product = require('../models/product.model')
-
-exports.viewCart = async (req, res) => {
-  try {
-    const cart = await cartService.viewCart(req.user.id)
-    res.status(200).json(cart)
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
-}
 
 exports.addItemToCart = async (req, res) => {
   try {
+    let cartResponse = []
     const { productId, quantity } = req.body
-    // const product = await Product.findOne({ _id: productId })
-    const product = await Product.findById(productId)
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' })
+
+    if (req.user) {
+      const updatedCart = await cartService.addItemToCart(
+        req.user.id,
+        productId,
+        quantity
+      )
+      if (updatedCart) {
+        cartResponse = updatedCart
+      }
+    } else {
+      let token = req.cookies['XSRF-TOKEN']
+      if (!token) {
+        token = req.csrfToken()
+      }
+      const updatedGuestCart = await guestCartService.addItemToGuestCart(
+        token,
+        productId,
+        quantity
+      )
+      if (updatedGuestCart) {
+        cartResponse = updatedGuestCart
+      }
     }
 
-    const cart = await cartService.addItemToCart(
-      req.user.id,
-      productId,
-      quantity,
-      product.price
-    )
-    return res.status(201).json(cart)
+    return res.status(201).json(cartResponse)
   } catch (error) {
     return res.status(500).json({ message: error.message })
   }
 }
 
+exports.viewCart = async (req, res) => {
+  try {
+    let cartresponce = []
+
+    if (req.user) {
+      console.log('req.user: ', await req.user)
+      await cartService.viewCart(req.user).then((usercart) => {
+        if (usercart) {
+          cartresponce = usercart
+        }
+      })
+
+      // console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
+      // console.log((await req.user._id) + ' eeeeeee')
+      // const cart = await cartService.viewCart(req.user._id)
+      // console.log(thiscart)
+    } else {
+      let token = req.cookies['XSRF-TOKEN']
+      if (!token) {
+        token = req.csrfToken
+      }
+
+      const guestCart = await guestCartService.getGuestCart(token)
+      if (guestCart) {
+        cartresponce = guestCart
+      }
+    }
+
+    res.status(200).json(cartresponce)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
 exports.removeItemFromCart = async (req, res) => {
   try {
-    const cart = await cartService.removeItemFromCart(
-      req.user.id,
-      req.params.id
-    )
-    res.status(200).json(cart)
+    let cartresponce = []
+    if (req.user) {
+      const cart = await cartService.removeItemFromCart(
+        req.user.id,
+        req.params.id
+      )
+      if (cart) {
+        cartresponce = cart
+      }
+    } else {
+      let token = req.cookies['XSRF-TOKEN']
+      if (!token) {
+        token = req.csrfToken
+      }
+
+      const guestCart = await guestCartService.removeItemFromGuestCart(
+        token,
+        req.params.id
+      )
+      if (guestCart) {
+        cartresponce = guestCart
+      }
+    }
+
+    res.status(200).json(cartresponce)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
@@ -45,8 +105,21 @@ exports.removeItemFromCart = async (req, res) => {
 
 exports.clearCart = async (req, res) => {
   try {
-    const cart = await cartService.clearCart(req.user.id)
-    res.status(200).json({ message: 'Cart cleared successfully' }) // Send response in the controller
+    if (req.user) {
+      const cleanUserCart = await cartService.clearCart(req.user)
+      res
+        .status(200)
+        .json({ message: 'Cart cleared successfully', cleanUserCart }) // Send response in the controller
+    } else {
+      let token = req.cookies['XSRF-TOKEN']
+      if (!token) {
+        token = req.csrfToken
+      }
+      const cleanGuestCart = await guestCartService.clearGuestCart(token)
+      res
+        .status(200)
+        .json({ message: 'Cart cleared successfully ', cleanGuestCart }) // Send response in the controller
+    }
   } catch (error) {
     if (error.message === 'Cart not found') {
       res.status(404).json({ message: error.message })

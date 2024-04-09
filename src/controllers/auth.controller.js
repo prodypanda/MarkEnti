@@ -54,24 +54,36 @@ exports.register = async (req, res) => {
 // skipcq: JS-0045, JS-0045
 exports.login = async (req, res) => {
   try {
-    await passport.authenticate(
+    passport.authenticate(
       'local',
-      { session: false },
-      (err, user, info) => {
+      { session: false, failWithError: true },
+      (err, user, info, isAuthenticated) => {
+        console.log(isAuthenticated)
+        if (isAuthenticated) {
+          req.auth = true // Set the authenticated flag on the request object
+          return res
+            .status(400)
+            .json({ message: 'User already logged in, please logout first.' })
+        }
+
         if (err) {
+          req.auth = false // Set the authenticated flag on the request object
+
           return res.status(500).json({ message: err.message })
         }
         if (!user) {
+          req.auth = false // Set the authenticated flag on the request object
           return res.status(400).json({ message: info.message })
         }
 
-        const payload = { id: user._id, role: user.role }
+        const payload = { id: user._id, role: user.roles }
         const token = jwt.sign(payload, process.env.JWT_SECRET, {
           expiresIn: process.env.JWT_expiresIn || '30d',
         })
 
+        req.auth = true // Set the authenticated flag on the request object
         return res.json({
-          user: { id: user._id, username: user.username, role: user.role },
+          user: { id: user._id, username: user.username, role: user.roles },
           token,
         })
       }

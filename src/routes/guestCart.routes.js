@@ -2,7 +2,9 @@
 const express = require('express')
 const router = express.Router()
 const guestCartController = require('../controllers/guestCart.controller.js')
-const guestSessionMiddleware = require('../middlewares/guestSession.middleware.js')
+const {
+  guestSessionMiddleware,
+} = require('../middlewares/guestSession.middleware.js')
 
 /**
  * @swagger

@@ -421,25 +421,34 @@ const {
 } = require('../validation/inputValidator')
 const router = express.Router()
 
-console.log(isAuthenticated)
-if (isAuthenticated) {
-  router.get('/', authMiddleware, cartController.viewCart)
-} else {
-  router.get('/', guestSessionMiddleware, guestCartController.getGuestCart)
-}
+//
+//
+//
+//
+//
+//
+
+router.get('/', authMiddleware, guestSessionMiddleware, cartController.viewCart)
 
 router.post(
   '/item',
   authMiddleware,
-  validateCartImput,
+  // validateCartImput,
+  guestSessionMiddleware,
   cartController.addItemToCart
 )
 router.delete(
   '/item/:id',
   authMiddleware,
-  validateMongoId,
+  // validateMongoId,
+  guestSessionMiddleware,
   cartController.removeItemFromCart
 )
 
-router.delete('/clear', authMiddleware, cartController.clearCart)
+router.delete(
+  '/clear',
+  authMiddleware,
+  guestSessionMiddleware,
+  cartController.clearCart
+)
 module.exports = router

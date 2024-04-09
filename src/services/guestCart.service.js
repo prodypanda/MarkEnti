@@ -88,13 +88,19 @@ exports.getGuestCart = async (sessionId) => {
 
   // Find guest cart by session ID and populate product references in items array
   // Return found guest cart
-  const guestCart = await GuestCart.findOne({ sessionId }).populate(
+  let guestCart = await GuestCart.findOne({ sessionId }).populate(
     'items.product'
   )
   if (!guestCart) {
-    throw new Error('Cart not found, please refresh the page and try again')
+    // Create new guest cart if not found
+    guestCart = new GuestCart({ sessionId, items: [] }) // Create new cart model instance
+
+    await guestCart.save()
+
+    // throw new Error('Cart not found, please refresh the page and try again')
+    return { guestCart }
   } else if (guestCart.items.length === 0) {
-    return { sessionId, items: [] }
+    return { guestCart }
   } else {
     return guestCart
   }
@@ -167,6 +173,31 @@ exports.removeItemFromGuestCart = async (sessionId, itemId) => {
   await guestCart.save()
   return guestCart
 }
+// add functionality to change product count (return reserved products) for each deleted product in guest cart
+exports.clearGuestCart = async (sessionId) => {
+  if (!sessionId) {
+    throw new Error('Session ID is required')
+  }
+  const guestCart = await GuestCart.findOne({ sessionId })
+  if (!guestCart) {
+    throw new Error('Cart not found, please refresh the page and try again')
+  }
+
+  // Iterate over each item in the guest cart
+  for (const item of guestCart.items) {
+    const product = await Product.findById(item.product)
+    if (product) {
+      // Update the product's inventory count by adding back the quantity from the cart
+      product.inventoryCount += item.quantity
+      await product.save()
+    }
+  }
+
+  // Clear the items array after updating inventory counts
+  guestCart.items = []
+  await guestCart.save()
+  return true
+}
 
 exports.deleteGuestCart = async (sessionId) => {
   if (!sessionId) {
@@ -176,6 +207,6 @@ exports.deleteGuestCart = async (sessionId) => {
   if (!guestCart) {
     throw new Error('Cart not found, please refresh the page and try again')
   }
-  await guestCart.delete()
+  await guestCart.deleteOne({ sessionId })
   return true
 }

@@ -61,7 +61,8 @@ const userSchema = new Schema({
     enum: ['root', 'admin', 'manager', 'customer', 'guest'],
     default: 'customer',
   },
-  roles: [{ type: Schema.Types.ObjectId, ref: 'Role' }],
+  roles: { type: Schema.Types.ObjectId, ref: 'Role' },
+  active: { type: Boolean, default: true },
 
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },

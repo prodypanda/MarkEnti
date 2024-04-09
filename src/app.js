@@ -3,13 +3,18 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const passport = require('passport')
 const helmet = require('helmet')
-
+const logger = require('logger').createLogger('development.log') // logs to a file
+logger.setLevel('info')
+// const xss = require('xss-clean')
+cors = require('cors')
 // middlewares
 const loggerMiddleware = require('./middlewares/logger.middleware')
 const rateLimitMiddleware = require('./middlewares/security/rateLimit.middleware')
 const sanitizeMiddleware = require('./middlewares/sanitize.middleware')
 // const { csrfProtection } = require('./middlewares/security/csrf.middleware')
-const guestSessionMiddleware = require('./middlewares/guestSession.middleware')
+// const {
+//   guestSessionMiddleware,
+// } = require('./middlewares/guestSession.middleware')
 
 // routes
 // this is where all the routes are defined
@@ -31,7 +36,7 @@ const salesReportsRoutes = require('./routes/salesReports.routes')
 const cmsRoutes = require('./routes/cms.routes')
 const menuRoutes = require('./routes/menu.routes')
 const cartRoutes = require('./routes/cart.routes')
-const guestCartRoutes = require('./routes/guestCart.routes')
+// const guestCartRoutes = require('./routes/guestCart.routes')
 const userTRoutes = require('./routes/users')
 
 // const swaggerUi = require('swagger-ui-express')
@@ -152,10 +157,11 @@ app.use(rateLimitMiddleware.apiLimiter)
 
 app.use(bodyParser.json())
 app.use(cookieParser())
-app.use(guestSessionMiddleware)
+// app.use(guestSessionMiddleware)
 app.use(passport.initialize())
 // Custom error handler for unauthorized requests
 
+app.use(cors())
 require('./config/passport')
 
 /**
@@ -212,6 +218,6 @@ app.use('/api/discounts', discountRoutes)
 app.use('/api/sales-reports', salesReportsRoutes)
 app.use('/api/cms', cmsRoutes)
 app.use('/api/menus', menuRoutes)
-app.use('/api/carts/guest', guestCartRoutes)
+// app.use('/api/carts/guest', guestCartRoutes)
 
 module.exports = app

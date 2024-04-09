@@ -20,20 +20,6 @@ exports.createGuestCart = async (req, res) => {
   }
 }
 
-exports.getGuestCart = async (req, res) => {
-  try {
-    let token = req.cookies['XSRF-TOKEN']
-    if (!token) {
-      token = req.csrfToken
-    }
-
-    const guestCart = await guestCartService.getGuestCart(token)
-    return res.status(200).json(guestCart)
-  } catch (error) {
-    return res.status(500).json({ message: error.message })
-  }
-}
-
 exports.addItemToGuestCart = async (req, res) => {
   try {
     let token = req.cookies['XSRF-TOKEN']
@@ -47,6 +33,20 @@ exports.addItemToGuestCart = async (req, res) => {
       req.body.quantity
     )
     return res.status(201).json(updatedGuestCart)
+  } catch (error) {
+    return res.status(500).json({ message: error.message })
+  }
+}
+
+exports.getGuestCart = async (req, res) => {
+  try {
+    let token = req.cookies['XSRF-TOKEN']
+    if (!token) {
+      token = req.csrfToken
+    }
+
+    const guestCart = await guestCartService.getGuestCart(token)
+    return res.status(200).json(guestCart)
   } catch (error) {
     return res.status(500).json({ message: error.message })
   }

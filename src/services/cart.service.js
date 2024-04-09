@@ -1,6 +1,6 @@
 const Cart = require('../models/cart.model')
 const CartItem = require('../models/cartItem.model')
-
+const Product = require('../models/product.model')
 /**
  * Retrieves the cart for the given user, including populated cart items and products.
  *
@@ -29,8 +29,20 @@ const viewCart = async (userId) => {
  * @param {number} price The price paid for the product
  * @returns {Promise<Cart>} A promise that resolves with the updated Cart model for the user
  */
-const addItemToCart = async (userId, productId, quantity, price) => {
+const addItemToCart = async (userId, productId, quantity) => {
   try {
+    // const product = await Product.findOne({ _id: productId })
+    const product = await Product.findById(productId)
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' })
+    }
+    if (product.inventoryCount < quantity) {
+      return res.status(404).json({
+        message:
+          'Not enough inventory for the product, please reduce quantity or choose a different product.',
+      })
+    }
+
     let cart = await Cart.findOne({ user: userId })
 
     if (!cart) {
@@ -40,13 +52,16 @@ const addItemToCart = async (userId, productId, quantity, price) => {
     const cartItem = new CartItem({
       product: productId,
       quantity: quantity,
-      price: price,
+      price: product.price,
     })
 
     await cartItem.save()
     cart.items.push(cartItem)
     await cart.save()
 
+    // Update product inventory count to change product count (reserved products)
+    product.inventoryCount -= quantity
+    await product.save()
     return cart
   } catch (error) {
     throw new Error(`Error adding item to cart: ${error.message}`)
