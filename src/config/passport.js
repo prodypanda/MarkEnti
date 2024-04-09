@@ -7,13 +7,13 @@ const logger = require('logger').createLogger('development.log') // logs to a fi
 passport.use(
   new LocalStrategy(
     {
-      usernameField: 'email',
+      usernameField: 'email'
     },
     async (email, password, done) => {
       try {
         // skipcq: JS-0240
         console.log('start passport.use - LocalStrategy')
-        const user = await User.findOne({ email: email }).select('+password')
+        const user = await User.findOne({ email }).select('+password')
         if (!user) {
           console.log('passport.use - !user')
           return done(null, false, { message: 'Incorrect email.' })
@@ -37,7 +37,7 @@ const opts = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
   secretOrKey: process.env.JWT_SECRET,
   passReqToCallback: true,
-  ignoreExpiration: false,
+  ignoreExpiration: false
 }
 
 /**
@@ -58,7 +58,7 @@ passport.use(
       // 'fatal', 'error', 'warn', 'info', 'debug'
       // logger.setLevel('info')
       // Log the execution of this middleware
-      logger.info({ /*req,*/ jwt_payload }, 'Executing JWT strategy.')
+      logger.info({ /* req, */ jwt_payload }, 'Executing JWT strategy.')
 
       // Find the user by its ID
       const user = await User.findById(jwt_payload.id)

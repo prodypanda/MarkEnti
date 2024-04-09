@@ -60,7 +60,7 @@ exports.isAuthenticated = (req, res, next) => {
   })(req, res, next)
 }
 
-//second solution
+// second solution
 // const jwt = require('jsonwebtoken'); //you need to install jsonwebtoken first
 // require('dotenv').config();
 // exports.verifyToken  = (req, res, next) => {

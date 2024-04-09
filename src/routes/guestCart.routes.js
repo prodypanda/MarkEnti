@@ -3,7 +3,7 @@ const express = require('express')
 const router = express.Router()
 const guestCartController = require('../controllers/guestCart.controller.js')
 const {
-  guestSessionMiddleware,
+  guestSessionMiddleware
 } = require('../middlewares/guestSession.middleware.js')
 
 /**
