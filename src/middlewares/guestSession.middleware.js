@@ -26,10 +26,10 @@ exports.guestSessionMiddleware = async (req, res, next) => {
         await res.cookie('XSRF-TOKEN', csrfToken, {
           httpOnly: false,
           sameSite: 'lax',
-          maxAge: maxAge,
+          maxAge
         })
 
-        console.log(`csrfToken= ` + csrfToken)
+        console.log('csrfToken= ' + csrfToken)
         req.csrfToken = csrfToken
         // return res.json({
         //   state: 'new',

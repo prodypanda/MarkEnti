@@ -59,13 +59,13 @@ const userSchema = new Schema({
   role: {
     type: String,
     enum: ['root', 'admin', 'manager', 'customer', 'guest'],
-    default: 'customer',
+    default: 'customer'
   },
   roles: { type: Schema.Types.ObjectId, ref: 'Role' },
   active: { type: Boolean, default: true },
 
   created_at: { type: Date, default: Date.now },
-  updated_at: { type: Date, default: Date.now },
+  updated_at: { type: Date, default: Date.now }
 })
 
 // Hash password before saving

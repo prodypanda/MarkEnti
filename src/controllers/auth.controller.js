@@ -78,13 +78,13 @@ exports.login = async (req, res) => {
 
         const payload = { id: user._id, role: user.roles }
         const token = jwt.sign(payload, process.env.JWT_SECRET, {
-          expiresIn: process.env.JWT_expiresIn || '30d',
+          expiresIn: process.env.JWT_expiresIn || '30d'
         })
 
         req.auth = true // Set the authenticated flag on the request object
         return res.json({
           user: { id: user._id, username: user.username, role: user.roles },
-          token,
+          token
         })
       }
     )(req, res)
