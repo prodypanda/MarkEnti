@@ -4,31 +4,33 @@ const Product = require('../models/product.model')
 
 exports.addItemToCart = async (req, res) => {
   try {
-    let cartResponse = []
     const { productId, quantity } = req.body
+    if (!productId || !quantity) {
+      return res
+        .status(400)
+        .json({ message: 'Product ID and quantity are required.' })
+    }
 
-    if (req.user) {
-      const updatedCart = await cartService.addItemToCart(
-        req.user.id,
-        productId,
-        quantity
-      )
-      if (updatedCart) {
-        cartResponse = updatedCart
-      }
-    } else {
-      let token = req.cookies['XSRF-TOKEN']
-      if (!token) {
-        token = req.csrfToken()
-      }
-      const updatedGuestCart = await guestCartService.addItemToGuestCart(
-        token,
-        productId,
-        quantity
-      )
-      if (updatedGuestCart) {
-        cartResponse = updatedGuestCart
-      }
+    let cartResponse = []
+    let token = req.user ? req.user.id : req.cookies['XSRF-TOKEN']
+
+    // If the user is not authenticated and no token is present, generate a new one.
+    if (!req.user && !token) {
+      token = req.csrfToken()
+    }
+
+    // Determine the cart service to use based on whether the user is authenticated.
+    const cartServiceToUse = req.user ? cartService : guestCartService
+    const cartMethod = req.user ? 'addItemToCart' : 'addItemToGuestCart'
+    const identifier = req.user ? req.user.id : token
+
+    const updatedCart = await cartServiceToUse[cartMethod](
+      identifier,
+      productId,
+      quantity
+    )
+    if (updatedCart) {
+      cartResponse = updatedCart
     }
 
     return res.status(201).json(cartResponse)
