@@ -11,15 +11,7 @@ exports.addItemToCart = async (req, res) => {
         .json({ message: 'Product ID and quantity are required.' })
     }
 
-    let cartResponse = []
-    let token = req.user ? req.user.id : req.cookies['XSRF-TOKEN']
-
-    // If the user is not authenticated and no token is present, generate a new one.
-    if (!req.user && !token) {
-      token = req.csrfToken()
-    }
-
-    // Determine the cart service to use based on whether the user is authenticated.
+    const token = determineToken(req)
     const cartServiceToUse = req.user ? cartService : guestCartService
     const cartMethod = req.user ? 'addItemToCart' : 'addItemToGuestCart'
     const identifier = req.user ? req.user.id : token
@@ -29,78 +21,83 @@ exports.addItemToCart = async (req, res) => {
       productId,
       quantity
     )
-    if (updatedCart) {
-      cartResponse = updatedCart
-    }
-
-    return res.status(201).json(cartResponse)
+    return res.status(201).json(updatedCart || [])
   } catch (error) {
     return res.status(500).json({ message: error.message })
   }
 }
 
+function determineToken(req) {
+  let token = req.user ? req.user.id : req.cookies['XSRF-TOKEN']
+  // If the user is not authenticated and no token is present, generate a new one.
+  if (!req.user && !token) {
+    token = req.csrfToken()
+  }
+  return token
+}
+
 exports.viewCart = async (req, res) => {
   try {
-    let cartresponce = []
+    const token = determineToken(req)
+    let cartResponse = []
 
-    if (req.user) {
-      console.log('req.user: ', await req.user)
-      await cartService.viewCart(req.user).then((usercart) => {
-        if (usercart) {
-          cartresponce = usercart
-        }
-      })
+    // Determine the service and method to use based on whether the user is authenticated
+    const cartServiceToUse = req.user ? cartService : guestCartService
+    const cartMethod = req.user ? 'viewCart' : 'getGuestCart'
+    const identifier = req.user ? req.user : token
 
-      // console.log('rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr')
-      // console.log((await req.user._id) + ' eeeeeee')
-      // const cart = await cartService.viewCart(req.user._id)
-      // console.log(thiscart)
-    } else {
-      let token = req.cookies['XSRF-TOKEN']
-      if (!token) {
-        token = req.csrfToken
-      }
-
-      const guestCart = await guestCartService.getGuestCart(token)
-      if (guestCart) {
-        cartresponce = guestCart
-      }
+    // Fetch the cart using the determined service and method
+    const cart = await cartServiceToUse[cartMethod](identifier)
+    if (cart) {
+      cartResponse = cart
     }
 
-    res.status(200).json(cartresponce)
+    res.status(200).json(cartResponse)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 }
 
+// Ensure determineToken is defined only once and used consistently
+function determineToken(req) {
+  // If the user is authenticated, use the user's ID; otherwise, use the XSRF-TOKEN cookie or generate a new token
+  return req.user ? req.user.id : req.cookies['XSRF-TOKEN'] || req.csrfToken()
+}
+
 exports.removeItemFromCart = async (req, res) => {
   try {
-    let cartresponce = []
-    if (req.user) {
-      const cart = await cartService.removeItemFromCart(
-        req.user.id,
-        req.params.id
-      )
-      if (cart) {
-        cartresponce = cart
-      }
-    } else {
-      let token = req.cookies['XSRF-TOKEN']
-      if (!token) {
-        token = req.csrfToken
-      }
-
-      const guestCart = await guestCartService.removeItemFromGuestCart(
-        token,
-        req.params.id
-      )
-      if (guestCart) {
-        cartresponce = guestCart
-      }
+    const productId = req.params.id
+    if (!productId) {
+      return res.status(400).json({ message: 'Product ID is required.' })
     }
 
-    res.status(200).json(cartresponce)
+    const token = determineToken(req)
+    const updatedCart = await removeItem(token, productId, req.user)
+    if (!updatedCart) {
+      return res.status(404).json({ message: 'Item not found in cart.' })
+    }
+
+    res.status(200).json(updatedCart)
   } catch (error) {
+    handleRemoveItemError(error, res)
+  }
+}
+
+async function removeItem(token, productId, user) {
+  const cartServiceToUse = user ? cartService : guestCartService
+  const cartMethod = user ? 'removeItemFromCart' : 'removeItemFromGuestCart'
+  const identifier = user ? user.id : token
+
+  return await cartServiceToUse[cartMethod](identifier, productId)
+}
+
+function handleRemoveItemError(error, res) {
+  if (
+    error.message === 'Cart not found' ||
+    error.message === 'Item not found in cart.'
+  ) {
+    res.status(404).json({ message: error.message })
+  } else {
     res.status(500).json({ message: error.message })
   }
 }
