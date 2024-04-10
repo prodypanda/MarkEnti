@@ -114,7 +114,7 @@ exports.updateAllItemsInGuestCart = async (sessionId, items) => {
     // throw new Error('Items array is required and cannot be empty')
     items = []
   }
-  let guestCart = await GuestCart.findOne({ sessionId })
+  const guestCart = await GuestCart.findOne({ sessionId })
   if (!guestCart) {
     throw new Error('Cart not found, please refresh the page and try again')
   }
@@ -133,7 +133,7 @@ exports.updateItemInGuestCart = async (sessionId, itemId, quantity) => {
   } else if (quantity <= 0) {
     return await this.removeItemFromGuestCart(sessionId, itemId)
   }
-  let guestCart = await GuestCart.findOne({ sessionId })
+  const guestCart = await GuestCart.findOne({ sessionId })
   if (!guestCart) {
     throw new Error('Cart not found, please refresh the page and try again')
   }
@@ -156,7 +156,7 @@ exports.updateItemInGuestCart = async (sessionId, itemId, quantity) => {
  * saves the updated guest cart, and returns it.
  */
 exports.removeItemFromGuestCart = async (sessionId, itemId) => {
-  let guestCart = await GuestCart.findOne({ sessionId })
+  const guestCart = await GuestCart.findOne({ sessionId })
   if (!guestCart) {
     throw new Error('Cart not found, please refresh the page and try again')
   }
