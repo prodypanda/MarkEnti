@@ -49,9 +49,6 @@ exports.addItemToGuestCart = async (sessionId, productId, quantity) => {
     )
   }
 
-  product.inventoryCount -= quantity
-  await product.save()
-
   let guestCart = await GuestCart.findOne({ sessionId })
   if (!guestCart) {
     // guestCart = new GuestCart({ sessionId, items: [] })
@@ -73,6 +70,10 @@ exports.addItemToGuestCart = async (sessionId, productId, quantity) => {
     guestCart.items.push({ product, quantity, price: product.price })
   }
   await guestCart.save()
+
+  product.inventoryCount -= quantity
+  await product.save()
+
   return guestCart
 }
 

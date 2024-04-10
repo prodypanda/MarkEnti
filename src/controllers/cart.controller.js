@@ -1,15 +1,33 @@
 const cartService = require('../services/cart.service')
 const guestCartService = require('../services/guestCart.service.js')
-const Product = require('../models/product.model')
 
 exports.addItemToCart = async (req, res) => {
+  //check if user authenticated or not
+  //if true:
+  //-run the addItemToCart service:
+  //--check if product exist, if false: throw an error
+  //--check if enough inventory for the product, if false: throw an error
+  //--check if cart exist, if false: create a new empty cart
+  //--add new CartItem and fill it with product informations
+  //--save cart and CartItem
+  //--Update product inventory count by changing product count (reserved products)
+  //if false:
+  //-check if req.cookies exist, if false: generate a new one req.csrfToken()
+  //-run the addItemToGuestCart service:
+  //--check if product exist, if false: throw an error
+  //--check if enough inventory for the product, if false: throw an error
+  //--check if guestcart exist, if false: create a new empty guestcart
+  //--add new GuestCartItem and fill it with product informations
+  //--save guestcart and GuestCartItem
+  //--Update product inventory count by changing product count (reserved products)
+
   try {
     let cartResponse = []
     const { productId, quantity } = req.body
 
     if (req.user) {
       const updatedCart = await cartService.addItemToCart(
-        req.user.id,
+        req.user._id,
         productId,
         quantity
       )
@@ -33,7 +51,7 @@ exports.addItemToCart = async (req, res) => {
 
     return res.status(201).json(cartResponse)
   } catch (error) {
-    return res.status(500).json({ message: error.message })
+    return res.status(error.statusCode || 500).json({ message: error.message })
   }
 }
 

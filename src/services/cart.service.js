@@ -34,13 +34,17 @@ const addItemToCart = async (userId, productId, quantity) => {
     // const product = await Product.findOne({ _id: productId })
     const product = await Product.findById(productId)
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' })
+      throw {
+        message: 'Product not found',
+        statusCode: 404,
+      }
     }
     if (product.inventoryCount < quantity) {
-      return res.status(404).json({
+      throw {
         message:
           'Not enough inventory for the product, please reduce quantity or choose a different product.',
-      })
+        statusCode: 409,
+      }
     }
 
     let cart = await Cart.findOne({ user: userId })
@@ -64,7 +68,10 @@ const addItemToCart = async (userId, productId, quantity) => {
     await product.save()
     return cart
   } catch (error) {
-    throw new Error(`Error adding item to cart: ${error.message}`)
+    throw {
+      message: `Error adding item to cart: ${error.message}`,
+      statusCode: error.statusCode,
+    }
   }
 }
 
