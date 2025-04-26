@@ -12,7 +12,7 @@ const viewCart = async (userId) => {
   try {
     const cart = await Cart.findOne({ user: userId }).populate({
       path: 'items',
-      populate: { path: 'product' },
+      populate: { path: 'product' }
     })
     return cart
   } catch (error) {
@@ -36,14 +36,14 @@ const addItemToCart = async (userId, productId, quantity) => {
     if (!product) {
       throw {
         message: 'Product not found',
-        statusCode: 404,
+        statusCode: 404
       }
     }
     if (product.inventoryCount < quantity) {
       throw {
         message:
           'Not enough inventory for the product, please reduce quantity or choose a different product.',
-        statusCode: 409,
+        statusCode: 409
       }
     }
 
@@ -55,8 +55,8 @@ const addItemToCart = async (userId, productId, quantity) => {
 
     const cartItem = new CartItem({
       product: productId,
-      quantity: quantity,
-      price: product.price,
+      quantity,
+      price: product.price
     })
 
     await cartItem.save()
@@ -70,7 +70,7 @@ const addItemToCart = async (userId, productId, quantity) => {
   } catch (error) {
     throw {
       message: `Error adding item to cart: ${error.message}`,
-      statusCode: error.statusCode,
+      statusCode: error.statusCode
     }
   }
 }
@@ -86,7 +86,7 @@ const removeItemFromCart = async (userId, itemId) => {
   try {
     const cart = await Cart.findOne({
       user: userId,
-      items: { $elemMatch: { $in: itemId } }, // Use $elemMatch to check for item within items array
+      items: { $elemMatch: { $in: itemId } } // Use $elemMatch to check for item within items array
     })
     if (!cart) {
       throw new Error('Cart empty or item not found in cart') // Throw error if cart not found or item not in cart
@@ -146,5 +146,5 @@ module.exports = {
   viewCart,
   addItemToCart,
   removeItemFromCart,
-  clearCart,
+  clearCart
 }
