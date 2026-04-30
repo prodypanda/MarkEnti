@@ -37,7 +37,7 @@
     "slugify": "^1.6.6",
     "stripe": "^14.14.0",
     "stylelint": "^16.2.1",
-    "uuid": "^9.0.1"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "i": "^0.3.7",
